@@ -195,7 +195,7 @@ agentic-os/
 ├── registry/              # Plugin marketplace
 ├── standards/             # Discover/inject conventions
 ├── prompts/               # 10 reusable templates
-├── data/                  # Runtime data (gitignored)
+├── data/                  # Runtime data (agent-routes.json tracked; settings/cost/chat gitignored)
 ├── audit/                 # Activity log (gitignored)
 └── backups/               # Snapshots (gitignored)
 ```

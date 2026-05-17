@@ -8,7 +8,7 @@ async function loadPage(name) {
     await loadScript(`${PAGE_BASE}${name}.js`);
     pageCache[name] = true;
   } catch (err) {
-    console.error(`Failed to load page: ${name}`, err);
+    showToast(`Failed to load page: ${name}`, 'error');
     throw err;
   }
 }
