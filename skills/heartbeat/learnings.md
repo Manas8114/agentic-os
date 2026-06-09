@@ -51,3 +51,18 @@ description: Lightweight s
 - Agent: opencode
 - Input: (from previous step)
 - Output: ⚠ Error communicating with opencode: [WinError 2] The system cannot find the file specified
+
+## 2026-06-09 (Scheduler Chain 60b2f6c5 Step 1 Run f300b09e)
+- Agent: opencode
+- Input: (from previous step)
+- Output: Command not found: opencode
+
+## 2026-06-09 (Scheduler Run)
+- Agent: opencode
+- Input: (scheduled)
+- Output: Command not found: opencode
+
+## 2026-06-09 (Chain api-test-1 Step 1 Run 1b9077a9)
+- Agent: opencode
+- Input: (from previous step)
+- Output: ⚠ Error communicating with opencode: [WinError 2] The system cannot find the file specified
