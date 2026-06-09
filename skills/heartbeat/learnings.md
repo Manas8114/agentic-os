@@ -46,3 +46,8 @@ description: Lightweight s
 - Agent: opencode
 - Input: test
 - Output: ⚠ Error communicating with opencode: [WinError 2] The system cannot find the file specified
+
+## 2026-06-09 (Chain test-chain-1 Step 1 Run 9f118d6f)
+- Agent: opencode
+- Input: (from previous step)
+- Output: ⚠ Error communicating with opencode: [WinError 2] The system cannot find the file specified
