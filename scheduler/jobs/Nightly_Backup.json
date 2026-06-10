@@ -1,0 +1,11 @@
+{
+  "id": "d5587248",
+  "name": "Nightly Backup",
+  "skill": "backup-skill",
+  "skills": null,
+  "cron": "0 2 * * *",
+  "enabled": true,
+  "created": "2026-06-09T11:22:05.554441+00:00",
+  "last_run": null,
+  "next_run": null
+}

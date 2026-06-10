@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mission Control - Icon Generator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0b0f14;
+    color: #eef2f7;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  .container { max-width: 800px; margin: 0 auto; }
+  h1 { margin-bottom: 0.5rem; background: linear-gradient(135deg, #7c6dff, #c88fff, #00e09e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .subtitle { color: #8b93b4; margin-bottom: 2rem; }
+  .svg-preview {
+    background: #131c26;
+    border: 1px solid #2a3648;
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  .sizes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .size-item {
+    background: #131c26;
+    border: 1px solid #2a3648;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  .size-item:hover { border-color: #7c6dff; box-shadow: 0 0 20px rgba(124,109,255,0.2); }
+  .size-item canvas { width: 100%; max-width: 100px; height: auto; margin-bottom: 0.5rem; }
+  .size-label { font-size: 0.85rem; color: #8b93b4; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #7c6dff, #5a4bd8);
+    color: white;
+  }
+  .btn-primary:hover { box-shadow: 0 4px 20px rgba(124,109,255,0.4); transform: translateY(-1px); }
+  .btn-secondary {
+    background: #1a2634;
+    color: #a4adbd;
+    border: 1px solid #2a3648;
+  }
+  .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+  .status { margin-top: 1rem; padding: 1rem; background: #1a2634; border-radius: 8px; font-family: monospace; font-size: 0.875rem; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+  .progress-bar { height: 4px; background: #1a2634; border-radius: 2px; overflow: hidden; margin: 1rem 0; }
+  .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #7c6dff, #00e09e); transition: width 0.3s; }
+  .code-block {
+    background: #0d1117;
+    border: 1px solid #2a3648;
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: monospace;
+    font-size: 0.8rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+  .icons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .icon-preview {
+    background: #131c26;
+    border: 1px solid #2a3648;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    aspect-ratio: 1;
+  }
+  .icon-preview canvas { width: 100%; max-width: 80px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎨 Mission Control Icon Generator</h1>
+  <p class="subtitle">Generate all required PWA icon sizes from the Mission Control SVG logo</p>
+
+  <div class="svg-preview">
+    <svg id="masterSvg" viewBox="0 0 36 36" width="120" height="120">
+      <defs>
+        <linearGradient id="mc" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#7c6dff"/>
+          <stop offset="50%" stop-color="#c88fff"/>
+          <stop offset="100%" stop-color="#00e09e"/>
+        </linearGradient>
+      </defs>
+      <rect x="2" y="2" width="32" height="32" rx="10" fill="url(#mc)" opacity="0.15"/>
+      <rect x="4" y="4" width="28" height="28" rx="8" fill="none" stroke="url(#mc)" stroke-width="1.5"/>
+      <path d="M18 6 L12 14 L12 22 L18 28 L24 22 L24 14 Z" fill="none" stroke="url(#mc)" stroke-width="2" stroke-linejoin="round"/>
+      <circle cx="18" cy="18" r="5" fill="url(#mc)"/>
+      <rect x="15" y="13" width="6" height="10" rx="1" fill="url(#mc)"/>
+      <rect x="15" y="17" width="6" height="6" rx="1" fill="url(#mc)"/>
+    </svg>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-primary" onclick="generateAllIcons()">🚀 Generate All Icons</button>
+    <button class="btn btn-secondary" onclick="downloadAll()">📦 Download All as ZIP</button>
+    <button class="btn btn-secondary" onclick="generateManifestIcons()">📋 Generate manifest.json Icons</button>
+  </div>
+
+  <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+  <div id="status" class="status" style="display:none"></div>
+
+  <h2 style="margin: 2rem 0 1rem;">Generated Icons Preview</h2>
+  <div id="iconsPreview" class="icons-grid"></div>
+
+  <h2 style="margin: 2rem 0 1rem;">Manifest Icons Section</h2>
+  <div id="manifestIconsPreview" class="icons-grid" style="display:none"></div>
+
+  <h2 style="margin: 2rem 0 1rem;">Command Line Generation</h2>
+  <div class="code-block" id="cliCommands"></div>
+</div>
+
+<script>
+const sizes = [
+  { size: 48, name: 'icon-48.png' },
+  { size: 72, name: 'icon-72.png' },
+  { size: 96, name: 'icon-96.png' },
+  { size: 128, name: 'icon-128.png' },
+  { size: 144, name: 'icon-144.png' },
+  { size: 152, name: 'icon-152.png' },
+  { size: 192, name: 'icon-192.png' },
+  { size: 384, name: 'icon-384.png' },
+  { size: 512, name: 'icon-512.png' }
+];
+
+const manifestSizes = [
+  { size: 48, name: 'icon-48.png' },
+  { size: 72, name: 'icon-72.png' },
+  { size: 96, name: 'icon-96.png' },
+  { size: 128, name: 'icon-128.png' },
+  { size: 144, name: 'icon-144.png' },
+  { size: 152, name: 'icon-152.png' },
+  { size: 192, name: 'icon-192.png' },
+  { size: 384, name: 'icon-384.png' },
+  { size: 512, name: 'icon-512.png' }
+];
+
+const svgContent = document.getElementById('masterSvg').outerHTML;
+const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
+const svgUrl = URL.createObjectURL(svgBlob);
+
+function renderSvgToCanvas(size) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, size, size);
+      resolve({ canvas, size });
+    };
+    img.onerror = reject;
+    img.src = svgUrl;
+  });
+}
+
+async function generateAllIcons() {
+  const status = document.getElementById('status');
+  const progressFill = document.getElementById('progressFill');
+  const preview = document.getElementById('iconsPreview');
+  status.style.display = 'block';
+  status.textContent = 'Generating icons...';
+  preview.innerHTML = '';
+
+  for (let i = 0; i < sizes.length; i++) {
+    const { size, name } = sizes[i];
+    progressFill.style.width = `${((i + 1) / sizes.length) * 100}%`;
+    status.textContent = `Generating ${name} (${size}x${size})...`;
+
+    try {
+      const { canvas } = await renderSvgToCanvas(size);
+      
+      const div = document.createElement('div');
+      div.className = 'icon-preview';
+      div.innerHTML = `
+        <canvas></canvas>
+        <span class="size-label">${name}</span>
+        <span class="size-label">${size}×${size}px</span>
+      `;
+      div.querySelector('canvas').getContext('2d').drawImage(canvas, 0, 0);
+      preview.appendChild(div);
+    } catch (err) {
+      console.error(`Failed to generate ${name}:`, err);
+    }
+  }
+
+  progressFill.style.width = '100%';
+  status.textContent = `✅ Generated ${sizes.length} icons successfully! Click on any icon to download.`;
+
+  // Add click to download
+  document.querySelectorAll('.icon-preview').forEach((el, i) => {
+    el.style.cursor = 'pointer';
+    el.onclick = () => {
+      const { canvas, size } = await renderSvgToCanvas(sizes[i].size);
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = sizes[i].name;
+        a.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    };
+  });
+}
+
+async function generateManifestIcons() {
+  const status = document.getElementById('status');
+  const manifestPreview = document.getElementById('manifestIconsPreview');
+  status.style.display = 'block';
+  status.textContent = 'Generating manifest icons...';
+  manifestPreview.style.display = 'grid';
+  manifestPreview.innerHTML = '';
+
+  for (const { size, name } of manifestSizes) {
+    status.textContent = `Generating ${name} (${size}x${size})...`;
+
+    try {
+      const { canvas } = await renderSvgToCanvas(size);
+      
+      const div = document.createElement('div');
+      div.className = 'icon-preview';
+      div.innerHTML = `
+        <canvas></canvas>
+        <span class="size-label">${name}</span>
+        <span class="size-label">${size}×${size}px</span>
+      `;
+      div.querySelector('canvas').getContext('2d').drawImage(canvas, 0, 0);
+      manifestPreview.appendChild(div);
+    } catch (err) {
+      console.error(`Failed to generate ${name}:`, err);
+    }
+  }
+
+  status.textContent = `✅ Generated ${manifestSizes.length} manifest icons!`;
+
+  // Add click to download
+  document.querySelectorAll('#manifestIconsPreview .icon-preview').forEach((el, i) => {
+    el.style.cursor = 'pointer';
+    el.onclick = async () => {
+      const { canvas } = await renderSvgToCanvas(manifestSizes[i].size);
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = manifestSizes[i].name;
+        a.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    };
+  });
+}
+
+async function downloadAll() {
+  const status = document.getElementById('status');
+  status.style.display = 'block';
+  status.textContent = 'Creating ZIP...';
+
+  // For now, just trigger downloads sequentially
+  // In a real app, you'd use JSZip
+  for (const { size, name } of sizes) {
+    const { canvas } = await renderSvgToCanvas(size);
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+    
+    // Small delay to prevent browser blocking
+    await new Promise(r => setTimeout(r, 100));
+  }
+
+  // Also download manifest icons
+  for (const { size, name } of manifestSizes) {
+    const { canvas } = await renderSvgToCanvas(size);
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+      URL.revokeObjectURL(url);
+    }, 'image/png');
+    await new Promise(r => setTimeout(r, 100));
+  }
+
+  document.getElementById('status').textContent = '✅ All downloads initiated! Check your downloads folder.';
+}
+
+function generateCliCommands() {
+  const cmds = [
+    '# ImageMagick commands (run from dashboard directory):\n',
+    'convert favicon.svg -resize 48x48 icons/icon-48.png',
+    'convert favicon.svg -resize 72x72 icons/icon-72.png',
+    'convert favicon.svg -resize 96x96 icons/icon-96.png',
+    'convert favicon.svg -resize 128x128 icons/icon-128.png',
+    'convert favicon.svg -resize 144x144 icons/icon-144.png',
+    'convert favicon.svg -resize 152x152 icons/icon-152.png',
+    'convert favicon.svg -resize 192x192 icons/icon-192.png',
+    'convert favicon.svg -resize 384x384 icons/icon-384.png',
+    'convert favicon.svg -resize 512x512 icons/icon-512.png',
+    '',
+    '# Or use the browser-based generator above and click "Generate All Icons"'
+  ].join('\n');
+  
+  document.getElementById('cliCommands').textContent = cmds;
+}
+
+function updateStatus(message) {
+  const status = document.getElementById('status');
+  status.textContent = message;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  generateCliCommands();
+});
+</script>
+</body>
+</html>

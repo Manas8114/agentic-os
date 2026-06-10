@@ -1,0 +1,77 @@
+{
+  "name": "Agentic OS",
+  "short_name": "Agentic OS",
+  "description": "Locally-hosted multi-agent orchestration OS — opencode, Hermes, Gemini CLI in one dashboard with persistent memory, skills, scheduler, and cost analytics.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0f14",
+  "theme_color": "#7c6dff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["productivity", "developer-tools", "utilities"],
+  "icons": [
+    {
+      "src": "/dashboard/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View the main dashboard",
+      "url": "/#dashboard",
+      "icon": "/dashboard/favicon.svg"
+    },
+    {
+      "name": "AI Chat",
+      "short_name": "AI Chat",
+      "description": "Open AI chat interface",
+      "url": "/#chat",
+      "icon": "/dashboard/favicon.svg"
+    },
+    {
+      "name": "Hermes Workspace",
+      "short_name": "Hermes V2",
+      "description": "Full Hermes control room — Chat, Memory, Skills, Inspector, Swarm",
+      "url": "/#hermes-workspace",
+      "icon": "/dashboard/favicon.svg"
+    },
+    {
+      "name": "Command Room",
+      "short_name": "Command Room",
+      "description": "Virtual office view of all agents",
+      "url": "/#command-room",
+      "icon": "/dashboard/favicon.svg"
+    },
+    {
+      "name": "Agent Config",
+      "short_name": "Agent Config",
+      "description": "Configure agents",
+      "url": "/#agent-config",
+      "icon": "/dashboard/favicon.svg"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/docs/images/mission-control.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Agentic OS Dashboard"
+    },
+    {
+      "src": "/docs/images/hermes-workspace.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Hermes Workspace V2"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

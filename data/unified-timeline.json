@@ -1,0 +1,445 @@
+{
+  "events": [
+    {
+      "id": "audit-941dbc20",
+      "type": "audit",
+      "timestamp": "2026-06-09T18:49:53.950973+00:00",
+      "title": "Audit: context_rule_created",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-9aad1018",
+      "type": "audit",
+      "timestamp": "2026-06-09T18:19:01.586638+00:00",
+      "title": "Audit: knowledge_graph_reindexed",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-5bf56650",
+      "type": "audit",
+      "timestamp": "2026-06-09T16:55:54.335863+00:00",
+      "title": "Audit: memory_reindexed",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-3e8b47d1",
+      "type": "audit",
+      "timestamp": "2026-06-09T16:23:47.014583+00:00",
+      "title": "Audit: plugin_uninstalled",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-0935117f",
+      "type": "audit",
+      "timestamp": "2026-06-09T16:23:47.004499+00:00",
+      "title": "Audit: plugin_installed",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-341b9873",
+      "type": "audit",
+      "timestamp": "2026-06-09T16:21:32.008006+00:00",
+      "title": "Audit: plugin_uninstalled",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-5486d901",
+      "type": "audit",
+      "timestamp": "2026-06-09T16:17:52.356378+00:00",
+      "title": "Audit: plugin_installed",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-de51c976",
+      "type": "audit",
+      "timestamp": "2026-06-09T13:35:07.403797+00:00",
+      "title": "Audit: agent_config_updated",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-a8df2eb8",
+      "type": "audit",
+      "timestamp": "2026-06-09T13:27:23.929088+00:00",
+      "title": "Audit: settings_updated",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-1b1fcd88",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:31:13.067914+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-5763d1fc",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:29:12.423806+00:00",
+      "title": "Audit: skill_chain_step",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-758adfe6",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:29:12.410247+00:00",
+      "title": "Audit: handoff_created",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "handoff-c5920b19",
+      "type": "handoff",
+      "timestamp": "2026-06-09T11:29:12.406795+00:00",
+      "title": "Handoff: opencode \u2192 hermes",
+      "details": "Completed heartbeat, output passed to daily-standup",
+      "source": "handoff"
+    },
+    {
+      "id": "audit-40f25c69",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:29:12.302062+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-168c6441",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:29:11.920425+00:00",
+      "title": "Audit: skill_chain_step",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:25:49.112212+00:00",
+      "title": "Audit: scheduler_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:24:19.971920+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:22:39.774877+00:00",
+      "title": "Audit: scheduler_chain_step",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "handoff-f4ad5f6c",
+      "type": "handoff",
+      "timestamp": "2026-06-09T11:22:39.773831+00:00",
+      "title": "Handoff: opencode \u2192 hermes",
+      "details": "Completed heartbeat, output passed to daily-standup",
+      "source": "handoff"
+    },
+    {
+      "id": "audit-",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:22:39.773831+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:22:39.773831+00:00",
+      "title": "Audit: handoff_created",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:22:39.423399+00:00",
+      "title": "Audit: scheduler_chain_step",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-4ef78a85",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:22:05.565383+00:00",
+      "title": "Audit: job_created",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-ad939a3c",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:22:05.554441+00:00",
+      "title": "Audit: job_created",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-e04ffcec",
+      "type": "audit",
+      "timestamp": "2026-06-09T11:21:22.656618+00:00",
+      "title": "Audit: job_created",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-38695c90",
+      "type": "audit",
+      "timestamp": "2026-06-09T10:57:28.351229+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-d4ad338e",
+      "type": "audit",
+      "timestamp": "2026-06-09T10:55:57.981465+00:00",
+      "title": "Audit: handoff_created",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-4df48a14",
+      "type": "audit",
+      "timestamp": "2026-06-09T10:55:57.981465+00:00",
+      "title": "Audit: skill_chain_step",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "handoff-aa6ac698",
+      "type": "handoff",
+      "timestamp": "2026-06-09T10:55:57.980466+00:00",
+      "title": "Handoff: opencode \u2192 hermes",
+      "details": "Completed heartbeat, output passed to daily-standup",
+      "source": "handoff"
+    },
+    {
+      "id": "audit-19a7ced7",
+      "type": "audit",
+      "timestamp": "2026-06-09T10:55:57.895856+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-fd959c0b",
+      "type": "audit",
+      "timestamp": "2026-06-09T10:55:57.630492+00:00",
+      "title": "Audit: skill_chain_step",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-445909a8",
+      "type": "audit",
+      "timestamp": "2026-06-09T07:49:49.148990+00:00",
+      "title": "Audit: handoff_created",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "handoff-cbebd13a",
+      "type": "handoff",
+      "timestamp": "2026-06-09T07:49:49.147991+00:00",
+      "title": "Handoff: gemini \u2192 opencode",
+      "details": "Research completed, ready for implementation",
+      "source": "handoff"
+    },
+    {
+      "id": "audit-d7f4c180",
+      "type": "audit",
+      "timestamp": "2026-06-09T07:28:58.182674+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-a56289c7",
+      "type": "audit",
+      "timestamp": "2026-06-09T07:27:44.967314+00:00",
+      "title": "Audit: settings_updated",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-65055668",
+      "type": "audit",
+      "timestamp": "2026-06-09T07:27:23.119950+00:00",
+      "title": "Audit: brain_update",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-c30b55e6",
+      "type": "audit",
+      "timestamp": "2026-06-09T06:55:27.443748+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-28ccb8ab",
+      "type": "audit",
+      "timestamp": "2026-06-08T19:22:19.619468+00:00",
+      "title": "Audit: agent_health_refreshed",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-52589373",
+      "type": "audit",
+      "timestamp": "2026-06-08T19:20:00.347428+00:00",
+      "title": "Audit: chat_message",
+      "details": "test",
+      "source": "audit"
+    },
+    {
+      "id": "audit-a49fc654",
+      "type": "audit",
+      "timestamp": "2026-06-08T19:20:00.331585+00:00",
+      "title": "Audit: chat_message",
+      "details": "test",
+      "source": "audit"
+    },
+    {
+      "id": "audit-1d2c8eb5",
+      "type": "audit",
+      "timestamp": "2026-06-08T19:20:00.308970+00:00",
+      "title": "Audit: chat_message",
+      "details": "test",
+      "source": "audit"
+    },
+    {
+      "id": "audit-f7c5e838",
+      "type": "audit",
+      "timestamp": "2026-06-08T19:19:39.131520+00:00",
+      "title": "Audit: chat_message",
+      "details": "test",
+      "source": "audit"
+    },
+    {
+      "id": "audit-dfa3aaec",
+      "type": "audit",
+      "timestamp": "2026-06-08T19:18:42.951018+00:00",
+      "title": "Audit: chat_message",
+      "details": "Hello",
+      "source": "audit"
+    },
+    {
+      "id": "audit-2edd28fc",
+      "type": "audit",
+      "timestamp": "2026-06-08T19:15:55.715916+00:00",
+      "title": "Audit: chat_message",
+      "details": "Hello",
+      "source": "audit"
+    },
+    {
+      "id": "audit-b047fb96",
+      "type": "audit",
+      "timestamp": "2026-06-08T19:14:45.929389+00:00",
+      "title": "Audit: chat_message",
+      "details": "Hello",
+      "source": "audit"
+    },
+    {
+      "id": "audit-391a5c60",
+      "type": "audit",
+      "timestamp": "2026-06-08T18:46:01.867806+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-da954927",
+      "type": "audit",
+      "timestamp": "2026-06-08T18:46:01.631311+00:00",
+      "title": "Audit: chat_message",
+      "details": "Hello",
+      "source": "audit"
+    },
+    {
+      "id": "audit-994fa751",
+      "type": "audit",
+      "timestamp": "2026-06-08T13:30:54.258066+00:00",
+      "title": "Audit: chat_message",
+      "details": "Reply with just: OK",
+      "source": "audit"
+    },
+    {
+      "id": "audit-5090887e",
+      "type": "audit",
+      "timestamp": "2026-06-08T13:27:39.649693+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-254d699d",
+      "type": "audit",
+      "timestamp": "2026-06-08T13:24:28.765917+00:00",
+      "title": "Audit: chat_message",
+      "details": "Say hello in one sentence",
+      "source": "audit"
+    },
+    {
+      "id": "audit-e53f5317",
+      "type": "audit",
+      "timestamp": "2026-06-08T13:21:10.557232+00:00",
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    },
+    {
+      "id": "audit-90e74635",
+      "type": "audit",
+      "timestamp": "2026-06-08T13:18:03.617311+00:00",
+      "title": "Audit: chat_message",
+      "details": "Hello, test message",
+      "source": "audit"
+    },
+    {
+      "id": "audit-2537c790",
+      "type": "audit",
+      "timestamp": "2026-06-08T12:30:01.325533+00:00",
+      "title": "Audit: chat_message",
+      "details": "hi",
+      "source": "audit"
+    },
+    {
+      "id": "journal-2026-06-05",
+      "type": "journal",
+      "timestamp": "2026-06-05T12:00:00",
+      "title": "Journal: 2026-06-05",
+      "details": "# Test Journal Entry\nThis is a test entry.",
+      "source": "journal"
+    },
+    {
+      "id": "audit-",
+      "type": "audit",
+      "timestamp": null,
+      "title": "Audit: skill_run",
+      "details": "",
+      "source": "audit"
+    }
+  ],
+  "total": 55
+}

@@ -1,0 +1,32 @@
+{
+  "opencode": {
+    "response_times": [
+      {
+        "timestamp": "2026-06-10T08:51:25.107959+00:00",
+        "value": 0.0
+      }
+    ],
+    "success_rates": [
+      {
+        "timestamp": "2026-06-10T08:51:25.107959+00:00",
+        "value": 0.0
+      }
+    ],
+    "costs": []
+  },
+  "hermes": {
+    "response_times": [],
+    "success_rates": [],
+    "costs": []
+  },
+  "gemini": {
+    "response_times": [],
+    "success_rates": [],
+    "costs": []
+  },
+  "claude": {
+    "response_times": [],
+    "success_rates": [],
+    "costs": []
+  }
+}

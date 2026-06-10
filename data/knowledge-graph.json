@@ -1,0 +1,5854 @@
+{
+  "entities": {
+    "Active Projects": {
+      "name": "Active Projects",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "active-projects",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Building Phase": {
+      "name": "Building Phase",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "active-projects",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "GKE": {
+      "name": "GKE",
+      "type": "gcp_service",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "active-projects",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Cloud SQL": {
+      "name": "Cloud SQL",
+      "type": "gcp_service",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "active-projects",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Cloud CDN": {
+      "name": "Cloud CDN",
+      "type": "gcp_service",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "active-projects",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Istio": {
+      "name": "Istio",
+      "type": "tech_stack",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "active-projects",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Next.js": {
+      "name": "Next.js",
+      "type": "tech_stack",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "active-projects",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Agentic OS": {
+      "name": "Agentic OS",
+      "type": "project",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "active-projects",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "constitution",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.450751+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "identity",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "recent-decisions",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "backup-skill",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.711790+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "brainstorming",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "code-review",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "content-draft",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "cost-analytics",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "daily-standup",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "goal-planner",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "heartbeat",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "meeting-minutes",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "memory-consolidation",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "project-planner",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "research-synthesis",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "systematic-debug",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "tdd-cycle",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.562030+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "CloudMart": {
+      "name": "CloudMart",
+      "type": "project",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "active-projects",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Kernel of a system": {
+      "name": "Kernel of a system",
+      "type": "quoted",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "quoted_string",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Business Brain": {
+      "name": "Business Brain",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Project Overview\nAgentic": {
+      "name": "Project Overview\nAgentic",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Hermes Agent": {
+      "name": "Hermes Agent",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "constraints",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Current Priorities": {
+      "name": "Current Priorities",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Brand Voice": {
+      "name": "Brand Voice",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Key Relationships": {
+      "name": "Key Relationships",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Standing Decisions": {
+      "name": "Standing Decisions",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "What We Don": {
+      "name": "What We Don",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Hermes": {
+      "name": "Hermes",
+      "type": "project",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "constraints",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "identity",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "recent-decisions",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "cost-analytics",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Gemini": {
+      "name": "Gemini",
+      "type": "project",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "business-brain",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "constraints",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "identity",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "recent-decisions",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "content-draft",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "cost-analytics",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "research-synthesis",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Core Principles": {
+      "name": "Core Principles",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "constitution",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.450751+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Required Steps Before Each": {
+      "name": "Required Steps Before Each",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "constitution",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.450751+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Free Tier": {
+      "name": "Free Tier",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "constraints",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Student Developer Pack": {
+      "name": "Student Developer Pack",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "constraints",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Python": {
+      "name": "Python",
+      "type": "tech_stack",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "constraints",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        },
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Role\nAgentic": {
+      "name": "Role\nAgentic",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "identity",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Core Traits": {
+      "name": "Core Traits",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "identity",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Voice\nTechnical": {
+      "name": "Voice\nTechnical",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "identity",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Motivation\nBuild": {
+      "name": "Motivation\nBuild",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "identity",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Persistent Memory": {
+      "name": "Persistent Memory",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Active Work": {
+      "name": "Active Work",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Building Agentic": {
+      "name": "Building Agentic",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Technology Preferences": {
+      "name": "Technology Preferences",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Student Dev Pack": {
+      "name": "Student Dev Pack",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "memory",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Recent Decisions": {
+      "name": "Recent Decisions",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "recent-decisions",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Created Agentic": {
+      "name": "Created Agentic",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "recent-decisions",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Test\n\nTest": {
+      "name": "Test\n\nTest",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "brain",
+          "content_id": "test-git",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.614333+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Test Journal Entry\nThis": {
+      "name": "Test Journal Entry\nThis",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "journal",
+          "content_id": "2026-06-05",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.661674+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Backup Skill": {
+      "name": "Backup Skill",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "backup-skill",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.711790+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nCreates": {
+      "name": "Description\nCreates",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "backup-skill",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.711790+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "project-planner",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Output\nCompressed": {
+      "name": "Output\nCompressed",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "backup-skill",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.711790+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Agent Assignment": {
+      "name": "Agent Assignment",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "backup-skill",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.711790+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "brainstorming",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "code-review",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "content-draft",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "cost-analytics",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "daily-standup",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "goal-planner",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "heartbeat",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "meeting-minutes",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "memory-consolidation",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "project-planner",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "research-synthesis",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "systematic-debug",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "tdd-cycle",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.562030+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nSocratic": {
+      "name": "Description\nSocratic",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "brainstorming",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Output\nDesign": {
+      "name": "Output\nDesign",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "brainstorming",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "gemini": {
+      "name": "gemini",
+      "type": "project",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "brainstorming",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "code-review",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "goal-planner",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "heartbeat",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "project-planner",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Code Review": {
+      "name": "Code Review",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "code-review",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nReviews": {
+      "name": "Description\nReviews",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "code-review",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Output\nStructured": {
+      "name": "Output\nStructured",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "code-review",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "goal-planner",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "meeting-minutes",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Content Draft": {
+      "name": "Content Draft",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "content-draft",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nDrafts": {
+      "name": "Description\nDrafts",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "content-draft",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Output\nDraft": {
+      "name": "Output\nDraft",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "content-draft",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Cost Analytics": {
+      "name": "Cost Analytics",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "cost-analytics",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nTracks": {
+      "name": "Description\nTracks",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "cost-analytics",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Output\nCost": {
+      "name": "Output\nCost",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "cost-analytics",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Daily Standup": {
+      "name": "Daily Standup",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "daily-standup",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nGenerates": {
+      "name": "Description\nGenerates",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "daily-standup",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Output\nMorning": {
+      "name": "Output\nMorning",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "daily-standup",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "hermes": {
+      "name": "hermes",
+      "type": "project",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "daily-standup",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "heartbeat",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        },
+        {
+          "source": "skill",
+          "content_id": "memory-consolidation",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nAudits": {
+      "name": "Description\nAudits",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Verify Kubernetes": {
+      "name": "Verify Kubernetes",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "IAM": {
+      "name": "IAM",
+      "type": "gcp_service",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "kubernetes": {
+      "name": "kubernetes",
+      "type": "tech_stack",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "devops-audit",
+          "context": "pattern_match",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "I want to...": {
+      "name": "I want to...",
+      "type": "quoted",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "goal-planner",
+          "context": "quoted_string",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Goal Planner": {
+      "name": "Goal Planner",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "goal-planner",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nTakes": {
+      "name": "Description\nTakes",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "goal-planner",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "System Health Monitor": {
+      "name": "System Health Monitor",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "heartbeat",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nChecks": {
+      "name": "Description\nChecks",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "heartbeat",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Meeting Minutes": {
+      "name": "Meeting Minutes",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "meeting-minutes",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nProcesses": {
+      "name": "Description\nProcesses",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "meeting-minutes",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Memory Consolidation": {
+      "name": "Memory Consolidation",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "memory-consolidation",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nSynthesizes": {
+      "name": "Description\nSynthesizes",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "memory-consolidation",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Output\nConsolidated": {
+      "name": "Output\nConsolidated",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "memory-consolidation",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Project Planner": {
+      "name": "Project Planner",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "project-planner",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Output\nSpec": {
+      "name": "Output\nSpec",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "project-planner",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Research Synthesis": {
+      "name": "Research Synthesis",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "research-synthesis",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nPerforms": {
+      "name": "Description\nPerforms",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "research-synthesis",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Output\nResearch": {
+      "name": "Output\nResearch",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "research-synthesis",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Systematic Debugging": {
+      "name": "Systematic Debugging",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "systematic-debug",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nFour": {
+      "name": "Description\nFour",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "systematic-debug",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Output\nDebug": {
+      "name": "Output\nDebug",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "systematic-debug",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ],
+      "properties": {}
+    },
+    "Description\nEnforces": {
+      "name": "Description\nEnforces",
+      "type": "proper_noun",
+      "mentions": [
+        {
+          "source": "skill",
+          "content_id": "tdd-cycle",
+          "context": "capitalized_phrase",
+          "timestamp": "2026-06-10T06:22:03.562030+00:00"
+        }
+      ],
+      "properties": {}
+    }
+  },
+  "relations": [
+    {
+      "source": "Active Projects",
+      "target": "Building Phase",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Projects",
+      "target": "GKE",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Projects",
+      "target": "Cloud SQL",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Projects",
+      "target": "Cloud CDN",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Projects",
+      "target": "Istio",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Projects",
+      "target": "Next.js",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Projects",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Phase",
+      "target": "GKE",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Phase",
+      "target": "Cloud SQL",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Phase",
+      "target": "Cloud CDN",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Phase",
+      "target": "Istio",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Phase",
+      "target": "Next.js",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Phase",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "GKE",
+      "target": "Cloud SQL",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "GKE",
+      "target": "Cloud CDN",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "GKE",
+      "target": "Istio",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "GKE",
+      "target": "Next.js",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "GKE",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud SQL",
+      "target": "Cloud CDN",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud SQL",
+      "target": "Istio",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud SQL",
+      "target": "Next.js",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud SQL",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud CDN",
+      "target": "Istio",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud CDN",
+      "target": "Next.js",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud CDN",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Istio",
+      "target": "Next.js",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Istio",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Next.js",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.405145+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "Business Brain",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "Project Overview\nAgentic",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "Hermes Agent",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "Current Priorities",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "Brand Voice",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "Key Relationships",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "Standing Decisions",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "What We Don",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Kernel of a system",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Business Brain",
+      "target": "Project Overview\nAgentic",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Business Brain",
+      "target": "Hermes Agent",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Business Brain",
+      "target": "Current Priorities",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Business Brain",
+      "target": "Brand Voice",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Business Brain",
+      "target": "Key Relationships",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Business Brain",
+      "target": "Standing Decisions",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Business Brain",
+      "target": "What We Don",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Business Brain",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Business Brain",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Business Brain",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Overview\nAgentic",
+      "target": "Hermes Agent",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Overview\nAgentic",
+      "target": "Current Priorities",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Overview\nAgentic",
+      "target": "Brand Voice",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Overview\nAgentic",
+      "target": "Key Relationships",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Overview\nAgentic",
+      "target": "Standing Decisions",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Overview\nAgentic",
+      "target": "What We Don",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Overview\nAgentic",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Overview\nAgentic",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Overview\nAgentic",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Current Priorities",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Brand Voice",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Key Relationships",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Standing Decisions",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "What We Don",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 3,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 3,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Current Priorities",
+      "target": "Brand Voice",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Current Priorities",
+      "target": "Key Relationships",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Current Priorities",
+      "target": "Standing Decisions",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Current Priorities",
+      "target": "What We Don",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Current Priorities",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Current Priorities",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Current Priorities",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Brand Voice",
+      "target": "Key Relationships",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Brand Voice",
+      "target": "Standing Decisions",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Brand Voice",
+      "target": "What We Don",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Brand Voice",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Brand Voice",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Brand Voice",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Key Relationships",
+      "target": "Standing Decisions",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Key Relationships",
+      "target": "What We Don",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Key Relationships",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Key Relationships",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Key Relationships",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Standing Decisions",
+      "target": "What We Don",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Standing Decisions",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Standing Decisions",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Standing Decisions",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "What We Don",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "What We Don",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "What We Don",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agentic OS",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 5,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.911301+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agentic OS",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 7,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.911301+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 6,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.911301+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Gemini",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.423232+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Core Principles",
+      "target": "Required Steps Before Each",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.450751+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Free Tier",
+      "target": "Student Developer Pack",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Free Tier",
+      "target": "Hermes Agent",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Free Tier",
+      "target": "Python",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Free Tier",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Free Tier",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Student Developer Pack",
+      "target": "Hermes Agent",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Student Developer Pack",
+      "target": "Python",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Student Developer Pack",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Student Developer Pack",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Python",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Python",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Python",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.480820+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Role\nAgentic",
+      "target": "Core Traits",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Role\nAgentic",
+      "target": "Voice\nTechnical",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Role\nAgentic",
+      "target": "Motivation\nBuild",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Role\nAgentic",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Role\nAgentic",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Core Traits",
+      "target": "Voice\nTechnical",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Core Traits",
+      "target": "Motivation\nBuild",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Core Traits",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Core Traits",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Voice\nTechnical",
+      "target": "Motivation\nBuild",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Voice\nTechnical",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Voice\nTechnical",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Motivation\nBuild",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Motivation\nBuild",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.511823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Persistent Memory",
+      "target": "Hermes Agent",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Persistent Memory",
+      "target": "Active Work",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.540824+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Persistent Memory",
+      "target": "Building Agentic",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Persistent Memory",
+      "target": "Technology Preferences",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Persistent Memory",
+      "target": "Student Dev Pack",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Persistent Memory",
+      "target": "Python",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Persistent Memory",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Persistent Memory",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Persistent Memory",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Active Work",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Building Agentic",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Technology Preferences",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Hermes Agent",
+      "target": "Student Dev Pack",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Work",
+      "target": "Building Agentic",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Work",
+      "target": "Technology Preferences",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Work",
+      "target": "Student Dev Pack",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Work",
+      "target": "Python",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Work",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Work",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Active Work",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Agentic",
+      "target": "Technology Preferences",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Agentic",
+      "target": "Student Dev Pack",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Agentic",
+      "target": "Python",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Agentic",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Agentic",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Building Agentic",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Technology Preferences",
+      "target": "Student Dev Pack",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Technology Preferences",
+      "target": "Python",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Technology Preferences",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Technology Preferences",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Technology Preferences",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Student Dev Pack",
+      "target": "Python",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Student Dev Pack",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Student Dev Pack",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Student Dev Pack",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Python",
+      "target": "CloudMart",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.541823+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Recent Decisions",
+      "target": "Created Agentic",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Recent Decisions",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Recent Decisions",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Created Agentic",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Created Agentic",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.579333+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Backup Skill",
+      "target": "Description\nCreates",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.711790+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Backup Skill",
+      "target": "Output\nCompressed",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.711790+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Backup Skill",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.711790+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nCreates",
+      "target": "Output\nCompressed",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.712781+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nCreates",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.712781+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nCompressed",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.712781+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agent Assignment",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 15,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.712781+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.562030+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nSocratic",
+      "target": "Output\nDesign",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nSocratic",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nSocratic",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nDesign",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nDesign",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agent Assignment",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 6,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.760794+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Code Review",
+      "target": "Description\nReviews",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Code Review",
+      "target": "Output\nStructured",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Code Review",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Code Review",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nReviews",
+      "target": "Output\nStructured",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nReviews",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nReviews",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nStructured",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 4,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nStructured",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 3,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.811802+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Content Draft",
+      "target": "Description\nDrafts",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Content Draft",
+      "target": "Output\nDraft",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Content Draft",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Content Draft",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nDrafts",
+      "target": "Output\nDraft",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nDrafts",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nDrafts",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nDraft",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nDraft",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agent Assignment",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 3,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.865303+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cost Analytics",
+      "target": "Description\nTracks",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cost Analytics",
+      "target": "Output\nCost",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cost Analytics",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cost Analytics",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cost Analytics",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nTracks",
+      "target": "Output\nCost",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nTracks",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nTracks",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nTracks",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nCost",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nCost",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nCost",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agent Assignment",
+      "target": "Hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.910309+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Daily Standup",
+      "target": "Description\nGenerates",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Daily Standup",
+      "target": "Output\nMorning",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Daily Standup",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Daily Standup",
+      "target": "hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nGenerates",
+      "target": "Output\nMorning",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nGenerates",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nGenerates",
+      "target": "hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nMorning",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nMorning",
+      "target": "hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agent Assignment",
+      "target": "hermes",
+      "type": "co_occurs",
+      "source_count": 3,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:02.959862+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nAudits",
+      "target": "Verify Kubernetes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nAudits",
+      "target": "Output\nStructured",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nAudits",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nAudits",
+      "target": "Cloud SQL",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nAudits",
+      "target": "GKE",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nAudits",
+      "target": "Cloud CDN",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nAudits",
+      "target": "IAM",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nAudits",
+      "target": "kubernetes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nAudits",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nAudits",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Verify Kubernetes",
+      "target": "Output\nStructured",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Verify Kubernetes",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Verify Kubernetes",
+      "target": "Cloud SQL",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Verify Kubernetes",
+      "target": "GKE",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Verify Kubernetes",
+      "target": "Cloud CDN",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Verify Kubernetes",
+      "target": "IAM",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Verify Kubernetes",
+      "target": "kubernetes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Verify Kubernetes",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Verify Kubernetes",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nStructured",
+      "target": "Cloud SQL",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nStructured",
+      "target": "GKE",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nStructured",
+      "target": "Cloud CDN",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nStructured",
+      "target": "IAM",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nStructured",
+      "target": "kubernetes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nStructured",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 3,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agent Assignment",
+      "target": "Cloud SQL",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agent Assignment",
+      "target": "GKE",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agent Assignment",
+      "target": "Cloud CDN",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agent Assignment",
+      "target": "IAM",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agent Assignment",
+      "target": "kubernetes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud SQL",
+      "target": "IAM",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud SQL",
+      "target": "kubernetes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud SQL",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud SQL",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "GKE",
+      "target": "IAM",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "GKE",
+      "target": "kubernetes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "GKE",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "GKE",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud CDN",
+      "target": "IAM",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud CDN",
+      "target": "kubernetes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud CDN",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Cloud CDN",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "IAM",
+      "target": "kubernetes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "IAM",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "IAM",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "kubernetes",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "kubernetes",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agentic OS",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 4,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.015864+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "I want to...",
+      "target": "Goal Planner",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ]
+    },
+    {
+      "source": "I want to...",
+      "target": "Description\nTakes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ]
+    },
+    {
+      "source": "I want to...",
+      "target": "Output\nStructured",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ]
+    },
+    {
+      "source": "I want to...",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ]
+    },
+    {
+      "source": "I want to...",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ]
+    },
+    {
+      "source": "I want to...",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Goal Planner",
+      "target": "Description\nTakes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Goal Planner",
+      "target": "Output\nStructured",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.071381+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Goal Planner",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Goal Planner",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Goal Planner",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nTakes",
+      "target": "Output\nStructured",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nTakes",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nTakes",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nTakes",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.072374+00:00"
+        }
+      ]
+    },
+    {
+      "source": "System Health Monitor",
+      "target": "Description\nChecks",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ]
+    },
+    {
+      "source": "System Health Monitor",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ]
+    },
+    {
+      "source": "System Health Monitor",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ]
+    },
+    {
+      "source": "System Health Monitor",
+      "target": "hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ]
+    },
+    {
+      "source": "System Health Monitor",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nChecks",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nChecks",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nChecks",
+      "target": "hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nChecks",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Agentic OS",
+      "target": "hermes",
+      "type": "co_occurs",
+      "source_count": 2,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        },
+        {
+          "source": "co_occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "hermes",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.133379+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Meeting Minutes",
+      "target": "Description\nProcesses",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Meeting Minutes",
+      "target": "Output\nStructured",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Meeting Minutes",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Meeting Minutes",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nProcesses",
+      "target": "Output\nStructured",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nProcesses",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nProcesses",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.218395+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Memory Consolidation",
+      "target": "Description\nSynthesizes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Memory Consolidation",
+      "target": "Output\nConsolidated",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Memory Consolidation",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Memory Consolidation",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Memory Consolidation",
+      "target": "hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nSynthesizes",
+      "target": "Output\nConsolidated",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nSynthesizes",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nSynthesizes",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nSynthesizes",
+      "target": "hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nConsolidated",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nConsolidated",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nConsolidated",
+      "target": "hermes",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.284909+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Planner",
+      "target": "Description\nCreates",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Planner",
+      "target": "Output\nSpec",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Planner",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Planner",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Project Planner",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nCreates",
+      "target": "Output\nSpec",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nCreates",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nCreates",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nSpec",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nSpec",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nSpec",
+      "target": "gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.353938+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Research Synthesis",
+      "target": "Description\nPerforms",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Research Synthesis",
+      "target": "Output\nResearch",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Research Synthesis",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Research Synthesis",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Research Synthesis",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nPerforms",
+      "target": "Output\nResearch",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nPerforms",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nPerforms",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nPerforms",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nResearch",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nResearch",
+      "target": "Gemini",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nResearch",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.422703+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Systematic Debugging",
+      "target": "Description\nFour",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Systematic Debugging",
+      "target": "Output\nDebug",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Systematic Debugging",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Systematic Debugging",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nFour",
+      "target": "Output\nDebug",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nFour",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nFour",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nDebug",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Output\nDebug",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.492924+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nEnforces",
+      "target": "Agent Assignment",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.562030+00:00"
+        }
+      ]
+    },
+    {
+      "source": "Description\nEnforces",
+      "target": "Agentic OS",
+      "type": "co_occurs",
+      "source_count": 1,
+      "contexts": [
+        {
+          "source": "co-occurrence",
+          "timestamp": "2026-06-10T06:22:03.562030+00:00"
+        }
+      ]
+    }
+  ],
+  "version": 1
+}

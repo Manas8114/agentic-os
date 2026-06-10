@@ -1,0 +1,98 @@
+// ─── Gateway Status Bar Logic ─────────────────────────────────────────────────
+// Manages the top persistent status bar: connection · profile · tokens · model
+// ──────────────────────────────────────────────────────────────────────────────
+
+const Gateway = {
+  connected: false,
+  tokensToday: 0,
+  profile: null,
+  interval: null,
+};
+
+function gwInit() {
+  // Guard: clear any existing interval before starting
+  if (Gateway.interval) { clearInterval(Gateway.interval); Gateway.interval = null; }
+  gwLoadProfile();
+  gwRefreshStatus();
+  Gateway.interval = setInterval(gwRefreshStatus, 15000);
+}
+
+async function gwRefreshStatus() {
+  try {
+    const data = await api.getStatus();
+    const online = (data.agents || []).filter(a => a.status === 'online').length;
+    const total  = (data.agents || []).length;
+    Gateway.connected = online > 0;
+
+    const dot    = document.getElementById('gwDot');
+    const status = document.getElementById('gwStatus');
+    if (dot)    dot.className    = `agent-dot ${online === total ? 'online' : online > 0 ? 'warning' : 'offline'}`;
+    if (status) status.textContent = online === total ? 'All systems go' : online > 0 ? `${online}/${total} agents` : 'Disconnected';
+  } catch {
+    const dot    = document.getElementById('gwDot');
+    const status = document.getElementById('gwStatus');
+    if (dot)    dot.className    = 'agent-dot offline';
+    if (status) status.textContent = 'Server offline';
+    Gateway.connected = false;
+  }
+}
+
+function gwLoadProfile() {
+  try {
+    const activeKey = localStorage.getItem('hw_active_profile') || 'Default';
+    const profiles  = JSON.parse(localStorage.getItem('hw_profiles') || '[]');
+    Gateway.profile = profiles.find(p => p.name === activeKey) || { name: 'Default', model: 'openrouter/owl-alpha' };
+  } catch {
+    Gateway.profile = { name: 'Default', model: 'openrouter/owl-alpha' };
+  }
+  gwUpdateProfileUI();
+}
+
+function gwUpdateProfileUI() {
+  const p = Gateway.profile;
+  const gwProfile      = document.getElementById('gwProfile');
+  const gwModel        = document.getElementById('gwModel');
+  const topbarPName    = document.getElementById('topbarProfileName');
+
+  if (gwProfile)   gwProfile.textContent   = p?.name  || 'Default';
+  if (gwModel)     gwModel.textContent     = (p?.model || 'owl-alpha').split('/').pop();
+  if (topbarPName) topbarPName.textContent = p?.name  || 'Default';
+}
+
+function gwUpdateTokens(tokens) {
+  Gateway.tokensToday += tokens || 0;
+  const gwTokens = document.getElementById('gwTokens');
+  if (gwTokens) {
+    const t = Gateway.tokensToday;
+    gwTokens.textContent = t >= 1000 ? `${(t / 1000).toFixed(1)}k tokens today` : `${t} tokens today`;
+  }
+}
+
+async function gwRestartGateway() {
+  const btn = document.querySelector('.gw-restart-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Restarting…'; }
+  try {
+    await api.post('/api/agents/health/refresh', {});
+    showToast('Gateway refreshed', 'success');
+    await gwRefreshStatus();
+  } catch (err) {
+    showToast('Refresh failed: ' + err.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '↺ Restart'; }
+  }
+}
+
+// Sync profile changes from HW to gateway bar
+window.addEventListener('storage', (e) => {
+  if (e.key === 'hw_active_profile' || e.key === 'hw_profiles') {
+    gwLoadProfile();
+  }
+});
+
+// Expose
+window.gwRestartGateway  = gwRestartGateway;
+window.gwUpdateTokens    = gwUpdateTokens;
+window.gwUpdateProfileUI = gwUpdateProfileUI;
+
+// Auto-init on DOMContentLoaded
+window.addEventListener('DOMContentLoaded', gwInit);

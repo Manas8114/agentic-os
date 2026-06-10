@@ -1,0 +1,14 @@
+{
+  "id": "32a45919",
+  "name": "Test Research Pipeline 2",
+  "skill": null,
+  "skills": [
+    "research-synthesis",
+    "project-planner"
+  ],
+  "cron": "0 3 * * 0",
+  "enabled": true,
+  "created": "2026-06-09T11:22:05.558638+00:00",
+  "last_run": null,
+  "next_run": null
+}

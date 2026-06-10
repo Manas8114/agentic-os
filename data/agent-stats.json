@@ -1,0 +1,34 @@
+{
+  "opencode": {
+    "total_runs": 1,
+    "successful_runs": 0,
+    "failed_runs": 1,
+    "total_response_time": 0.0,
+    "last_seen": "2026-06-10T08:51:25.106955+00:00",
+    "chat_messages": 0
+  },
+  "hermes": {
+    "total_runs": 0,
+    "successful_runs": 0,
+    "failed_runs": 0,
+    "total_response_time": 0.0,
+    "last_seen": "2026-06-10T08:50:42.664478+00:00",
+    "chat_messages": 6
+  },
+  "gemini": {
+    "total_runs": 0,
+    "successful_runs": 0,
+    "failed_runs": 0,
+    "total_response_time": 0.0,
+    "last_seen": null,
+    "chat_messages": 0
+  },
+  "claude": {
+    "total_runs": 0,
+    "successful_runs": 0,
+    "failed_runs": 0,
+    "total_response_time": 0.0,
+    "last_seen": null,
+    "chat_messages": 0
+  }
+}

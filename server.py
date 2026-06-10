@@ -20,6 +20,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from starlette.websockets import WebSocket, WebSocketDisconnect
+
+# aiohttp for external API calls (optional import)
+try:
+    import aiohttp
+    AIOHTTP_AVAILABLE = True
+except ImportError:
+    AIOHTTP_AVAILABLE = False
 
 app = FastAPI(title="Agentic OS", version="1.1.0")
 
@@ -1210,9 +1218,893 @@ def get_session_replay(session_id: str):
     except Exception as e:
         return {"session_id": session_id, "messages": [], "error": str(e)}
 
-# ─── Routes: Dashboard Static Files ──────────────────────────────
 
-dashboard_dir = BASE_DIR / "dashboard"
+# ─── Video Generation (Multiple Provider Support) ───
+
+# Video provider API keys (loaded from environment)
+VIDEO_API_KEYS = {
+    "runway": os.environ.get("RUNWAY_API_KEY"),
+    "pika": os.environ.get("PIKA_API_KEY"),
+    "luma": os.environ.get("LUMA_API_KEY"),
+    "replicate": os.environ.get("REPLICATE_API_TOKEN"),  # For Stable Video Diffusion
+}
+
+async def generate_video_runway(prompt: str, duration: int = 4, fps: int = 8, aspect_ratio: str = "16:9") -> dict:
+    """Generate video using Runway Gen-2 API."""
+    if not AIOHTTP_AVAILABLE:
+        return {"error": "aiohttp not installed. Run: pip install aiohttp"}
+    api_key = VIDEO_API_KEYS.get("runway")
+    if not api_key:
+        return {"error": "RUNWAY_API_KEY not configured"}
+    
+    try:
+        async with aiohttp.ClientSession() as session:
+            payload = {
+                "prompt": prompt,
+                "duration": min(duration, 16),  # Runway max 16s
+                "fps": fps,
+                "aspect_ratio": aspect_ratio,
+                "model": "gen-2",
+            }
+            
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            }
+            
+            async with session.post(
+                "https://api.runwayml.com/v1/generate",
+                json=payload,
+                headers=headers,
+                timeout=aiohttp.ClientTimeout(total=180)
+            ) as resp:
+                if resp.status == 200:
+                    result = await resp.json()
+                    return {
+                        "url": result.get("video_url") or result.get("output", [None])[0],
+                        "status": "completed",
+                        "job_id": result.get("id"),
+                    }
+                else:
+                    error_text = await resp.text()
+                    return {"error": f"Runway API error {resp.status}: {error_text}"}
+    except Exception as e:
+        return {"error": f"Runway generation failed: {str(e)}"}
+
+async def generate_video_pika(prompt: str, duration: int = 4, fps: int = 8, aspect_ratio: str = "16:9") -> dict:
+    """Generate video using Pika Labs API."""
+    if not AIOHTTP_AVAILABLE:
+        return {"error": "aiohttp not installed. Run: pip install aiohttp"}
+    api_key = VIDEO_API_KEYS.get("pika")
+    if not api_key:
+        return {"error": "PIKA_API_KEY not configured"}
+    
+    try:
+        async with aiohttp.ClientSession() as session:
+            payload = {
+                "prompt": prompt,
+                "duration": min(duration, 10),  # Pika max 10s
+                "fps": fps,
+                "aspect_ratio": aspect_ratio,
+            }
+            
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            }
+            
+            async with session.post(
+                "https://api.pika.art/v1/generate",
+                json=payload,
+                headers=headers,
+                timeout=aiohttp.ClientTimeout(total=180)
+            ) as resp:
+                if resp.status == 200:
+                    result = await resp.json()
+                    return {
+                        "url": result.get("video_url") or result.get("output_url"),
+                        "status": "completed",
+                        "job_id": result.get("id"),
+                    }
+                else:
+                    error_text = await resp.text()
+                    return {"error": f"Pika API error {resp.status}: {error_text}"}
+    except Exception as e:
+        return {"error": f"Pika generation failed: {str(e)}"}
+
+async def generate_video_luma(prompt: str, duration: int = 5, fps: int = 24, aspect_ratio: str = "16:9") -> dict:
+    """Generate video using Luma Dream Machine API."""
+    if not AIOHTTP_AVAILABLE:
+        return {"error": "aiohttp not installed. Run: pip install aiohttp"}
+    api_key = VIDEO_API_KEYS.get("luma")
+    if not api_key:
+        return {"error": "LUMA_API_KEY not configured"}
+    
+    try:
+        async with aiohttp.ClientSession() as session:
+            payload = {
+                "prompt": prompt,
+                "duration": min(duration, 5),  # Luma max 5s
+                "aspect_ratio": aspect_ratio,
+                "loop": False,
+            }
+            
+            headers = {
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            }
+            
+            async with session.post(
+                "https://api.lumalabs.ai/dream-machine/v1/generations",
+                json=payload,
+                headers=headers,
+                timeout=aiohttp.ClientTimeout(total=180)
+            ) as resp:
+                if resp.status == 200:
+                    result = await resp.json()
+                    return {
+                        "url": result.get("video_url"),
+                        "status": "pending",
+                        "job_id": result.get("id"),
+                    }
+                else:
+                    error_text = await resp.text()
+                    return {"error": f"Luma API error {resp.status}: {error_text}"}
+    except Exception as e:
+        return {"error": f"Luma generation failed: {str(e)}"}
+
+async def generate_video_svd(prompt: str, duration: int = 4, fps: int = 8, aspect_ratio: str = "16:9") -> dict:
+    """Generate video using Stable Video Diffusion via Replicate."""
+    if not AIOHTTP_AVAILABLE:
+        return {"error": "aiohttp not installed. Run: pip install aiohttp"}
+    api_key = VIDEO_API_KEYS.get("replicate")
+    if not api_key:
+        return {"error": "REPLICATE_API_TOKEN not configured"}
+    
+    try:
+        async with aiohttp.ClientSession() as session:
+            # Stable Video Diffusion on Replicate
+            payload = {
+                "version": "stability-ai/stable-video-diffusion:latest",
+                "input": {
+                    "prompt": prompt,
+                    "width": 1024 if aspect_ratio == "16:9" else 576,
+                    "height": 576 if aspect_ratio == "16:9" else 1024,
+                    "num_frames": min(duration * 8, 25),  # SVD max 25 frames
+                    "fps": min(fps, 8),  # SVD typically 8-12 fps
+                    "motion_bucket_id": 127,
+                    "cond_aug": 0.02,
+                }
+            }
+            
+            headers = {
+                "Authorization": f"Token {api_key}",
+                "Content-Type": "application/json",
+            }
+            
+            async with session.post(
+                "https://api.replicate.com/v1/predictions",
+                json=payload,
+                headers=headers,
+                timeout=aiohttp.ClientTimeout(total=60)
+            ) as resp:
+                if resp.status == 201:
+                    result = await resp.json()
+                    # Poll for completion
+                    prediction_id = result["id"]
+                    max_wait = 120  # seconds
+                    start_time = time.time()
+                    
+                    while time.time() - start_time < max_wait:
+                        await asyncio.sleep(5)
+                        async with session.get(
+                            f"https://api.replicate.com/v1/predictions/{prediction_id}",
+                            headers=headers
+                        ) as poll_resp:
+                            if poll_resp.status == 200:
+                                poll_result = await poll_resp.json()
+                                if poll_result["status"] == "succeeded":
+                                    output = poll_result.get("output", [])
+                                    return {
+                                        "url": output[0] if isinstance(output, list) else output,
+                                        "status": "completed",
+                                        "job_id": prediction_id,
+                                    }
+                                elif poll_result["status"] == "failed":
+                                    return {"error": f"SVD generation failed: {poll_result.get('error', 'Unknown error')}"}
+                    return {"error": "SVD generation timed out"}
+                else:
+                    error_text = await resp.text()
+                    return {"error": f"Replicate API error {resp.status}: {error_text}"}
+    except Exception as e:
+        return {"error": f"SVD generation failed: {str(e)}"}
+
+# Main video generation dispatcher
+async def generate_video_dispatch(prompt: str, model: str, duration: int = 4, fps: int = 8, aspect_ratio: str = "16:9") -> dict:
+    """Dispatch video generation to the appropriate provider."""
+    
+    model_dispatch = {
+        "gen-2": generate_video_runway,
+        "runway-gen-2": generate_video_runway,
+        "runway": generate_video_runway,
+        "pika": generate_video_pika,
+        "pika-1.0": generate_video_pika,
+        "luma": generate_video_luma,
+        "luma-dream-machine": generate_video_luma,
+        "stable-video-diffusion": generate_video_svd,
+        "svd": generate_video_svd,
+        "replicate-svd": generate_video_svd,
+    }
+    
+    handler = model_dispatch.get(model.lower())
+    if not handler:
+        return {"error": f"Unknown video model: {model}. Available: {', '.join(model_dispatch.keys())}"}
+    
+    return await handler(prompt, duration, fps, aspect_ratio)
+
+
+class VideoGenerationRequest(BaseModel):
+    prompt: str
+    model: str = "gen-2"
+    duration: int = 4
+    fps: int = 8
+    aspect_ratio: str = "16:9"
+
+@app.post("/api/video/generate")
+async def generate_video(data: VideoGenerationRequest):
+    """Generate video using specified provider."""
+    result = await generate_video_dispatch(
+        prompt=data.prompt,
+        model=data.model,
+        duration=data.duration,
+        fps=data.fps,
+        aspect_ratio=data.aspect_ratio
+    )
+    
+    if "error" in result:
+        raise HTTPException(500, result["error"])
+    
+    append_audit({
+        "action": "video_generate",
+        "model": data.model,
+        "prompt": data.prompt[:100],
+    })
+    
+    return {
+        "url": result.get("url"),
+        "status": result.get("status", "pending"),
+        "job_id": result.get("job_id"),
+        "model": data.model,
+        "prompt": data.prompt,
+    }
+
+@app.get("/api/video/models")
+async def list_video_models():
+    """List available video generation models with provider info."""
+    models = {
+        "gen-2": {"name": "Runway Gen-2", "provider": "Runway", "max_duration": 16, "fps": [8, 12, 24], "requires_key": "RUNWAY_API_KEY", "aspect_ratios": ["16:9", "9:16", "1:1", "4:3"]},
+        "pika": {"name": "Pika 1.0", "provider": "Pika Labs", "max_duration": 10, "fps": [24], "requires_key": "PIKA_API_KEY", "aspect_ratios": ["16:9", "9:16", "1:1"]},
+        "luma-dream-machine": {"name": "Luma Dream Machine", "provider": "Luma AI", "max_duration": 5, "fps": [24], "requires_key": "LUMA_API_KEY", "aspect_ratios": ["16:9", "9:16", "1:1"]},
+        "stable-video-diffusion": {"name": "Stable Video Diffusion (Replicate)", "provider": "Stability AI / Replicate", "max_duration": 4, "fps": [8, 12], "requires_key": "REPLICATE_API_TOKEN", "aspect_ratios": ["16:9", "9:16", "1:1", "4:3"]},
+    }
+    return {"models": models}
+
+@app.get("/api/video/job/{job_id}")
+async def get_video_job_status(job_id: str):
+    """Check status of a video generation job."""
+    # This would query the respective provider's job status endpoint
+    return {"job_id": job_id, "status": "pending", "message": "Job status polling not yet implemented for all providers"}
+
+@app.post("/api/video/job/{job_id}/cancel")
+async def cancel_video_job(job_id: str):
+    """Cancel a video generation job."""
+    return {"job_id": job_id, "status": "cancelled", "message": "Cancellation not yet implemented for all providers"}
+
+
+# ─── Jarvis Voice Assistant ───────────────────────────────────────────
+
+# Jarvis configuration
+JARVIS_CONFIG_FILE = BASE_DIR / "data" / "jarvis-config.json"
+JARVIS_TASKS_FILE = BASE_DIR / "data" / "jarvis-tasks.json"
+JARVIS_SCHEDULE_FILE = BASE_DIR / "data" / "jarvis-schedule.json"
+JARVIS_BRIEFINGS_FILE = BASE_DIR / "data" / "jarvis-briefings.json"
+
+def ensure_jarvis_files():
+    for f in [JARVIS_CONFIG_FILE, JARVIS_TASKS_FILE, JARVIS_SCHEDULE_FILE, JARVIS_BRIEFINGS_FILE]:
+        f.parent.mkdir(parents=True, exist_ok=True)
+        if not f.exists():
+            f.write_text("{}")
+
+def load_jarvis_config() -> dict:
+    if JARVIS_CONFIG_FILE.exists():
+        try:
+            return json.loads(JARVIS_CONFIG_FILE.read_text())
+        except Exception:
+            pass
+    return {
+        "wake_word": "jarvis",
+        "voice": "elevenlabs",
+        "voice_id": "21m00Tcm4TlvDq8ikWAM",  # Rachel
+        "briefing_time": "08:00",
+        "auto_briefing": True,
+        "tts_provider": "elevenlabs",
+        "elevenlabs_api_key": os.environ.get("ELEVENLABS_API_KEY"),
+        "openai_tts_api_key": os.environ.get("OPENAI_API_KEY"),
+    }
+
+def save_jarvis_config(config: dict):
+    JARVIS_CONFIG_FILE.write_text(json.dumps(config, indent=2))
+
+def load_jarvis_tasks() -> list:
+    if JARVIS_TASKS_FILE.exists():
+        try:
+            return json.loads(JARVIS_TASKS_FILE.read_text())
+        except Exception:
+            pass
+    return []
+
+def save_jarvis_tasks(tasks: list):
+    JARVIS_TASKS_FILE.write_text(json.dumps(tasks, indent=2))
+
+def load_jarvis_schedule() -> list:
+    if JARVIS_SCHEDULE_FILE.exists():
+        try:
+            return json.loads(JARVIS_SCHEDULE_FILE.read_text())
+        except Exception:
+            pass
+    return []
+
+def save_jarvis_schedule(schedule: list):
+    JARVIS_SCHEDULE_FILE.write_text(json.dumps(schedule, indent=2))
+
+def load_jarvis_briefings() -> list:
+    if JARVIS_BRIEFINGS_FILE.exists():
+        try:
+            return json.loads(JARVIS_BRIEFINGS_FILE.read_text())
+        except Exception:
+            pass
+    return []
+
+def save_jarvis_briefings(briefings: list):
+    JARVIS_BRIEFINGS_FILE.write_text(json.dumps(briefings, indent=2))
+
+# ─── Jarvis Models ───
+class JarvisConfigUpdate(BaseModel):
+    wake_word: Optional[str] = None
+    voice: Optional[str] = None
+    voice_id: Optional[str] = None
+    briefing_time: Optional[str] = None
+    auto_briefing: Optional[bool] = None
+    tts_provider: Optional[str] = None
+    elevenlabs_api_key: Optional[str] = None
+    openai_tts_api_key: Optional[str] = None
+
+class JarvisTaskCreate(BaseModel):
+    title: str
+    description: Optional[str] = ""
+    priority: str = "medium"  # low, medium, high
+    due_date: Optional[str] = None
+    assigned_agent: Optional[str] = None
+    recurring: Optional[str] = None  # daily, weekly, monthly
+
+class JarvisTaskUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    priority: Optional[str] = None
+    due_date: Optional[str] = None
+    assigned_agent: Optional[str] = None
+    completed: Optional[bool] = None
+    recurring: Optional[str] = None
+
+class JarvisScheduleCreate(BaseModel):
+    title: str
+    description: Optional[str] = ""
+    start_time: str
+    end_time: str
+    recurrence: Optional[str] = None  # daily, weekly, monthly
+    agents: list[str] = []
+    reminder_minutes: int = 15
+
+class JarvisBriefingRequest(BaseModel):
+    date: Optional[str] = None  # defaults to today
+    style: str = "standard"  # standard, detailed, executive
+
+class JarvisCoordinateRequest(BaseModel):
+    command: str
+    context: Optional[str] = ""
+
+class JarvisTTSRequest(BaseModel):
+    text: str
+    voice_id: Optional[str] = None
+    model: str = "eleven_multilingual_v2"
+    stability: float = 0.5
+    similarity_boost: float = 0.75
+
+# ─── Jarvis API Endpoints ───
+@app.get("/api/jarvis/config")
+async def get_jarvis_config():
+    """Get Jarvis configuration."""
+    config = load_jarvis_config()
+    # Don't expose API keys in response
+    safe_config = {k: v for k, v in config.items() if not k.endswith("_api_key")}
+    return safe_config
+
+@app.put("/api/jarvis/config")
+async def update_jarvis_config(data: JarvisConfigUpdate):
+    """Update Jarvis configuration."""
+    config = load_jarvis_config()
+    update_data = data.dict(exclude_unset=True)
+    config.update(update_data)
+    save_jarvis_config(config)
+    safe_config = {k: v for k, v in config.items() if not k.endswith("_api_key")}
+    return {"config": safe_config, "message": "Configuration updated"}
+
+@app.post("/api/jarvis/wake-word")
+async def test_wake_word():
+    """Test wake word detection (simulates wake word trigger)."""
+    # In a real implementation, this would integrate with Porcupine or similar
+    return {
+        "status": "wake_word_detected",
+        "wake_word": load_jarvis_config().get("wake_word", "jarvis"),
+        "timestamp": get_timestamp(),
+        "message": "Wake word detected - ready for command"
+    }
+
+@app.post("/api/jarvis/listen")
+async def jarvis_listen(data: dict):
+    """Process voice command after wake word."""
+    command = data.get("command", "")
+    if not command:
+        raise HTTPException(400, "Command is required")
+    
+    # Process command through smart router
+    suggested_agent = router_suggest(RouterSuggest(task=command))
+    
+    from fastapi import BackgroundTasks
+    return {
+        "command": command,
+        "suggested_agent": suggested_agent.get("suggested_agent"),
+        "confidence": suggested_agent.get("confidence"),
+        "timestamp": get_timestamp(),
+    }
+
+@app.post("/api/jarvis/execute")
+async def jarvis_execute(data: JarvisCoordinateRequest):
+    """Execute a voice command by coordinating agents."""
+    command = data.command
+    context = data.context or ""
+    
+    # Determine best agent for command
+    suggestion = router_suggest(RouterSuggest(task=command))
+    agent = suggestion.get("suggested_agent", "hermes")
+    
+    # Build enhanced prompt with context
+    prompt = f"""Voice command from Jarvis: "{command}"
+
+Context: {context if context else "No additional context"}
+
+Execute this task as the {agent} agent. Provide a clear, spoken response suitable for TTS."""
+    
+    # Execute via agent
+    result = await execute_agent(agent, prompt)
+    
+    # Create task if needed
+    task_id = None
+    if any(word in command.lower() for word in ["create", "add", "schedule", "remind", "task"]):
+        task = {
+            "id": str(uuid.uuid4())[:8],
+            "title": command[:80],
+            "description": context,
+            "priority": "medium",
+            "created": get_timestamp(),
+            "source": "jarvis_voice",
+        }
+        tasks = load_jarvis_tasks()
+        tasks.append(task)
+        save_jarvis_tasks(tasks)
+        task_id = task["id"]
+    
+    append_audit({
+        "action": "jarvis_execute",
+        "command": command[:100],
+        "agent": agent,
+        "task_id": task_id,
+    })
+    
+    return {
+        "command": command,
+        "agent": agent,
+        "result": result,
+        "task_id": task_id,
+        "spoken_response": f"Done. {result[:200]}" if result else "Command executed.",
+    }
+
+@app.post("/api/jarvis/tts")
+async def jarvis_tts(data: JarvisTTSRequest):
+    """Generate speech using TTS (ElevenLabs or OpenAI)."""
+    if not AIOHTTP_AVAILABLE:
+        return {"error": "aiohttp not installed. Run: pip install aiohttp"}
+    config = load_jarvis_config()
+    provider = config.get("tts_provider", "elevenlabs")
+    
+    if provider == "elevenlabs":
+        api_key = config.get("elevenlabs_api_key") or os.environ.get("ELEVENLABS_API_KEY")
+        if not api_key:
+            return {"error": "ElevenLabs API key not configured"}
+        
+        voice_id = data.voice_id or config.get("voice_id", "21m00Tcm4TlvDq8ikWAM")
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                payload = {
+                    "text": data.text,
+                    "model_id": data.model,
+                    "voice_settings": {
+                        "stability": data.stability,
+                        "similarity_boost": data.similarity_boost,
+                    }
+                }
+                headers = {
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                }
+                async with session.post(
+                    f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}",
+                    json=payload,
+                    headers=headers,
+                    timeout=aiohttp.ClientTimeout(total=60)
+                ) as resp:
+                    if resp.status == 200:
+                        audio_data = await resp.read()
+                        import base64
+                        return {
+                            "audio_base64": base64.b64encode(audio_data).decode(),
+                            "format": "mp3",
+                            "provider": "elevenlabs",
+                        }
+                    else:
+                        error_text = await resp.text()
+                        return {"error": f"ElevenLabs API error {resp.status}: {error_text}"}
+        except Exception as e:
+            return {"error": f"ElevenLabs TTS failed: {str(e)}"}
+    
+    elif provider == "openai":
+        api_key = config.get("openai_tts_api_key") or os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            return {"error": "OpenAI API key not configured"}
+        
+        try:
+            async with aiohttp.ClientSession() as session:
+                payload = {
+                    "model": "tts-1",
+                    "input": data.text,
+                    "voice": data.voice_id or "alloy",
+                }
+                headers = {
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                }
+                async with session.post(
+                    "https://api.openai.com/v1/audio/speech",
+                    json=payload,
+                    headers=headers,
+                    timeout=aiohttp.ClientTimeout(total=60)
+                ) as resp:
+                    if resp.status == 200:
+                        audio_data = await resp.read()
+                        import base64
+                        return {
+                            "audio_base64": base64.b64encode(audio_data).decode(),
+                            "format": "mp3",
+                            "provider": "openai",
+                        }
+                    else:
+                        error_text = await resp.text()
+                        return {"error": f"OpenAI TTS error {resp.status}: {error_text}"}
+        except Exception as e:
+            return {"error": f"OpenAI TTS failed: {str(e)}"}
+    
+    return {"error": f"Unknown TTS provider: {provider}"}
+
+# ─── Jarvis Task Management ───
+@app.get("/api/jarvis/tasks")
+async def list_jarvis_tasks(status: Optional[str] = None):
+    """List all Jarvis tasks."""
+    tasks = load_jarvis_tasks()
+    if status:
+        tasks = [t for t in tasks if t.get("completed") == (status == "completed")]
+    return {"tasks": tasks}
+
+@app.post("/api/jarvis/tasks")
+async def create_jarvis_task(data: JarvisTaskCreate):
+    """Create a new Jarvis task."""
+    task = {
+        "id": str(uuid.uuid4())[:8],
+        "title": data.title,
+        "description": data.description,
+        "priority": data.priority,
+        "due_date": data.due_date,
+        "assigned_agent": data.assigned_agent,
+        "recurring": data.recurring,
+        "completed": False,
+        "created": get_timestamp(),
+    }
+    tasks = load_jarvis_tasks()
+    tasks.append(task)
+    save_jarvis_tasks(tasks)
+    return {"task": task, "message": "Task created"}
+
+@app.get("/api/jarvis/tasks/{task_id}")
+async def get_jarvis_task(task_id: str):
+    """Get a specific Jarvis task."""
+    tasks = load_jarvis_tasks()
+    task = next((t for t in tasks if t["id"] == task_id), None)
+    if not task:
+        raise HTTPException(404, "Task not found")
+    return task
+
+@app.patch("/api/jarvis/tasks/{task_id}")
+async def update_jarvis_task(task_id: str, data: JarvisTaskUpdate):
+    """Update a Jarvis task."""
+    tasks = load_jarvis_tasks()
+    for i, task in enumerate(tasks):
+        if task["id"] == task_id:
+            update_data = data.dict(exclude_unset=True)
+            task.update(update_data)
+            if task.get("completed"):
+                task["completed_at"] = get_timestamp()
+            save_jarvis_tasks(tasks)
+            return {"task": task, "message": "Task updated"}
+    raise HTTPException(404, "Task not found")
+
+@app.delete("/api/jarvis/tasks/{task_id}")
+async def delete_jarvis_task(task_id: str):
+    """Delete a Jarvis task."""
+    tasks = load_jarvis_tasks()
+    tasks = [t for t in tasks if t["id"] != task_id]
+    save_jarvis_tasks(tasks)
+    return {"status": "deleted", "task_id": task_id}
+
+@app.post("/api/jarvis/tasks/{task_id}/complete")
+async def complete_jarvis_task(task_id: str):
+    """Mark a task as completed."""
+    tasks = load_jarvis_tasks()
+    for task in tasks:
+        if task["id"] == task_id:
+            task["completed"] = True
+            task["completed_at"] = get_timestamp()
+            save_jarvis_tasks(tasks)
+            return {"task": task, "message": "Task completed"}
+    raise HTTPException(404, "Task not found")
+
+# ─── Jarvis Schedule Management ───
+@app.get("/api/jarvis/schedule")
+async def list_jarvis_schedule(date: Optional[str] = None):
+    """List scheduled events."""
+    schedule = load_jarvis_schedule()
+    if date:
+        schedule = [s for s in schedule if s.get("start_time", "").startswith(date)]
+    return {"schedule": schedule}
+
+@app.post("/api/jarvis/schedule")
+async def create_jarvis_schedule(data: JarvisScheduleCreate):
+    """Create a scheduled event."""
+    event = {
+        "id": str(uuid.uuid4())[:8],
+        "title": data.title,
+        "description": data.description,
+        "start_time": data.start_time,
+        "end_time": data.end_time,
+        "recurrence": data.recurrence,
+        "agents": data.agents,
+        "reminder_minutes": data.reminder_minutes,
+        "created": get_timestamp(),
+    }
+    schedule = load_jarvis_schedule()
+    schedule.append(event)
+    save_jarvis_schedule(schedule)
+    return {"event": event, "message": "Event created"}
+
+@app.delete("/api/jarvis/schedule/{event_id}")
+async def delete_jarvis_schedule(event_id: str):
+    """Delete a scheduled event."""
+    schedule = load_jarvis_schedule()
+    schedule = [s for s in schedule if s["id"] != event_id]
+    save_jarvis_schedule(schedule)
+    return {"status": "deleted", "event_id": event_id}
+
+# ─── Jarvis Briefings ───
+@app.post("/api/jarvis/briefing")
+async def generate_jarvis_briefing(data: JarvisBriefingRequest):
+    """Generate a daily/periodic briefing."""
+    date = data.date or datetime.now().strftime("%Y-%m-%d")
+    style = data.style
+    
+    # Gather data for briefing
+    tasks = load_jarvis_tasks()
+    schedule = load_jarvis_schedule()
+    today_schedule = [s for s in schedule if s.get("start_time", "").startswith(date)]
+    pending_tasks = [t for t in tasks if not t.get("completed") and (t.get("due_date") == date or not t.get("due_date"))]
+    completed_today = [t for t in tasks if t.get("completed") and t.get("completed_at", "").startswith(date)]
+    
+    # Get agent status
+    agent_status = get_agent_health()
+    
+    # Generate briefing content
+    briefing_content = f"Good morning! Here's your briefing for {date}.\n\n"
+    
+    if style == "executive":
+        briefing_content += f"**Summary**: {len(pending_tasks)} pending tasks, {len(today_schedule)} scheduled events, {len(completed_today)} completed today.\n\n"
+    else:
+        briefing_content += f"• **Pending Tasks**: {len(pending_tasks)}\n"
+        briefing_content += f"• **Today's Schedule**: {len(today_schedule)} events\n"
+        briefing_content += f"• **Completed Today**: {len(completed_today)}\n\n"
+    
+    if today_schedule:
+        briefing_content += "**Today's Schedule:**\n"
+        for event in today_schedule[:5]:
+            briefing_content += f"  • {event.get('start_time', '').split('T')[1][:5]} - {event['title']}\n"
+        briefing_content += "\n"
+    
+    if pending_tasks:
+        briefing_content += "**Top Pending Tasks:**\n"
+        for task in pending_tasks[:5]:
+            briefing_content += f"  • {task['title']} ({task.get('priority', 'medium')})\n"
+        briefing_content += "\n"
+    
+    # Agent status summary
+    briefing_content += "**Agent Status:**\n"
+    for agent in agent_status.get("agents", []):
+        status_icon = "🟢" if agent["status"] == "online" else "🔴" if agent["status"] == "offline" else "🟡"
+        briefing_content += f"  {status_icon} {agent['name'].capitalize()}: {agent['status']}\n"
+    
+    # Save briefing
+    briefing = {
+        "id": str(uuid.uuid4())[:8],
+        "date": date,
+        "style": style,
+        "content": briefing_content,
+        "generated": get_timestamp(),
+    }
+    briefings = load_jarvis_briefings()
+    briefings.append(briefing)
+    save_jarvis_briefings(briefings)
+    
+    return {
+        "briefing": briefing,
+        "tts_text": briefing_content.replace("**", "").replace("•", "").replace("-", ""),
+    }
+
+@app.get("/api/jarvis/briefings")
+async def list_jarvis_briefings(limit: int = 10):
+    """List recent briefings."""
+    briefings = load_jarvis_briefings()
+    return {"briefings": briefings[-limit:]}
+
+@app.get("/api/jarvis/briefings/{briefing_id}")
+async def get_jarvis_briefing(briefing_id: str):
+    """Get a specific briefing."""
+    briefings = load_jarvis_briefings()
+    briefing = next((b for b in briefings if b["id"] == briefing_id), None)
+    if not briefing:
+        raise HTTPException(404, "Briefing not found")
+    return briefing
+
+# ─── Jarvis Wake Word Detection (Porcupine Integration Guide) ───
+@app.get("/api/jarvis/wake-word/setup")
+async def jarvis_wake_word_setup():
+    """Get setup instructions for wake word detection."""
+    config = load_jarvis_config()
+    wake_word = config.get("wake_word", "jarvis")
+    
+    return {
+        "wake_word": wake_word,
+        "providers": {
+            "porcupine": {
+                "name": "Picovoice Porcupine",
+                "description": "Cross-platform wake word engine with WebAssembly support",
+                "setup": [
+                    "1. Sign up at https://console.picovoice.ai/",
+                    "2. Create a custom wake word or use built-in ones",
+                    "3. Get your AccessKey",
+                    "4. Add PORCUPINE_ACCESS_KEY to environment variables",
+                    "5. Install @picovoice/porcupine-web-react or similar for browser",
+                ],
+            }
+        },
+        "snowboy": {
+            "name": "Snowboy (Legacy)",
+            "description": "Alternative wake word engine (deprecated but functional)",
+            "note": "Snowboy is deprecated. Consider Porcupine for new implementations.",
+        }
+    },
+    "current_config": {
+        "wake_word": wake_word,
+        "sensitivity": 0.5,
+    }
+
+# ─── Jarvis Daily Briefing Scheduler ───
+async def run_jarvis_daily_briefing():
+    """Scheduled job to run daily briefing."""
+    config = load_jarvis_config()
+    if not config.get("auto_briefing"):
+        return
+    
+    briefing_time = config.get("briefing_time", "08:00")
+    now = datetime.now().strftime("%H:%M")
+    if now != briefing_time:
+        return
+    
+    date = datetime.now().strftime("%Y-%m-%d")
+    briefing = await generate_jarvis_briefing(JarvisBriefingRequest(date=date, style="standard"))
+    
+    # Send to all connected Jarvis WebSocket clients
+    # This would need integration with the connection manager
+    append_audit({"action": "jarvis_briefing_generated", "date": briefing["date"]})
+
+
+# ─── Jarvis Voice Commands (WebSocket) ───
+@app.websocket("/ws/jarvis")
+async def websocket_jarvis(websocket: WebSocket):
+    """WebSocket for real-time Jarvis voice interaction."""
+    # Validate token
+    token = websocket.query_params.get("token")
+    if token:
+        payload = decode_token(token)
+        if not payload:
+            await websocket.close(code=4001, reason="Invalid token")
+            return
+    else:
+        api_key = websocket.query_params.get("api_key")
+        if not api_key or api_key not in VALID_API_KEYS:
+            await websocket.close(code=4001, reason="Authentication required")
+            return
+    
+    await manager.connect(websocket)
+    try:
+        # Send initial status
+        config = load_jarvis_config()
+        await manager.send_personal(websocket, {
+            "type": "jarvis_ready",
+            "data": {
+                "wake_word": config.get("wake_word", "jarvis"),
+                "status": "listening",
+            }
+        })
+        
+        while True:
+            data = await websocket.receive_text()
+            try:
+                msg = json.loads(data)
+                if msg.get("type") == "voice_command":
+                    command = msg.get("command", "")
+                    if command:
+                        # Process through Jarvis
+                        result = await jarvis_execute(JarvisCoordinateRequest(
+                            command=command,
+                            context=msg.get("context", "")
+                        ))
+                        await manager.send_personal(websocket, {
+                            "type": "jarvis_response",
+                            "data": result
+                        })
+                elif msg.get("type") == "wake_word":
+                    await manager.send_personal(websocket, {
+                        "type": "wake_word_ack",
+                        "data": {"status": "ready", "wake_word": load_jarvis_config().get("wake_word", "jarvis")}
+                    })
+            except Exception as e:
+                await manager.send_personal(websocket, {
+                    "type": "error",
+                    "data": {"message": str(e)}
+                })
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+    except Exception:
+        manager.disconnect(websocket)
+
+
+# ─── Routes: Dashboard Static Files ──────────────────────────────
 if dashboard_dir.exists():
     app.mount("/dashboard", StaticFiles(directory=str(dashboard_dir)), name="dashboard")
 

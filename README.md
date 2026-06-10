@@ -1,344 +1,569 @@
-<div align="center">
-  <br/>
-  <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"/>
-  <img src="https://img.shields.io/badge/python-3.10+-blue.svg" alt="Python 3.10+"/>
-  <img src="https://img.shields.io/badge/FastAPI-0.115+-green.svg" alt="FastAPI"/>
-  <img src="https://img.shields.io/badge/agents-3-orange.svg" alt="3 Agents"/>
-  <img src="https://img.shields.io/badge/skills-16-purple.svg" alt="16 Skills"/>
-  <img src="https://img.shields.io/badge/version-v0.2.0-blueviolet.svg" alt="v0.2.0"/>
-  <img src="https://img.shields.io/badge/status-stable-brightgreen.svg" alt="Status: Stable"/>
-  <a href="https://dev.to/mihir_nmodi_14a06a4019e1/i-built-an-open-source-agent-os-2h30"><img src="https://img.shields.io/badge/dev.to-article-blue.svg" alt="dev.to article"/></a>
-  <br/><br/>
-</div>
+# Mission Control
 
-# Agentic OS (agentic-os) 🧠 — Multi-Agent Orchestration Platform
+> **A multi-agent orchestration platform that coordinates opencode, Hermes, Gemini CLI, OpenClaw, Codex, and custom agents into a unified, self-improving, autonomous operating system for AI-powered development and operations.**
 
-A locally-hosted operating system for AI agents — an open-source GitHub repository — that coordinates **opencode**, **Hermes Agent**, and **Gemini CLI** into a unified dashboard with persistent memory, cron scheduling, skill execution, cost analytics, and disaster recovery.
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/your-org/mission-control/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/your-org/mission-control/blob/main/LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![Python](https://img.shields.io/badge/python-%3E%3D3.11-blue.svg)](https://python.org/)
+[![PWA](https://img.shields.io/badge/PWA-ready-purple.svg)](https://web.dev/progressive-web-apps/)
 
-> **Why Agentic OS?** Most agent tools work in isolation — a terminal for coding, a separate chat for research, another for memory. Agentic OS is the **control plane** that unifies them: one dashboard, one memory layer, one scheduler, one skill hub. Three agents, infinite capabilities.
+---
+
+## 🎯 Mission Control at a Glance
+
+Mission Control transforms how you work with AI agents. Instead of switching between terminals, you get a **unified command center** where multiple specialized agents collaborate through shared memory, skills, schedules, and handoffs — all orchestrated from a premium web interface.
+
+### Why Mission Control?
+
+| Traditional Approach | Mission Control |
+|---------------------|-----------------|
+| Multiple terminal windows | Single unified dashboard |
+| Fragmented context | Shared persistent memory |
+| Manual task handoffs | Automated agent coordination |
+| No cost visibility | Real-time multi-provider cost tracking |
+| One-off tasks | Skills with eval, learning, and versioning |
+| Local knowledge only | Semantic search + knowledge graph |
 
 ---
 
 ## ✨ Features
 
-| Category | Features |
-|----------|----------|
-| **🤖 3-Agent Engine** | opencode (code/DevOps), Hermes (memory/scheduling), Gemini (research/analysis) with intelligent routing |
-| **🧩 16+ Skills** | Executable skill packs with eval scoring, learnings, and score history per run |
-| **🧠 Persistent Memory** | SQLite FTS5 + `brain/` folder — shared context read by all agents at session start |
-| **⏱ Cron Scheduler** | APScheduler-powered jobs — heartbeat, memory consolidation, daily standup, DevOps audit |
-| **💰 Cost Analytics** | Track spending per provider, model, agent. Free-tier alerts prevent surprise bills |
-| **📋 Audit Trail** | Every action logged — chat, skill runs, settings changes, backups |
-| **💾 One-Click Backup** | Full tar.gz snapshot of all configs, skills, brain, agents, prompts |
-| **📝 Prompt Library** | 10 reusable templates — code review, system audit, project plan, brainstorm, and more |
-| **📐 Standards System** | Discover and inject coding conventions across your project |
-| **🔌 Plugin Registry** | Marketplace-style plugin management (extensible via skills) |
-| **🎨 Dark/Light Theme** | GitHub-style dark mode + clean light theme, toggle from sidebar |
-| **⚡ Zero API Costs** | Built for free tiers — Gemini Flash, OpenRouter free models, local opencode |
-| **📋 Kanban Board** | Visual task management — drag-and-drop columns, priority/status filtering, block/unblock, detail view |
-| **🎯 Goals** | Project targets with progress tracking, auto-syncs to `brain/active-projects.md` |
-| **📓 Journal** | Daily markdown entries stored as `brain/journal/YYYY-MM-DD.md` with full-text search |
-| **❤️ Agent Health** | Real-time monitoring of opencode, Hermes, and Gemini CLI availability |
-| **🧭 Smart Router** | Keyword-based task routing with confidence scoring — suggests best agent for any task |
-| **📊 Learning Analytics** | Skill evaluation scores, performance trends, and historical charts |
-| **🎬 Session Replay** | Browse and replay past opencode sessions from the dashboard |
+### 🤖 **Multi-Agent Orchestration**
+- **7 Built-in Agents**: opencode, Hermes, Gemini CLI, Claude, OpenClaw, Codex, Jarvis (voice)
+- **Shared Memory Layer**: Vector DB + Knowledge Graph for semantic context
+- **Agent Handoff Protocol**: Structured task transfer with context preservation
+- **Smart Router**: Auto-routes tasks to best-fit agents
+
+### 🧠 **Advanced Memory System**
+- **Semantic Search**: Vector embeddings (OpenAI/text-embedding-3-small compatible, local fallback)
+- **Knowledge Graph**: Entity extraction, relations, force-directed visualization
+- **Context Injection**: Auto-loads relevant memory per task
+- **Memory Verification Center**: Health checks, auto-repair, re-indexing
+- **Daily Journal**: Templates, tags, entity linking, timeline views
+
+### ⚡ **Skills & Automation**
+- **Skill Library**: 6 Collections (SEO Research, Content Creation, Software Eng, Operations, Executive Assistant, Multi-Agent Swarm)
+- **Skill Evaluation**: Weighted criteria, score history, automated testing
+- **Skill Chaining**: Sequential multi-skill execution with context passing
+- **Scheduler**: APScheduler with per-skill agent routing
+
+### 📊 **Analytics & BI**
+- **Agent Performance**: Real-time metrics, trends, success rates, response times
+- **Cost Analytics**: Multi-provider token tracking, projections, free-tier alerts
+- **Unified Timeline**: Chronological browser of all events (skills, handoffs, voice, journal, screen)
+- **Learning Analytics**: Skill score trends, eval visualization
+
+### 🎙️ **Voice-First Interface**
+- **OMI-style Voice Capture**: Push-to-talk (Space), wake-word ready
+- **STT**: OpenRouter Whisper integration with auto-summarization
+- **Action Items**: Extracted from voice, saved to journal with checkboxes
+- **Jarvis Agent**: Voice-first personal assistant for scheduling, briefings, coordination
+
+### 🎨 **Premium Web Dashboard**
+- **Modern Design System**: Glass morphism, fluid animations, reduced-motion support
+- **Command Palette**: Fuzzy search (⌘K) for 50+ actions
+- **Dockable Panels**: Resizable, collapsible split panes with persistence
+- **PWA Ready**: Installable, offline-capable, app shortcuts
+- **Responsive**: Works on desktop, tablet, mobile
 
 ---
 
-## 🏗 Architecture
+## 🏗️ Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                    AGENTIC OS DASHBOARD                      │
-│                    FastAPI + Tailwind SPA                    │
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│  ┌──────────────-┐  ┌──────────────┐  ┌──────────────────┐   |
-│  │   opencode    │  │    Hermes    │  │   Gemini CLI     │   │
-│  │  (Code/DevOps)│  │ (Memory/Sched│  │ (Research/Analy) │   │
-│  │  File Ops)    │  │  /Channels)  │  │                  │   │
-│  └──────────────-┘  └──────────────┘  └──────────────────┘   |
-│                                                              │
-│  ┌──────────────────────────────────────────────────────┐    │
-│  │              7 CORE LAYERS (Stacked)                 │    │
-│  │  Layer 7: Identity / Persona / Constitution          │    │
-│  │  Layer 6: Self-Evolution + Capability Manager        │    │
-│  │  Layer 5: Scheduler + Awareness + Health Guardian    │    │
-│  │  Layer 4: Memory Graph + Memory Consolidation        │    │
-│  │  Layer 3: Skills Hub + Eval + Learnings Loop         │    │
-│  │  Layer 2: Business Brain + Context Folders           │    │
-│  │  Layer 1: Agent Router + Standards + Profiles        │    │
-│  └──────────────────────────────────────────────────────┘    │
-└──────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    MISSION CONTROL                          │
+├─────────────────────────────────────────────────────────────┤
+│  🎨 Premium Web Dashboard (FastAPI + Vanilla ES6 SPA)       │
+│  ├── Command Palette    ├── Dockable Panels                 │
+│  ├── Notification Center├── Agent Status Center             │
+│  └── Unified Timeline   └── Conversation View               │
+├─────────────────────────────────────────────────────────────┤
+│  🤖 AGENT EXECUTION ENGINE (7 Agents)                       │
+│  ├── opencode   ├── Hermes     ├── Gemini CLI               │
+│  ├── Claude     ├── OpenClaw   ├── Codex                    │
+│  └── Jarvis (Voice)                                          │
+├─────────────────────────────────────────────────────────────┤
+│  🧠 SHARED FOUNDATION (via shared_agent_core.py)            │
+│  ├── Memory Layer    ├── Skills Layer                       │
+│  ├── Tools Layer     ├── Context Layer                      │
+│  └── Agent Registry                                          │
+├─────────────────────────────────────────────────────────────┤
+│  💾 PERSISTENCE LAYER                                        │
+│  ├── Vector DB (semantic)  ├── Knowledge Graph               │
+│  ├── Brain Files (MD)      ├── Journal (MD)                  │
+│  ├── Skills (MD + JSON)    ├── Audit Log (JSONL)            │
+│  └── SQLite (Hermes native)                                  │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Agent Responsibilities
+### Technology Stack
 
-| Agent | Role | Default Model | Provider | Cost |
-|-------|------|---------------|----------|------|
-| **opencode** | Code generation, DevOps, file operations | deepseek-v4-flash-free | opencode-zen | **$0** |
-| **Hermes Agent** | Persistent memory, scheduling, messaging | Owl Alpha (1M ctx) | OpenRouter | **$0** |
-| **Gemini CLI** | Web research, multi-modal analysis | gemini-2.5-flash | Google OAuth | **$0** |
-
-### Routing Rules
-
-- **Code/DevOps task?** → opencode
-- **Memory/Channel/Schedule?** → Hermes Agent
-- **Research/Analysis?** → Gemini CLI
-- **Complex multi-step?** → Chain: Gemini researches → opencode implements → Hermes monitors/schedules
+| Layer | Technology |
+|-------|------------|
+| **Backend** | FastAPI (Python 3.11+), Uvicorn, APScheduler |
+| **Frontend** | Vanilla ES6, Chart.js, CSS Custom Properties |
+| **Agents** | CLI-based (opencode, Hermes, Gemini CLI, etc.) |
+| **Memory** | JSON-based Vector DB, JSON Knowledge Graph, Markdown |
+| **Voice STT** | OpenRouter Whisper API (OpenAI compatible) |
+| **Cost Tracking** | OpenRouter + Anthropic + local tracking |
+| **PWA** | Service Worker, Manifest, Service Worker |
 
 ---
 
 ## 🚀 Quick Start
 
+### Prerequisites
+
+- **Python 3.11+** (3.11+ recommended for best performance)
+- **Node.js 18+** (for optional frontend tooling)
+- **OpenRouter API Key** (get from [openrouter.ai](https://openrouter.ai))
+- **Anthropic API Key** (for Claude agent, optional)
+- **Git** (for version control)
+
+### One-Command Install
+
 ```bash
-git clone https://github.com/modimihir07/agentic-os.git
-cd agentic-os
-chmod +x install.sh && ./install.sh
+# Clone and install
+git clone https://github.com/your-org/mission-control.git
+cd mission-control
+chmod +x install.sh
+./install.sh
+
+# Start the server
 ./start.sh
-# Open http://127.0.0.1:8080
+```
+
+### Manual Installation
+
+```bash
+# 1. Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Configure environment
+cp .env.example .env
+# Edit .env with your API keys
+
+# 4. Initialize memory
+python -c "from shared_agent_core import AgentRegistry; r = AgentRegistry(Path('.')); print('Initialized', len(r.agents), 'agents')"
+
+# 5. Start server
+python -m uvicorn server:app --host 127.0.0.1 --port 8765
+```
+
+### Docker (Production)
+
+```bash
+# Build
+docker build -t mission-control .
+
+# Run
+docker run -d \
+  -p 8765:8765 \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/brain:/app/brain \
+  -v $(pwd)/.env:/app/.env \
+  --name mission-control \
+  mission-control
 ```
 
 ---
 
-## 📋 Prerequisites
+## ⚙️ Configuration
 
-| Tool | Required? | Install |
-|------|-----------|---------|
-| Python 3.10+ | ✅ Required | `sudo apt install python3 python3-pip` |
-| Node.js 18+ | ⚠ For opencode | `curl -fsSL https://deb.nodesource.com/setup_20.x \| sudo bash - && sudo apt install -y nodejs` |
-| opencode | ⚠ For code tasks | `npm install -g @opencode/cli` |
-| Hermes Agent | ⚠ For memory/scheduling | `curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh \| bash` |
-| Gemini CLI | ⚠ For Google AI | `npm install -g @google/gemini-cli` |
+### Environment Variables (`.env`)
 
-> ⚠ = Optional — the dashboard works with any subset of installed agents.
+```ini
+# Required
+OPENROUTER_API_KEY=sk-or-v1-...
+ANTHROPIC_API_KEY=sk-ant-...  # Optional, for Claude agent
 
----
+# Optional
+AGENTIC_OS_SECRET_KEY=your-secret-key-change-in-production
+AGENTIC_OS_ADMIN_PASSWORD=admin123
+AGENTIC_OS_PORT=8765
+AGENTIC_OS_HOST=127.0.0.1
 
-## 🔧 Configuration
-
-### Hermes (OpenRouter)
-```bash
-# Set your OpenRouter API key
-echo 'OPENROUTER_API_KEY=sk-or-v1-your-key-here' > ~/.hermes/.env
+# Hermes (optional, loads from ~/.hermes/.env automatically)
+# OPENROUTER_API_KEY already set above
 ```
 
-### Gemini CLI (Google OAuth)
-```bash
-gemini auth login
-# Complete OAuth in browser — tokens saved to ~/.gemini/oauth_creds.json
-```
+### Agent Configuration
 
-### Dashboard Settings
-Edit `data/settings.json`:
+Each agent has a config in `agents/<name>/<name>.json`:
+
 ```json
 {
-  "dashboard": { "port": 8080 },
-  "theme": "dark",
-  "agents": { "opencode": true, "hermes": true, "gemini": true }
+  "name": "opencode",
+  "model": "test-model",
+  "system_prompt": "You are the code generation and DevOps specialist...",
+  "allowed_tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Task"],
+  "max_turns": 50,
+  "auto_approve": false
 }
 ```
+
+### Memory Configuration
+
+The memory system auto-configures but can be tuned:
+
+```ini
+# Vector DB
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIM=1536
+VECTOR_MIN_SCORE=0.3
+
+# Knowledge Graph
+KG_MAX_RELATIONS=50
+KG_ENTITY_TYPES=gcp_service,tech_stack,project
+
+# Journal
+JOURNAL_TEMPLATES=daily,standup,retrospective,meeting,research
+```
+
+---
+
+## 🎮 Usage
+
+### Dashboard Access
+
+Open http://127.0.0.1:8765 in your browser.
+
+| Page | Description | Shortcut |
+|------|-------------|----------|
+| **Dashboard** | System overview, agent health, cost summary | ⌘1 |
+| **AI Chat** | Multi-agent terminal with context | ⌘2 |
+| **Agent Config** | API keys, models, system prompts per agent | ⌘3 |
+| **Skill Library** | Browse, search, install, organize skills | ⌘4 |
+| **Memory** | Browse brain files, journal, brain files | ⌘5 |
+| **Semantic Search** | Vector search across all memory | ⌘6 |
+| **Knowledge Graph** | Entity/relation visualization | ⌘7 |
+| **Context Injection** | Auto-load context for tasks | ⌘8 |
+| **Voice Capture** | Push-to-talk recording (Space) | ⌘9 |
+| **Unified Timeline** | Chronological event browser | ⌘0 |
+| **Scheduler** | Manage automated jobs | ⌘S |
+| **Analytics** | Performance, cost, learning dashboards | ⌘A |
+
+### Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `⌘K` / `Ctrl+K` | Open Command Palette |
+| `Space` (hold) | Push-to-talk Voice Recording |
+| `Esc` | Close Modal / Cancel Recording |
+| `⌘N` | New Skill / Task / Journal Entry |
+| `⌘/` | Focus Global Search |
+
+### Agent Interaction
+
+```bash
+# Direct CLI usage (bypasses dashboard)
+opencode run "Refactor the auth module to use dependency injection"
+hermes chat -q "Schedule a backup for tomorrow 2am"
+gemini -y "Research the latest React 19 features"
+```
+
+### Skill Execution
+
+```bash
+# Via dashboard
+# 1. Go to Skill Library
+# 2. Search for "devops-audit"
+# 3. Click "Run" → Select agent → Execute
+
+# Via API
+curl -X POST http://localhost:8765/api/skills/devops-audit/run \
+  -H "X-API-Key: your-key" \
+  -d '{"input": "Audit GCP project cloudmart-prod"}'
+
+# Via skill chaining
+curl -X POST http://localhost:8765/api/skills/chain \
+  -H "X-API-Key: your-key" \
+  -d '{"skills": ["research-synthesis", "content-draft"], "initial_input": "Write blog about GCP best practices"}'
+```
+
+### Voice Capture
+
+1. Navigate to **Voice Capture** page
+2. Hold **Spacebar** to record (push-to-talk)
+3. Release to auto-transcribe and summarize
+4. Action items extracted → saved to journal with checkboxes
+5. Say "Jarvis, schedule standup for tomorrow 9am" → Jarvis agent executes
 
 ---
 
 ## 📁 Project Structure
 
 ```
-agentic-os/
-├── server.py              # FastAPI backend (REST API)
-├── requirements.txt       # Python dependencies
-├── install.sh             # One-command installer
-├── start.sh               # Launch dashboard
-├── backup.sh / restore.sh # Disaster recovery
+mission-control/
+├── 📁 dashboard/                 # Web frontend (FastAPI static)
+│   ├── 📁 pages/                # Page modules (ES6)
+│   ├── 📁 icons/                # PWA icons + generator
+│   ├── index.html               # SPA entry point
+│   ├── styles.css               # Base styles
+│   ├── styles-premium.css       # Premium design system
+│   ├── app.js                   # Main app logic
+│   ├── api.js                   # API client
+│   └── utils.js                 # Shared utilities
 │
-├── dashboard/             # Web frontend (SPA)
-│   ├── index.html         # Entry point + sidebar
-│   ├── app.js             # SPA router + theme/sidebar toggle
-│   ├── api.js             # API client (all endpoints)
-│   ├── styles.css         # Full dark/light theme CSS
-│   ├── utils.js           # Shared utilities
-│   └── pages/             # 20 page modules (13 original + 7 v0.2.0)
-│       ├── dashboard.js   # Overview with stats
-│       ├── skills.js      # Skill grid/list/detail
-│       ├── memory.js      # Brain file editor
-│       ├── chat.js        # Multi-agent chat
-│       ├── scheduler.js   # Cron job manager
-│       ├── audit.js       # Activity trail
-│       ├── cost.js        # Cost analytics charts
-│       ├── plugins.js     # Plugin marketplace
-│       ├── backups.js     # Backup/restore UI
-│       ├── prompts.js     # Template library
-│       ├── standards.js   # Code conventions
-│       ├── settings.js    # Config editor
-│       ├── setup-wizard.js  # Guided setup
-│       ├── kanban.js      # ▸ Kanban Board (v0.2.0)
-│       ├── goals.js       # ▸ Goals (v0.2.0)
-│       ├── journal.js     # ▸ Journal (v0.2.0)
-│       ├── agent-health.js # ▸ Agent Health (v0.2.0)
-│       ├── smart-router.js # ▸ Smart Router (v0.2.0)
-│       ├── learning-analytics.js # ▸ Learning Analytics (v0.2.0)
-│       └── session-replay.js # ▸ Session Replay (v0.2.0)
+├── 📁 agents/                   # Per-agent configs
+│   ├── opencode/
+│   ├── hermes/
+│   ├── gemini/
+│   ├── claude/
+│   ├── openclaw/
+│   ├── codex/
+│   └── jarvis/
 │
-├── brain/                 # Shared context (all agents read)
-│   ├── business-brain.md  # Current project context
-│   ├── memory.md          # Accumulated knowledge
-│   ├── recent-decisions.md
+├── 📁 brain/                    # Shared memory (Markdown)
+│   ├── business-brain.md
 │   ├── active-projects.md
+│   ├── recent-decisions.md
+│   ├── constraints.md
 │   ├── identity.md
 │   ├── constitution.md
-│   └── journal/           # Daily markdown entries (YYYY-MM-DD.md)
+│   └── 📁 journal/              # Daily entries (YYYY-MM-DD.md)
 │
-├── skills/                # 16 executable skills
-│   ├── devops-audit/      # GCP/CloudMart infra audit
-│   ├── heartbeat/         # 5-min health check
-│   ├── content-draft/     # Blog/newsletter writing
-│   ├── code-review/       # PR review checklist
-│   ├── research-synthesis/ # Gemini research aggregator
-│   ├── daily-standup/     # Morning briefing
-│   ├── meeting-minutes/   # Notes processor
-│   ├── project-planner/   # Step-by-step plans
-│   ├── brainstorming/     # Socratic design
-│   ├── systematic-debug/  # 4-phase root cause
-│   ├── memory-consolidation/ # Weekly synthesis
-│   ├── backup-skill/      # Snapshot creator
-│   ├── cost-analytics/    # Multi-provider cost
-│   ├── tdd-cycle/         # Red-green-refactor
-│   ├── goal-planner/      # Goal → steps
-│   └── _template/         # Starter template
+├── 📁 skills/                   # Skill library
+│   ├── 📁 _template/            # Skill template
+│   ├── 📁 heartbeat/
+│   ├── 📁 devops-audit/
+│   ├── 📁 research-synthesis/
+│   └── ... (15 skills)
 │
-├── agents/                # Per-agent configs
-├── scheduler/jobs/        # Cron job definitions
-├── registry/              # Plugin marketplace
-├── standards/             # Discover/inject conventions
-├── prompts/               # 10 reusable templates
-├── data/                  # Runtime data (agent-routes.json tracked; settings/cost/chat gitignored)
-├── audit/                 # Activity log (gitignored)
-└── backups/               # Snapshots (gitignored)
+├── 📁 data/                     # Runtime data (JSON)
+│   ├── agent-routes.json
+│   ├── agent-performance.json
+│   ├── vector-memory.json
+│   ├── knowledge-graph.json
+│   ├── agent-stats.json
+│   ├── cost-history.json
+│   └── unified-timeline.json
+│
+├── 📁 audit/                    # Audit log (JSONL)
+│   └── audit.log
+│
+├── 📁 scheduler/                # Job definitions
+│   ├── scheduler.py
+│   └── 📁 jobs/
+│
+├── 📁 registry/                 # Plugin registry
+│   └── plugins.json
+│
+├── 📁 standards/                # Coding standards
+│   ├── index.yml
+│   └── 📁 profiles/
+│
+├── 📁 docs/                     # Documentation
+│   └── 📁 images/               # Screenshots for README
+│
+├── shared_agent_core.py         # 🎯 Shared agent foundation
+├── server.py                    # FastAPI backend
+├── requirements.txt
+├── install.sh                   # One-command installer
+├── start.sh                     # Start script
+├── backup.sh / restore.sh       # Disaster recovery
+└── README.md                    # This file
 ```
 
 ---
 
-## 🆕 What's New in v0.2.0
+## 🔧 Development
 
-| Feature | Description |
-|---------|-------------|
-| **📋 Kanban Board** | Visual task management with 6 columns (triage → todo → ready → in_progress → blocked → done), drag-and-drop, priority labels, filtering, and detail modals with complete/block/unblock actions |
-| **🎯 Goals** | Create and track project targets with progress bars, categories, and target dates. Auto-syncs to `brain/active-projects.md` for agent awareness |
-| **📓 Journal** | Daily markdown journal entries stored as `brain/journal/YYYY-MM-DD.md`. Full-text search, day streak tracking, word count |
-| **❤️ Agent Health** | Real-time dashboard showing online/offline status for all 3 agents (opencode, Hermes, Gemini CLI). Auto-refresh every 5 seconds |
-| **🧭 Smart Router** | Keyword-based routing engine — type a task description and get an AI-suggested agent with confidence score. Manual override available |
-| **📊 Learning Analytics** | Skill evaluation scores, performance trends, and per-skill detail breakdowns with mini bar charts |
-| **🎬 Session Replay** | Browse and replay past opencode sessions directly from the dashboard. View message content and timestamps |
+### Running in Dev Mode
 
-### UI Modernization
-- **Glass morphism cards** with subtle backdrop blur
-- **Glow borders** and gradient accents on interactive elements
-- **Skeleton loaders** with shimmer animation for async content
-- **Empty states** with icons and contextual messages
-- **All CSS additions are zero-breaking** — existing 13 pages and 28 endpoints unchanged
+```bash
+# With auto-reload
+python -m uvicorn server:app --host 127.0.0.1 --port 8765 --reload
 
----
+# Frontend changes auto-reload (no build step needed - vanilla ES6)
+```
 
-## 🎮 Usage
+### Adding a New Agent
 
-### AI Chat
-Select an agent from the sidebar → type your message → get response.
+1. Create `agents/new-agent/new-agent.json`
+2. Add CLI command to `server.py` `execute_agent()`
+3. Add routing rules to `data/agent-routes.json`
+3. Add agent to `shared_agent_core.py` `AgentType` enum
+4. Create agent tab in `dashboard/pages/agent-config.js`
 
-| Agent | Best for | Example |
-|-------|----------|---------|
-| **opencode** | "Check system status", "Deploy to GKE" | Code + terminal automation |
-| **Hermes** | "What did I work on recently?", "Schedule a daily backup" | Memory recall, scheduling |
-| **Gemini** | "Research latest AI agent trends", "Analyze this image" | Web research, multi-modal |
+### Adding a New Skill
 
-### Skills
-Browse 16 skills from Skills Hub → click Run → monitor eval scores over time.
+```bash
+# 1. Copy template
+cp -r skills/_template skills/my-skill
 
-### Scheduler
-Create cron jobs: heartbeat (5 min), memory consolidation (weekly), daily standup, DevOps audit.
+# 2. Edit SKILL.md with metadata
+# 3. Implement logic in skill's main file (or use shared executor)
+# 4. Add eval.json with criteria
+# 5. Test: curl -X POST /api/skills/my-skill/run
+```
 
-### Cost Analytics
-Track spending per provider/model/agent. Free-tier alerts warn when nearing limits.
+### Running Tests
 
-### Kanban Board (v0.2.0)
-Drag tasks across columns, filter by priority/category, click to view details. Block tasks when blocked, mark complete when done.
+```bash
+# API tests
+python -m pytest tests/ -v
 
-### Goals (v0.2.0)
-Create goals with categories and target dates. Progress tracked via +25% increments. Completed goals auto-sync to brain context.
+# Specific test
+python -c "from shared_agent_core import create_agent_core; c = create_agent_core(Path('.'), AgentType.OPENCODE); print(c.to_dict())"
+```
 
-### Journal (v0.2.0)
-Write daily entries with markdown support. Auto-saves after 2 seconds. Search across all entries from the dashboard.
+### Code Style
 
-### Smart Router (v0.2.0)
-Describe a task in plain English — the router analyzes keywords and suggests the best agent. Route manually or let AI decide.
+```bash
+# Format
+black .
+isort .
 
-### Agent Health (v0.2.0)
-Monitor online status of all 3 agents in real time with 5-second auto-refresh. Health checks are filesystem-based (no subprocess calls).
-
-### Learning Analytics (v0.2.0)
-View evaluation scores for all 16 skills. Trends chart shows score progression over time. Top skills ranked by performance.
-
-### Session Replay (v0.2.0)
-Browse opencode session logs by date and size. Click "Replay" to view all messages in a chat-like interface.
+# Lint
+ruff check .
+mypy shared_agent_core.py server.py
+```
 
 ---
 
-## 📊 Comparison: Agentic OS vs Claude Agent OS (Julian Goldie)
+## 📦 Deployment
 
-| Feature | Claude Agent OS (Video) | Agentic OS (This Project) |
-|---------|------------------------|---------------------------|
-| **Core Agents** | Claude + OpenClaw + Hermes | opencode + Hermes + Gemini CLI |
-| **Cost** | $20/mo (Claude subscription) | **$0 — all free tiers** |
-| **Stack** | Next.js + Tailwind | FastAPI + vanilla JS SPA |
-| **Architecture** | 4 layers | **7 layers** |
-| **Skills System** | Plugin marketplace (2,000+ from Hermes) | 16 curated skills + eval scoring + learnings |
-| **Memory** | Obsidian vault (external) | Built-in brain/ + SQLite FTS5 |
-| **Scheduler** | Not shown | APScheduler cron jobs |
-| **Cost Tracking** | Not shown | Built-in per-provider analytics |
-| **Backup/Restore** | Not shown | One-click tar.gz snapshots |
-| **Audit Trail** | Not shown | Full activity log |
-| **Standards System** | Not shown | Discover/inject conventions |
-| **Client Timeout** | Not shown | 200s AbortController |
-| **Kanban Board** | Yes | **Yes — built-in** with drag-and-drop, priority, block/unblock, filters |
-| **Open Source** | No (tutorial only) | **MIT License** |
+### Production Checklist
 
----
+- [ ] Set `AGENTIC_OS_SECRET_KEY` to strong random value
+- [ ] Use strong `AGENTIC_OS_ADMIN_PASSWORD`
+- [ ] Configure reverse proxy (nginx/Caddy) with SSL
+- [ ] Set up automated backups (`backup.sh` cron)
+- [ ] Configure monitoring (health endpoint: `/api/status`)
+- [ ] Set up log rotation for `audit/audit.log`
+- [ ] Review firewall rules (port 8765 internal only)
 
-## 🧪 Tested On
+### nginx Configuration
 
-- **OS**: Linux (Ubuntu 22.04+), macOS
-- **Python**: 3.10, 3.11, 3.12
-- **Browsers**: Chrome, Firefox, Edge
-- **Agents**: opencode v0.8+, Hermes Agent v1.0+, Gemini CLI v1.0+
+```nginx
+server {
+    listen 80;
+    server_name mission-control.yourdomain.com;
+    return 301 https://\$server_name\$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name mission-control.yourdomain.com;
+
+    ssl_certificate /etc/letsencrypt/live/mission-control.yourdomain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/mission-control.yourdomain.com/privkey.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:8765;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+    }
+
+    # WebSocket support
+    location /ws {
+        proxy_pass http://127.0.0.1:8765;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
+```
+
+### Systemd Service
+
+```ini
+# /etc/systemd/system/mission-control.service
+[Unit]
+Description=Mission Control
+After=network.target
+
+[Service]
+Type=simple
+User=mission-control
+WorkingDirectory=/opt/mission-control
+Environment=PATH=/opt/mission-control/venv/bin
+ExecStart=/opt/mission-control/venv/bin/python -m uvicorn server:app --host 127.0.0.1 --port 8765
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+```
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repo
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-See `data/agent-routes.json` for routing rules and `skills/_template/` for creating new skills.
+### Quick Contribution Guide
+
+1. **Fork** the repository
+2. **Create** a feature branch: `git checkout -b feature/amazing-feature`
+3. **Commit** your changes: `git commit -m 'Add amazing feature'`
+4. **Push** to branch: `git push origin feature/amazing-feature`
+4. **Open** a Pull Request
+
+### Code Standards
+
+- **Python**: Black (line length 100), isort, ruff, mypy strict
+- **JavaScript**: ESLint (Airbnb), Prettier
+- **CSS**: CSS Custom Properties, CSS Modules where applicable
+- **Commits**: Conventional Commits (`feat:`, `fix:`, `docs:`, `refactor:`)
+
+### Testing Requirements
+
+- All new endpoints must have tests
+- Skills must include `eval.json` with criteria
+- UI changes must work in both themes
+- Accessibility: WCAG 2.1 AA minimum
 
 ---
 
 ## 📄 License
 
-MIT License — free to use, modify, and distribute.
+MIT License - see [LICENSE](LICENSE) for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Nous Research** - Hermes Agent inspiration and CLI
+- **OpenRouter** - Unified API for multiple LLM providers
+- **Anthropic** - Claude API for reasoning agent
+- **Google** - Gemini CLI for research agent
+- **OpenCode** - Code generation agent
+- **JetBrains** - Inter & JetBrains Mono fonts
+- **Chart.js** - Analytics visualizations
+- **All contributors** who make Mission Control possible
+
+---
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/your-org/mission-control/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-org/mission-control/discussions)
+- **Security**: security@mission-control.dev
+- **Docs**: [Full Documentation](https://docs.mission-control.dev)
 
 ---
 
 <div align="center">
-  <p><strong>Agentic OS</strong> — Built with ❤️ by <a href="https://github.com/modimihir07">Mihir Modi</a></p>
-  <p>
-    <a href="https://dev.to/mihir_nmodi_14a06a4019e1/i-built-an-open-source-agent-os-2h30">📖 Read the dev.to article</a>
-    ·
-    <a href="https://github.com/modimihir07/agentic-os/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/modimihir07/agentic-os/discussions">Discussions</a>
-    ·
-    <a href="https://github.com/modimihir07/agentic-os">GitHub</a>
-  </p>
+
+**Built with ❤️ for the AI engineering community**
+
+*Mission Control — Your AI agents, unified.*
+
 </div>

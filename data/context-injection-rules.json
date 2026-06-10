@@ -1,0 +1,23 @@
+{
+  "rules": [
+    {
+      "id": "7263c1f7",
+      "name": "GCP Tasks",
+      "trigger_keywords": [
+        "gcp",
+        "infrastructure",
+        "cloud"
+      ],
+      "include_sources": [
+        "semantic",
+        "kg",
+        "brain"
+      ],
+      "max_items": 10,
+      "priority": 5,
+      "enabled": true,
+      "created": "2026-06-09T18:49:53.949976+00:00"
+    }
+  ],
+  "version": 1
+}

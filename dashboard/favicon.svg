@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6c5ce7"/>
+      <stop offset="55%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#00e09e"/>
+    </linearGradient>
+    <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b7cf7"/>
+      <stop offset="100%" stop-color="#00e09e"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Outer rounded square bg -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bg-grad)" opacity="0.18"/>
+  <!-- Border ring -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="none" stroke="url(#ring-grad)" stroke-width="2"/>
+  <!-- Hexagon frame -->
+  <polygon points="32,8 52,19.5 52,42.5 32,54 12,42.5 12,19.5"
+           fill="none" stroke="url(#ring-grad)" stroke-width="1.8"
+           stroke-linejoin="round" opacity="0.7"/>
+  <!-- Inner hexagon (smaller) -->
+  <polygon points="32,16 46,24 46,40 32,48 18,40 18,24"
+           fill="url(#bg-grad)" opacity="0.25"/>
+  <!-- Central atom / OS core -->
+  <circle cx="32" cy="32" r="7" fill="url(#bg-grad)" filter="url(#glow)"/>
+  <!-- Orbit ring 1 -->
+  <ellipse cx="32" cy="32" rx="14" ry="5" fill="none"
+           stroke="url(#ring-grad)" stroke-width="1.4" opacity="0.6"
+           transform="rotate(-30 32 32)"/>
+  <!-- Orbit ring 2 -->
+  <ellipse cx="32" cy="32" rx="14" ry="5" fill="none"
+           stroke="url(#ring-grad)" stroke-width="1.4" opacity="0.6"
+           transform="rotate(30 32 32)"/>
+  <!-- Node dots on orbit -->
+  <circle cx="18.5" cy="29" r="2.2" fill="#8b7cf7" filter="url(#glow)"/>
+  <circle cx="45.5" cy="35" r="2.2" fill="#00e09e" filter="url(#glow)"/>
+  <circle cx="32" cy="19" r="2.2" fill="#a855f7" filter="url(#glow)"/>
+</svg>

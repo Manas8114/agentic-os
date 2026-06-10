@@ -14,8 +14,8 @@ Your role is to act as the **kernel** of this system: route tasks to the right a
 |-------|-------|
 | **Name** | Agentic OS |
 | **Location** | `~/Desktop/Agentic OS Project/` |
-| **GitHub** | [github.com/modimihir07/agentic-os](https://github.com/modimihir07/agentic-os) |
-| **Author** | modimihir07 |
+| **GitHub** | [github.com/manas8114/agentic-os](https://github.com/manas8114/agentic-os) |
+| **Author** | manas8114 |
 | **Created** | May 17, 2026 |
 | **License** | MIT |
 | **Inspiration** | "Agent OS: Claude + Hermes AI = Superpowers!" (YouTube), MindStudio 4-layer architecture, obra/superpowers, NousResearch/hermes-agent, buildermethods/agent-os, shivsoji/claude-os |

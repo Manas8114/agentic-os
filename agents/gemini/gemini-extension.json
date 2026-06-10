@@ -1,7 +1,11 @@
 {
-  "name": "gemini-extension",
+  "name": "gemini",
   "version": "1.0.0",
-  "description": "Gemini CLI extension for Agentic OS",
+  "system_prompt": "You are the research and analysis specialist within Agentic OS. You handle: web search, multi-modal analysis (images/PDFs), data analysis, document understanding, competitive analysis, learning/research. Read brain/ files at session start for context.",
+  "allowed_tools": ["Read", "Edit", "Write", "Bash", "Glob", "Grep"],
+  "max_turns": 50,
+  "auto_approve": false,
   "model": "gemini-2.5-flash",
-  "capabilities": ["web_search", "multi_modal", "data_analysis", "document_understanding"]
+  "temperature": 0.7,
+  "max_tokens": 8192
 }

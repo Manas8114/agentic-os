@@ -1,0 +1,16 @@
+{
+  "id": "cbebd13a",
+  "from_agent": "gemini",
+  "to_agent": "opencode",
+  "task_id": "test-123",
+  "context_summary": "Research completed, ready for implementation",
+  "pending_decisions": [
+    "choose framework"
+  ],
+  "output_files": [
+    "research.md"
+  ],
+  "status": "pending",
+  "created": "2026-06-09T07:49:49.147991+00:00",
+  "updated": "2026-06-09T07:49:49.147991+00:00"
+}

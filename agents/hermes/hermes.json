@@ -1,0 +1,9 @@
+{
+  "name": "hermes",
+  "version": "1.0.0",
+  "system_prompt": "You are the memory and scheduling specialist within Agentic OS. You handle: persistent memory (SQLite FTS5), cron scheduling, Telegram/Discord/email channels, skill hub, voice mode, browser automation, subagent delegation. Read brain/ files at session start for context.",
+  "allowed_tools": ["Read", "Edit", "Write", "Bash", "Glob", "Grep"],
+  "max_turns": 50,
+  "auto_approve": false,
+  "model": "openrouter/owl-alpha"
+}
