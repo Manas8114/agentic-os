@@ -538,18 +538,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-## 🙏 Acknowledgments
-
-- **Nous Research** - Hermes Agent inspiration and CLI
-- **OpenRouter** - Unified API for multiple LLM providers
-- **Anthropic** - Claude API for reasoning agent
-- **Google** - Gemini CLI for research agent
-- **OpenCode** - Code generation agent
-- **JetBrains** - Inter & JetBrains Mono fonts
-- **Chart.js** - Analytics visualizations
-- **All contributors** who make Mission Control possible
-
----
 
 ## 📞 Support
 
