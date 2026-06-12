@@ -161,12 +161,6 @@ function renderOverviewBar() {
 function renderAgentGrid() {
   const container = document.getElementById('agentGrid');
   const agentOrder = ['opencode', 'hermes', 'gemini', 'claude'];
-  const agentMeta = {
-    opencode: { icon: '🔧', name: 'opencode', desc: 'Code & DevOps', color: 'blue', caps: ['Code Gen', 'File Ops', 'Git', 'DevOps', 'Infra', 'Testing'] },
-    hermes: { icon: '⚡', name: 'Hermes', desc: 'Memory & Scheduling', color: 'purple', caps: ['Memory', 'Cron', 'Channels', 'Skills', 'Voice', 'Browser'] },
-    gemini: { icon: '🧠', name: 'Gemini CLI', desc: 'Research & Analysis', color: 'green', caps: ['Web Search', 'Multi-modal', 'Docs', 'Data Analysis'] },
-    claude: { icon: '🤖', name: 'Claude', desc: 'Strategy & Architecture', color: 'orange', caps: ['Strategy', 'Architecture', 'Reasoning', 'Planning'] },
-  };
 
   container.innerHTML = agentOrder.map(name => {
     const a = agentStatusState.agents[name];

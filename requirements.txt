@@ -7,3 +7,15 @@ python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
 anthropic>=0.34.0
 slowapi>=0.1.9
+# Fix #8: Added missing runtime dependencies
+aiohttp>=3.9.0
+# Fix #8: Required for voice transcription in system.py
+faster-whisper>=0.10.0
+# sentence-transformers enables real local embeddings (optional — falls back to hash_to_vector)
+sentence-transformers>=2.2.0
+# Fix #24: pin to CPU-only torch variant to avoid 2GB+ GPU download
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.0.0
+# sounddevice and soundfile are hardware-dependent (microphone capture in jarvis.py)
+# Install manually if you have working audio hardware:
+#   pip install sounddevice soundfile

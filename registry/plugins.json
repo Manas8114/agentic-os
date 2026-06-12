@@ -127,6 +127,14 @@
       "author": "Agentic OS",
       "installed": "2026-05-17T00:00:00Z",
       "type": "built-in"
+    },
+    {
+      "name": "antigravity-research",
+      "version": "1.0.0",
+      "description": "Web research, discovery, experimentation, competitive analysis, technology scouting",
+      "author": "Agentic OS",
+      "installed": "2026-06-12T00:00:00Z",
+      "type": "built-in"
     }
   ]
 }

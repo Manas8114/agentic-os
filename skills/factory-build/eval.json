@@ -1,0 +1,9 @@
+{
+    "criteria": [
+        {"name": "Code Quality", "weight": 0.30, "description": "Clean, maintainable, follows best practices"},
+        {"name": "Test Coverage", "weight": 0.20, "description": "Adequate unit/integration/e2e tests"},
+        {"name": "Build Success", "weight": 0.20, "description": "CI/CD pipeline passes"},
+        {"name": "Requirement Fidelity", "weight": 0.15, "description": "All planned features implemented"},
+        {"name": "Documentation", "weight": 0.15, "description": "Complete docs generated"}
+    ]
+}

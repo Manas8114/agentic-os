@@ -215,7 +215,7 @@ function renderSummaryCards() {
   if (!perfState.summary) return;
   
   container.innerHTML = perfState.summary.map(a => {
-    const meta = agentMeta[a.name];
+    const meta = agentMetaPerformance[a.name];
     const costColor = a.total_cost > 0 ? 'var(--yellow)' : 'var(--text-muted)';
     return `
       <div class="card" style="border-left:4px solid var(--${meta.color});min-height:100px">
@@ -242,7 +242,7 @@ function renderDetailTable() {
   if (!perfState.summary) return;
   
   container.innerHTML = perfState.summary.map(a => {
-    const meta = agentMeta[a.name];
+    const meta = agentMetaPerformance[a.name];
     const successColor = a.success_rate >= 80 ? 'var(--green)' : a.success_rate >= 50 ? 'var(--yellow)' : 'var(--red)';
     const isSelected = a.name === perfState.selectedAgent;
     
@@ -364,21 +364,21 @@ function renderCostBreakdownTable() {
   container.innerHTML = `
     <div style="display:flex;flex-direction:column;gap:8px">
       ${agents.map(([name, data]) => {
-        const meta = agentMeta[name] || { icon: '🤖', color: 'accent' };
+        const meta = agentMetaPerformance[name] || { icon: '🤖', color: 'accent' };
         const dailyEntries = Object.entries(data.daily || {}).sort((a,b) => b[0].localeCompare(a[0]));
         return `
           <div style="padding:12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius)">
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
               <span style="font-size:18px">${meta.icon}</span>
               <strong style="color:var(--${meta.color})">${meta.name}</strong>
-              <span class="badge" style="background:var(--${meta.color}-dim);color:var(--${meta.color})">Total: $${data.total_cost.toFixed(4)}</span>
-              <span class="badge" style="background:var(--blue-dim);color:var(--blue)">${data.total_tokens.toLocaleString()} tokens</span>
+              <span class="badge" style="background:var(--${meta.color}-dim);color:var(--${meta.color})">Total: $${(data.total_cost ?? 0).toFixed(4)}</span>
+              <span class="badge" style="background:var(--blue-dim);color:var(--blue)">${(data.total_tokens ?? 0).toLocaleString()} tokens</span>
             </div>
             ${dailyEntries.length > 0 ? `
               <div style="display:flex;flex-wrap:wrap;gap:6px;font-size:11px">
                 ${dailyEntries.slice(-7).map(([date, vals]) => `
                   <span style="background:var(--bg-input);padding:4px 8px;border-radius:var(--radius);color:var(--text-secondary)">
-                    ${date}: $${vals.cost.toFixed(4)} (${vals.count} calls)
+                    ${date}: $${(vals.cost ?? 0).toFixed(4)} (${vals.count ?? 0} calls)
                   </span>
                 `).join('')}
               </div>
@@ -423,8 +423,8 @@ function renderCostChart() {
     datasets = agents.map(([name, data]) => ({
       label: name,
       data: labels.map(date => (data.daily || {})[date]?.cost || 0),
-      borderColor: `var(--${agentMeta[name]?.color || 'accent'})`,
-      backgroundColor: `var(--${agentMeta[name]?.color || 'accent'}-dim)`,
+      borderColor: `var(--${agentMetaPerformance[name]?.color || 'accent'})`,
+      backgroundColor: `var(--${agentMetaPerformance[name]?.color || 'accent'}-dim)`,
       fill: true,
       tension: 0.3,
     }));
@@ -434,8 +434,8 @@ function renderCostChart() {
     datasets = [{
       label: 'Total Tokens',
       data: agents.map(([, data]) => data.total_tokens),
-      backgroundColor: agents.map(([name]) => `var(--${agentMeta[name]?.color || 'accent'}-dim)`),
-      borderColor: agents.map(([name]) => `var(--${agentMeta[name]?.color || 'accent'})`),
+      backgroundColor: agents.map(([name]) => `var(--${agentMetaPerformance[name]?.color || 'accent'}-dim)`),
+      borderColor: agents.map(([name]) => `var(--${agentMetaPerformance[name]?.color || 'accent'})`),
       borderWidth: 2,
     }];
   }

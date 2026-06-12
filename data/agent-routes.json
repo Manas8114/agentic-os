@@ -11,9 +11,34 @@
       "priority": 10
     },
     {
-      "pattern": "research|analyze|search|summarize|compare|investigate|learn",
+      "pattern": "research|analyze|search|summarize|compare|investigate|learn|discover|experiment|scout",
       "target": "gemini",
       "priority": 10
+    },
+    {
+      "pattern": "strategy|architecture|plan|review|reason|complex|high.?level",
+      "target": "claude",
+      "priority": 10
+    },
+    {
+      "pattern": "codex|gpt.?4o|ci.?cd|test.?driven|test.?generation",
+      "target": "codex",
+      "priority": 8
+    },
+    {
+      "pattern": "route|orchestrat|coordinat|decompos|handoff|workflow",
+      "target": "openclaw",
+      "priority": 8
+    },
+    {
+      "pattern": "voice|briefing|schedule|remind|task.?manage|assistant",
+      "target": "jarvis",
+      "priority": 8
+    },
+    {
+      "pattern": "plan|goal|objective|decompos|multi.?step|horizon|synthes",
+      "target": "odysseus",
+      "priority": 8
     },
     {
       "pattern": ".*",
@@ -25,7 +50,13 @@
   "agent_capabilities": {
     "opencode": ["code_generation", "file_operations", "git_management", "terminal_execution", "infrastructure_as_code", "testing", "debugging"],
     "hermes": ["persistent_memory", "scheduled_tasks", "messaging_channels", "skill_hub", "voice", "browser_automation", "subagent_delegation"],
-    "gemini": ["web_search", "multi_modal_analysis", "document_understanding", "data_analysis", "research_synthesis", "reasoning"]
+    "gemini": ["web_search", "multi_modal_analysis", "document_understanding", "data_analysis", "research_synthesis", "reasoning"],
+    "claude": ["reasoning", "planning", "code_review", "architecture", "analysis"],
+    "codex": ["code_generation", "file_operations", "git_management", "testing", "ci_cd"],
+    "openclaw": ["routing", "orchestration", "task_decomposition", "handoff_management", "workflow_coordination"],
+    "jarvis": ["voice_commands", "scheduling", "task_management", "notifications", "briefings", "agent_coordination"],
+    "odysseus": ["planning", "research", "synthesis", "goal_decomposition", "multi_step_execution"],
+    "antigravity": ["web_search", "discovery", "experimentation", "competitive_analysis", "technology_scouting", "synthesis"]
   },
   "handoff_protocol": {
     "enabled": true,

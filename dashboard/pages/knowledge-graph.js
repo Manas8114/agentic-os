@@ -92,14 +92,12 @@ async function renderKnowledgeGraph() {
         <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
           <h3 class="card-title">Graph Visualization</h3>
           <div style="display:flex;gap:8px;align-items:center">
-            <label class="switch" style="margin:0" title="Physics simulation"><input type="checkbox" id="graphPhysics" checked onchange="toggleGraphPhysics()"><span class="switch-slider"></span></label>
-            <span style="font-size:12px;color:var(--text-muted)">Physics</span>
-            <select id="graphLayout" class="form-select" onchange="changeGraphLayout()" style="width:auto;min-width:140px"><option value="force">Force Directed</option><option value="hierarchical">Hierarchical</option><option value="circular">Circular</option></select>
+            <span style="font-size:12px;color:var(--text-muted)">D3.js Force-Directed</span>
             <button class="btn btn-ghost btn-sm" onclick="loadEntityNeighborhood()">🔄 Refresh</button>
           </div>
         </div>
         <div class="card-body" style="padding:0;height:calc(100% - 60px)">
-          <div id="graphContainer" style="width:100%;height:100%;position:relative"><canvas id="graphCanvas" style="width:100%;height:100%;display:block"></canvas></div>
+          <div id="d3GraphContainer" style="width:100%;height:100%;position:relative"></div>
         </div>
       </div>
     </div>
@@ -203,117 +201,79 @@ function getEntityIcon(type) { const icons = { gcp_service: '☁️', tech_stack
 
 function showEntityDetail(entityName) { setViewMode('graph'); setTimeout(() => loadEntityNeighborhood(entityName), 100); }
 
-// Graph Visualization
-function initGraph() {
-  const canvas = document.getElementById('graphCanvas');
-  if (!canvas) return;
-  kgState.graphCanvas = canvas;
-  kgState.graphCtx = canvas.getContext('2d');
-  resizeGraphCanvas();
-  window.addEventListener('resize', resizeGraphCanvas);
-  if (kgState.graphAnimationId) cancelAnimationFrame(kgState.graphAnimationId);
-  loadEntityNeighborhood(); // initial load
-  graphAnimationLoop();
-}
+// D3.js Graph Visualization
+let kgD3Graph = null;
 
-function resizeGraphCanvas() {
-  const container = document.getElementById('graphContainer');
-  if (!kgState.graphCanvas || !container) return;
-  kgState.graphCanvas.width = container.clientWidth * window.devicePixelRatio;
-  kgState.graphCanvas.height = container.clientHeight * window.devicePixelRatio;
-  kgState.graphCanvas.style.width = container.clientWidth + 'px';
-  kgState.graphCanvas.style.height = container.clientHeight + 'px';
-  kgState.graphCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+function initGraph() {
+  // Initialize D3 force-directed graph
+  if (!window.KG_D3) {
+    console.warn('D3 graph component not loaded');
+    return;
+  }
+  
+  kgD3Graph = window.KG_D3.init('d3GraphContainer');
+  if (!kgD3Graph) return;
+  
+  // Load initial neighborhood
+  loadEntityNeighborhood();
 }
 
 async function loadEntityNeighborhood(centerEntity = null) {
   try {
     const data = await api.searchKnowledgeGraph({ query: '', entity: centerEntity || '', depth: 2, limit: 100 });
     kgState.searchResults = data;
-    buildGraphFromKGData(data);
+    
+    // Build graph data for D3
+    const entities = data.entities || [];
+    const relations = data.relations || [];
+    const entityMap = {};
+    
+    const nodes = entities.map(e => ({
+      id: e.name,
+      label: e.name,
+      type: e.type,
+      mentions: e.mentions?.length || 0,
+      radius: Math.max(20, Math.min(50, 25 + (e.mentions?.length || 0) * 3)),
+      color: getEntityTypeColor(e.type),
+      type: e.type
+    }));
+    
+    const entityMapLocal = {};
+    nodes.forEach(n => entityMapLocal[n.id] = n);
+    
+    const links = relations
+      .filter(r => entityMapLocal[r.source] && entityMapLocal[r.target])
+      .map(r => ({
+        source: entityMapLocal[r.source],
+        target: entityMapLocal[r.target],
+        type: r.type || 'co_occurs',
+        weight: r.source_count || 1
+      }));
+    
+    kgState.graphNodes = nodes;
+    kgState.graphEdges = links;
+    kgState.entityMap = entityMapLocal;
+    
+    // Update D3 graph
+    if (kgD3Graph && kgD3Graph.setData) {
+      kgD3Graph.setData({ entities, relations });
+      kgD3Graph.update(nodes, links);
+    }
+    
     if (!centerEntity) renderKGSearchResults();
   } catch (err) { console.error('Failed to load graph:', err); }
 }
 
-function buildGraphFromKGData(data) {
-  const entities = data.entities || [];
-  const relations = data.relations || [];
-  const entityMap = {};
-  kgState.graphNodes = entities.map(e => {
-    const node = { id: e.name, label: e.name, type: e.type, x: Math.random() * 800 + 100, y: Math.random() * 600 + 100, vx: 0, vy: 0, radius: 30 + (e.mentions?.length || 0) * 2, color: getEntityTypeColor(e.type) };
-    entityMap[node.id] = node; return node;
-  });
-  kgState.graphEdges = [];
-  for (const rel of relations) {
-    if (entityMap[rel.source] && entityMap[rel.target]) {
-      kgState.graphEdges.push({ source: rel.source, target: rel.target, type: rel.type || 'co_occurs', weight: rel.source_count || 1 });
-    }
-  }
-  kgState.entityMap = entityMap;
+function getEntityTypeColor(type) {
+  const colors = { gcp_service: 'blue', tech_stack: 'green', project: 'purple', proper_noun: 'orange', quoted: 'yellow', unknown: 'accent' };
+  return colors[type] || 'accent';
 }
+function getEntityIcon(type) { const icons = { gcp_service: '☁️', tech_stack: '⚙️', project: '📦', proper_noun: '🏷️', quoted: '💬' }; return icons[type] || '🏷️'; }
 
-function graphAnimationLoop() {
-  if (!kgState.graphCtx || !kgState.graphCanvas) return;
-  kgState.graphCtx.clearRect(0, 0, kgState.graphCanvas.width / window.devicePixelRatio, kgState.graphCanvas.height / window.devicePixelRatio);
-  if (kgState.graphPhysics) applyPhysics();
-  // Draw edges
-  for (const edge of kgState.graphEdges) {
-    const source = kgState.entityMap[edge.source];
-    const target = kgState.entityMap[edge.target];
-    if (source && target) drawEdge(source, target, edge);
-  }
-  // Draw nodes
-  for (const node of Object.values(kgState.entityMap)) drawNode(node);
-  kgState.graphAnimationId = requestAnimationFrame(graphAnimationLoop);
-}
+function showEntityDetail(entityName) { setViewMode('graph'); setTimeout(() => loadEntityNeighborhood(entityName), 100); }
 
-function applyPhysics() {
-  const k = 0.01, repulsion = 2000; const nodes = Object.values(kgState.entityMap);
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
-      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-      const force = repulsion / (dist * dist);
-      const fx = (dx / dist) * force, fy = (dy / dist) * force;
-      nodes[i].vx += fx; nodes[i].vy += fy; nodes[j].vx -= fx; nodes[j].vy -= fy;
-    }
-  }
-  for (const edge of kgState.graphEdges) {
-    const source = kgState.entityMap[edge.source], target = kgState.entityMap[edge.target];
-    if (!source || !target) continue;
-    const dx = target.x - source.x, dy = target.y - source.y;
-    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-    const force = k * (dist - 100);
-    const fx = (dx / dist) * force, fy = (dy / dist) * force;
-    source.vx += fx; source.vy += fy; target.vx -= fx; target.vy -= fy;
-  }
-  const damping = 0.9;
-  for (const node of Object.values(kgState.entityMap)) {
-    node.x += node.vx; node.y += node.vy; node.vx *= damping; node.vy *= damping;
-    const m = 50; node.x = Math.max(m, Math.min(kgState.graphCanvas.width / window.devicePixelRatio - m, node.x)); node.y = Math.max(m, Math.min(kgState.graphCanvas.height / window.devicePixelRatio - m, node.y));
-  }
-}
-
-function drawNode(node) {
-  const ctx = kgState.graphCtx; if (!ctx) return;
-  const w = kgState.graphCanvas.width / window.devicePixelRatio, h = kgState.graphCanvas.height / window.devicePixelRatio;
-  ctx.beginPath(); ctx.arc(node.x, node.y, Math.min(node.radius, 40), 0, Math.PI * 2);
-  ctx.fillStyle = getNodeColor(node.type); ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 2; ctx.stroke();
-  ctx.font = '11px Inter, sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText(node.label, node.x, node.y + node.radius + 14);
-}
-
-function drawEdge(source, target, edge) {
-  const ctx = kgState.graphCtx; if (!ctx) return;
-  ctx.beginPath(); ctx.moveTo(source.x, source.y); ctx.lineTo(target.x, target.y);
-  ctx.strokeStyle = 'rgba(150, 150, 150, 0.4)'; ctx.lineWidth = Math.max(1, Math.min(3, edge.weight)); ctx.stroke();
-}
-
-function getNodeColor(type) { const colors = { gcp_service: '#fd79a8', tech_stack: '#6c5ce7', project: '#fdcb6e', proper_noun: '#00cec9', quoted: '#fab1a0' }; return colors[type] || '#a29bfe'; }
-
-function toggleGraphPhysics() { kgState.graphPhysics = document.getElementById('graphPhysics')?.checked || false; }
-function changeGraphLayout() { kgState.graphNodes.forEach(n => { n.x = Math.random() * 800 + 100; n.y = Math.random() * 600 + 100; n.vx = 0; n.vy = 0; }); }
-
-function handleKGSearchKeydown(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); performKGSearch(); } }
+// Remove old canvas-based functions (replaced by D3)
+// Removed: initGraph, resizeGraphCanvas, buildGraphFromKGData, graphAnimationLoop, applyPhysics, drawNode, drawEdge, toggleGraphPhysics, changeGraphLayout
 
 async function reindexKnowledgeGraph() { if (!confirm('Rebuild knowledge graph from all memory sources?')) return; showToast('Reindexing knowledge graph...', 'info'); try { const result = await api.reindexKnowledgeGraph(); showToast(`Reindex complete: ${result.indexed} items`, 'success'); await loadKGStats(); } catch (err) { showToast('Reindex failed: ' + err.message, 'error'); } }
 
@@ -325,5 +285,5 @@ window.setViewMode = setViewMode;
 window.showEntityDetail = showEntityDetail;
 window.initGraph = initGraph;
 window.loadEntityNeighborhood = loadEntityNeighborhood;
-window.toggleGraphPhysics = toggleGraphPhysics;
-window.changeGraphLayout = changeGraphLayout;
+window.toggleGraphPhysics = () => { if (kgD3Graph) kgD3Graph.togglePhysics(); };
+window.changeGraphLayout = () => { if (kgD3Graph) kgD3Graph.setData({}); };

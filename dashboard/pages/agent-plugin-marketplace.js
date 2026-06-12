@@ -36,12 +36,12 @@ async function renderAgentPluginMarketplace() {
         <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
           <strong style="font-size:14px">Agent:</strong>
           <div class="agent-switcher" style="display:flex;gap:8px">
-            ${Object.keys(agentMeta).map(key => `
+            ${Object.keys(agentMetaPluginMarketplace).map(key => `
               <button class="agent-switch-btn ${key === 'opencode' ? 'active' : ''}"
                       onclick="switchMarketplaceAgent('${key}')"
                       style="padding:8px 16px;border-radius:var(--radius);border:1px solid var(--border);background:${key === 'opencode' ? 'var(--accent-glow)' : 'var(--bg-card)'};color:${key === 'opencode' ? 'var(--accent)' : 'var(--text-primary)'};font-weight:600;cursor:pointer;transition:var(--transition)"
                       data-agent="${key}">
-                ${agentMeta[key].icon} ${agentMeta[key].name}
+                ${agentMetaPluginMarketplace[key].icon} ${agentMetaPluginMarketplace[key].name}
               </button>
             `).join('')}
           </div>
@@ -90,7 +90,7 @@ async function renderAgentPluginMarketplace() {
     <!-- Installed Plugins Section -->
     <div class="card mt-4">
       <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
-        <h3 class="card-title">Installed for ${agentMeta[pluginMarketplaceState.activeAgent]?.name || 'opencode'}</h3>
+        <h3 class="card-title">Installed for ${agentMetaPluginMarketplace[pluginMarketplaceState.activeAgent]?.name || 'opencode'}</h3>
         <span class="badge" id="installedCount">0</span>
       </div>
       <div class="card-body" style="padding:0">
@@ -277,14 +277,13 @@ function renderPluginsGrid() {
 
   container.innerHTML = pluginMarketplaceState.filteredPlugins.map(function(plugin) {
     var primary = plugin.primaryAgent || 'opencode';
-    var meta = agentMeta[primary] || { icon: '\uD83E\uDD16', name: primary, color: 'accent' };
+    var meta = agentMetaPluginMarketplace[primary] || { icon: '\\uD83E\\uDD16', name: primary, color: 'accent' };
     var latestScore = plugin.latestScore;
     var hasEval = plugin.hasEval;
     var evalCount = plugin.eval_criteria?.length || 0;
 
     return '<div class="skill-card" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:var(--transition);' + (plugin.installed ? 'border-color:var(--green);' : '') + '" onmouseover="this.style.borderColor=\'var(--accent)\';this.style.boxShadow=\'var(--shadow-lg)\'" onmouseout="this.style.borderColor=\'' + (plugin.installed ? 'var(--green)' : 'var(--border)') + '\';this.style.boxShadow=\'\'"><div style="padding:16px;border-bottom:1px solid var(--border);background:var(--bg-secondary);display:flex;align-items:flex-start;justify-content:space-between;gap:12px"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-weight:700;font-size:14px">' + escapeHtml(plugin.displayName) + '</span><span class="badge" style="background:var(--' + meta.color + '-dim);color:var(--' + meta.color + ');font-size:10px">' + meta.icon + ' ' + meta.name + '</span>' + (plugin.installed ? '<span class="badge badge-success" style="font-size:9px">\u2713 Installed</span>' : '') + (hasEval ? '<span class="badge badge-success" style="font-size:9px">Eval (' + evalCount + ')</span>' : '') + (latestScore !== undefined ? '<span class="badge" style="background:var(--accent-dim);color:var(--accent);font-size:9px">' + (latestScore * 100).toFixed(0) + '%</span>' : '') + '</div><div style="font-size:12px;color:var(--text-muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(plugin.category || 'general') + '</div></div></div><div style="padding:16px"><div style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5">' + escapeHtml(plugin.description || 'No description') + '</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary btn-sm" onclick="installPlugin(\'" + plugin.name + "\')" ' + (plugin.installed ? 'disabled' : '') + ' style="flex:1;min-width:120px">' + (plugin.installed ? '\u2713 Installed' : 'Install') + '</button><button class="btn btn-ghost btn-sm" onclick="viewPluginDetails(\'" + plugin.name + "\')" style="flex:1;min-width:100px">Details</button>' + (hasEval ? '<button class="btn btn-ghost btn-sm" onclick="viewPluginEval(\'" + plugin.name + "\')" style="flex:1;min-width:100px">Eval</button>' : '') + (plugin.type === 'skill' ? '<button class="btn btn-primary btn-sm" onclick="runPlugin(\'" + plugin.name + "\')" style="flex:1;min-width:100px">Run</button>' : '') + '</div></div>';
   }).join('');
-}
 }
 
 function renderInstalledPlugins() {
@@ -302,7 +301,7 @@ function renderInstalledPlugins() {
   // Update header
   var header = container.previousElementSibling?.querySelector('h3');
   if (header) {
-    var meta = agentMeta[activeAgent] || { name: activeAgent };
+    var meta = agentMetaPluginMarketplace[activeAgent] || { name: activeAgent };
     header.textContent = 'Installed for ' + meta.name;
   }
 
@@ -397,7 +396,7 @@ function refreshPlugins() {
 }
 
 // Expose globally
-window.renderPluginMarketplace = renderPluginMarketplace;
+window.renderAgentPluginMarketplace = renderAgentPluginMarketplace;
 window.switchMarketplaceAgent = switchMarketplaceAgent;
 window.applyPluginFilters = applyPluginFilters;
 window.installPlugin = installPlugin;

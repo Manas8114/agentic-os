@@ -1,0 +1,9 @@
+{
+    "criteria": [
+        {"name": "Pipeline Completion", "weight": 0.30, "description": "All stages execute successfully"},
+        {"name": "Human Checkpoint Quality", "weight": 0.25, "description": "Meaningful human decisions captured"},
+        {"name": "Agent Coordination", "weight": 0.20, "description": "Smooth multi-agent handoffs"},
+        {"name": "Error Recovery", "weight": 0.15, "description": "Graceful handling of failures"},
+        {"name": "State Persistence", "weight": 0.10, "description": "Complete audit trail maintained"}
+    ]
+}

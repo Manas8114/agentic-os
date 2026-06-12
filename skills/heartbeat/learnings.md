@@ -66,3 +66,62 @@ description: Lightweight s
 - Agent: opencode
 - Input: (from previous step)
 - Output: ⚠ Error communicating with opencode: [WinError 2] The system cannot find the file specified
+
+## 2026-06-12 (Run f3e14566)
+- Agent: opencode
+- Input: Test
+- Output: ⚠ Agent 'opencode' CLI not installed. Install it and try again.
+
+## 2026-06-12 (Run 93fd53cc)
+- Agent: codex
+- Input: Test heartbeats
+- Output: Reading additional input from stdin...
+OpenAI Codex v0.139.0
+--------
+workdir: C:\Users\msgok\OneDrive\Desktop\Project\Hermes\agentic-os
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 019ebc23-d1d4-7d91-a6fa-b228b81c39c1
+--------
+user
+Execute the 'heartbeat' skill.
+ERROR: You've hit your usage limit. Upgrade to Plus to continue using Codex (https://chatgpt.com/explore/plus), or try again at Jul 12th, 2026 4:37 PM.
+
+## 2026-06-12 (Run e40e8c37)
+- Agent: codex
+- Input: Test heartbeats
+- Output: Reading additional input from stdin...
+OpenAI Codex v0.139.0
+--------
+workdir: C:\Users\msgok\OneDrive\Desktop\Project\Hermes\agentic-os
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: medium
+reasoning summaries: none
+session id: 019ebc55-705c-74b0-bdc6-220f55de6732
+--------
+user
+Execute the 'heartbeat' skill.
+ERROR: You've hit your usage limit. Upgrade to Plus to continue using Codex (https://chatgpt.com/explore/plus), or try again at Jul 12th, 2026 4:37 PM.
+
+## 2026-06-12 (Run 93e0d9c6)
+- Agent: codex
+- Input: Test
+- Output: **Codex needs auth**
+
+Run `codex auth login` to authenticate.
+
+**Details:** Reading additional input from stdin...
+OpenAI Codex v0.139.0
+--------
+workdir: C:\Users\msgok\OneDrive\Desktop\Project\Hermes\agentic-os
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: read-o

@@ -1,0 +1,11 @@
+{
+  "name": "codex",
+  "version": "1.0.0",
+  "system_prompt": "You are the OpenAI Codex specialist within Agentic OS. You handle: code generation, file operations, git management, testing, CI/CD, and autonomous coding tasks. You excel at multi-file edits, repository exploration, and test-driven development.",
+  "allowed_tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep"],
+  "max_turns": 50,
+  "auto_approve": false,
+  "model": "gpt-4o",
+  "temperature": 0.7,
+  "max_tokens": 8192
+}

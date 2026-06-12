@@ -1,31 +1,32 @@
-// Workflow Designer — Visual DAG editor for skill chains & multi-agent workflows
+// Workflow Designer — Visual drag-and-drop workflow builder with node-based editing
 let workflowState = {
   nodes: [],
   edges: [],
   selectedNode: null,
   selectedEdge: null,
-  workflows: {},
-  activeWorkflow: null,
-  draggingNode: null,
-  dragOffset: { x: 0, y: 0 },
-  isConnecting: false,
-  connectionStart: null,
   history: [],
   historyIndex: -1,
   zoom: 1,
   pan: { x: 0, y: 0 },
-  isPanning: false,
-  panStart: { x: 0, y: 0 },
+  isDragging: false,
+  dragStart: { x: 0, y: 0 },
+  canvas: null,
+  ctx: null,
+  scaleCanvas: null,
+  scaleCtx: null,
 };
 
 const NODE_TYPES = {
-  skill: { label: 'Skill', color: '#7c6dff', icon: '⚡' },
-  agent: { label: 'Agent', color: '#00e09e', icon: '🤖' },
-  condition: { label: 'Condition', color: '#ffa502', icon: '🔀' },
-  parallel: { label: 'Parallel', color: '#ff4757', icon: '⚡' },
-  handoff: { label: 'Handoff', color: '#c88fff', icon: '🔄' },
-  start: { label: 'Start', color: '#00d4aa', icon: '▶️' },
-  end: { label: 'End', color: '#ff4757', icon: '⏹' },
+  start: { label: 'Start', color: '#00e09e', icon: '▶', inputs: 0, outputs: 1 },
+  end: { label: 'End', color: '#ff4757', icon: '■', inputs: 1, outputs: 0 },
+  agent: { label: 'Agent Task', color: '#7c6dff', icon: '🤖', inputs: 1, outputs: 1, config: { agent: 'opencode', skill: '', prompt: '' } },
+  skill: { label: 'Skill', color: '#8b7cf7', icon: '⚡', inputs: 1, outputs: 1, config: { skill: '', input: '' } },
+  condition: { label: 'Condition', color: '#ffa502', icon: '◆', inputs: 1, outputs: 2, config: { field: '', operator: 'equals', value: '' } },
+  loop: { label: 'Loop', color: '#fd79a8', icon: '↻', inputs: 1, outputs: 1, config: { count: 3, collection: '' } },
+  parallel: { label: 'Parallel', color: '#45aaf2', icon: '⇄', inputs: 1, outputs: 3, config: {} },
+  merge: { label: 'Merge', color: '#a29bfe', icon: '⊕', inputs: 3, outputs: 1, config: {} },
+  transform: { label: 'Transform', color: '#ecc48d', icon: '⚙', inputs: 1, outputs: 1, config: { code: 'return input;' } },
+  webhook: { label: 'Webhook', color: '#00d4aa', icon: '🔔', inputs: 0, outputs: 1, config: { url: '', method: 'POST' } },
 };
 
 async function renderWorkflowDesigner() {
@@ -34,859 +35,264 @@ async function renderWorkflowDesigner() {
     <div class="page-header">
       <div class="page-header-left">
         <h1 class="page-title">Workflow Designer</h1>
-        <p class="page-subtitle">Visual DAG editor for skill chains & multi-agent workflows</p>
+        <p class="page-subtitle">Visual drag-and-drop workflow builder with node-based editing</p>
       </div>
-      <div class="page-header-right" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <button class="btn btn-primary" onclick="executeWorkflow()">▶️ Execute</button>
-        <button class="btn btn-warning" onclick="validateWorkflow()">✓ Validate</button>
-        <button class="btn btn-ghost" onclick="saveWorkflow()">💾 Save</button>
-        <button class="btn btn-primary" onclick="showCreateWorkflowModal()">+ New Workflow</button>
+      <div class="page-header-right" style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="newWorkflow()">🆕 New</button>
+        <button class="btn btn-ghost btn-sm" onclick="saveWorkflow()">💾 Save</button>
+        <button class="btn btn-ghost btn-sm" onclick="loadWorkflow()">📂 Load</button>
+        <button class="btn btn-primary btn-sm" onclick="runWorkflow()">▶️ Run</button>
       </div>
     </div>
 
     <!-- Toolbar -->
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-body" style="padding:12px 16px">
-        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+    <div class="card" style="margin-bottom:8px">
+      <div class="card-body" style="padding:8px 16px">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
           <!-- Node Palette -->
-          <div style="display:flex;align-items:center;gap:8px;border-right:1px solid var(--border);padding-right:16px">
-            <strong style="font-size:13px;color:var(--text-secondary)">Nodes:</strong>
-            <div class="node-palette" style="display:flex;gap:4px" id="nodePalette"></div>
-          </div>
-
-          <!-- Workflow Controls -->
-          <div style="display:flex;align-items:center;gap:12px;border-right:1px solid var(--border);padding:0 16px">
-            <button class="btn btn-ghost btn-sm" onclick="undo()" id="undoBtn" disabled title="Undo (Ctrl+Z)">↶ Undo</button>
-            <button class="btn btn-ghost btn-sm" onclick="redo()" id="redoBtn" disabled title="Redo (Ctrl+Y)">↷ Redo</button>
-            <div style="width:1px;height:24px;background:var(--border)"></div>
-            <select id="workflowSelect" class="form-select" onchange="loadWorkflow(this.value)" style="width:auto;min-width:200px">
-              <option value="">Select or create workflow...</option>
-            </select>
-          </div>
-
-          <!-- Zoom/Pan Controls -->
-          <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
-            <span style="font-size:12px;color:var(--text-muted)" id="zoomLevel">100%</span>
-            <button class="btn btn-ghost btn-sm" onclick="zoomOut()" title="Zoom Out">🔍⁻</button>
-            <button class="btn btn-ghost btn-sm" onclick="zoomIn()" title="Zoom In">🔍⁺</button>
-            <button class="btn btn-ghost btn-sm" onclick="resetViewport()" title="Reset View">🎯</button>
-            <button class="btn btn-ghost btn-sm" onclick="autoLayout()" title="Auto Layout">⚡ Layout</button>
+          <div style="display:flex;gap:4px;flex-wrap:wrap" id="nodePalette"></div>
+          
+          <div style="flex:1"></div>
+          
+          <!-- Zoom Controls -->
+          <div style="display:flex;align-items:center;gap:8px">
+            <button class="btn btn-ghost btn-icon" onclick="zoomOut()" title="Zoom Out">🔍⁻</button>
+            <span id="zoomLevel" style="font-size:13px;font-family:var(--font-mono);min-width:60px;text-align:center">100%</span>
+            <button class="btn btn-ghost btn-icon" onclick="zoomIn()" title="Zoom In">🔍⁺</button>
+            <button class="btn btn-ghost btn-icon" onclick="resetView()" title="Reset View">⌖</button>
+            <button class="btn btn-ghost btn-icon" onclick="undo()" title="Undo (Ctrl+Z)" id="undoBtn" disabled>↶</button>
+            <button class="btn btn-ghost btn-icon" onclick="redo()" title="Redo (Ctrl+Y)" id="redoBtn" disabled>↷</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Canvas Area -->
-    <div class="card" style="flex:1;display:flex;flex-direction:column;min-height:0">
-      <div style="position:relative;flex:1;overflow:hidden;background:var(--bg-primary)">
-        <!-- Canvas Wrapper -->
-        <div id="canvasWrapper" style="width:100%;height:100%;position:relative;cursor:crosshair" 
-             onmousedown="onCanvasMouseDown(event)"
-             onmousemove="onCanvasMouseMove(event)"
-             onmouseup="onCanvasMouseUp(event)"
-             onwheel="onCanvasWheel(event)"
-             oncontextmenu="event.preventDefault()">
-          
-          <!-- Grid Background -->
-          <canvas id="gridCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:1"></canvas>
-          
-          <!-- SVG for Edges -->
-          <svg id="edgesSvg" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;pointer-events:none"></svg>
-          
-          <!-- Nodes Container -->
-          <div id="nodesContainer" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:3"></div>
-          
-          <!-- Connection Preview Line -->
-          <svg id="connectionPreview" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:4;pointer-events:none;display:none">
-            <path id="connectionPath" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5,5" fill="none" marker-end="url(#arrowhead)"></path>
-            <defs>
-              <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="var(--accent)"></polygon>
-              </marker>
-            </defs>
-          </svg>
-          
-          <!-- Mini-map -->
-          <div id="minimap" style="position:absolute;bottom:20px;right:20px;width:200px;height:150px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;z-index:10;box-shadow:0 4px 20px rgba(0,0,0,0.3)">
-            <canvas id="minimapCanvas" width="200" height="150" style="width:100%;height:100%"></canvas>
-            <div id="minimapViewportEl" style="position:absolute;border:2px solid var(--accent);background:var(--accent-glow);pointer-events:none"></div>
-          </div>
-        </div>
+    <!-- Main Canvas Area -->
+    <div class="card" style="height:calc(100vh - 300px);min-height:500px;overflow:hidden;position:relative">
+      <!-- Mini-map -->
+      <canvas id="miniMap" style="position:absolute;top:16px;right:16px;width:200px;height:150px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-primary);z-index:10;box-shadow:var(--shadow-lg);display:none"></canvas>
+      
+      <!-- Main Canvas -->
+      <canvas id="workflowCanvas" style="width:100%;height:100%;cursor:crosshair;touch-action:none"></canvas>
+      
+      <!-- Context Menu -->
+      <div id="nodeContextMenu" class="context-menu" style="display:none;position:absolute;z-index:100">
+        <div class="context-menu-item" onclick="editNodeConfig()"><span>⚙</span> Configure</div>
+        <div class="context-menu-item" onclick="duplicateNode()"><span>📋</span> Duplicate</div>
+        <div class="context-menu-item" onclick="deleteSelectedNode()"><span>🗑</span> Delete</div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" onclick="addEdgeFromSelected()"><span>🔗</span> Connect</div>
       </div>
-
-      <!-- Node Inspector Panel -->
-      <div id="nodeInspector" class="card" style="display:none;position:absolute;bottom:20px;left:20px;right:20px;max-height:300px;z-index:20;box-shadow:0 -4px 20px rgba(0,0,0,0.3)">
-        <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
-          <h3 class="card-title" id="inspectorTitle">Node Inspector</h3>
-          <button class="btn btn-ghost btn-sm" onclick="closeInspector()">✕</button>
+      
+      <!-- Node Config Panel (slide-in) -->
+      <div id="nodeConfigPanel" class="slide-panel" style="display:none;position:absolute;top:0;right:0;width:360px;height:100%;background:var(--bg-card);border-left:1px solid var(--border);box-shadow:var(--shadow-xl);z-index:20;overflow-y:auto">
+        <div style="padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+          <h3 id="configNodeTitle">Node Configuration</h3>
+          <button class="btn btn-ghost btn-icon" onclick="closeNodeConfig()" title="Close">✕</button>
         </div>
-        <div class="card-body" id="inspectorContent"></div>
+        <div id="configNodeBody" style="padding:16px"></div>
       </div>
     </div>
 
-    <!-- Workflow Select Modal -->
-    <div id="workflowModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center">
-      <div class="card" style="width:100%;max-width:600px;max-height:80vh;overflow:auto">
-        <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
-          <h3 class="card-title">Workflows</h3>
-          <button class="btn btn-ghost" onclick="closeWorkflowModal()">✕</button>
+    <!-- Status Bar -->
+    <div class="card" style="margin-top:8px">
+      <div class="card-body" style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+        <div style="display:flex;gap:16px;font-size:12px;color:var(--text-muted)">
+          <span>Nodes: <strong id="nodeCount">0</strong></span>
+          <span>Edges: <strong id="edgeCount">0</strong></span>
+          <span>Zoom: <strong id="zoomPercent">100%</strong></span>
         </div>
-        <div class="card-body">
-          <div style="margin-bottom:16px">
-            <button class="btn btn-primary" onclick="createNewWorkflow()">+ Create New Workflow</button>
-          </div>
-          <div id="workflowList"></div>
+        <div style="display:flex;gap:8px;font-size:12px;color:var(--text-muted)">
+          <span id="mousePos">0, 0</span>
+          <span id="selectionInfo"></span>
         </div>
       </div>
     </div>
   `;
 
-  // Initialize
-  initCanvas();
-  loadWorkflows();
-  loadHistoryFromStorage();
-  setupKeyboardShortcuts();
+  initWorkflowCanvas();
+  renderNodePalette();
+  renderWorkflow();
 }
 
-function initCanvas() {
-  const wrapper = document.getElementById('canvasWrapper');
-  const gridCanvas = document.getElementById('gridCanvas');
-  const minimapCanvas = document.getElementById('minimapCanvas');
+function initWorkflowCanvas() {
+  workflowState.canvas = document.getElementById('workflowCanvas');
+  if (!workflowState.canvas) {
+    console.warn('workflowCanvas element not found');
+    return;
+  }
+  workflowState.ctx = workflowState.canvas.getContext('2d');
   
-  // Set up resize handler
-  window.addEventListener('resize', () => {
-    resizeCanvases();
-    drawGrid();
-    renderNodes();
-    drawEdges();
-    updateMinimap();
-  });
-  
-  resizeCanvases();
-  drawGrid();
-  
-  // Set up minimap click
-  const minimapViewportEl = document.getElementById('minimapViewportEl');
-  minimapCanvas.addEventListener('click', (e) => {
-    const rect = minimapCanvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / workflowState.zoom;
-    const y = (e.clientY - rect.top) / workflowState.zoom;
-    const wrapper = document.getElementById('canvasWrapper');
-    workflowState.pan = {
-      x: -x + wrapper.clientWidth / 2 / workflowState.zoom,
-      y: -y + wrapper.clientHeight / 2 / workflowState.zoom,
-    };
-    applyTransform();
-    drawGrid();
-    renderNodes();
-    drawEdges();
-    updateMinimap();
-  });
-}
-
-function resizeCanvases() {
-  const wrapper = document.getElementById('canvasWrapper');
-  const gridCanvas = document.getElementById('gridCanvas');
-  const edgesSvg = document.getElementById('edgesSvg');
-  const connectionPreview = document.getElementById('connectionPreview');
-  
-  const width = wrapper.clientWidth;
-  const height = wrapper.clientHeight;
-  
-  gridCanvas.width = width;
-  gridCanvas.height = height;
-  edgesSvg.setAttribute('width', width);
-  edgesSvg.setAttribute('height', height);
-  connectionPreview.setAttribute('width', width);
-  connectionPreview.setAttribute('height', height);
-}
-
-function drawGrid() {
-  const canvas = document.getElementById('gridCanvas');
-  const ctx = canvas.getContext('2d');
-  const wrapper = document.getElementById('canvasWrapper');
-  
-  const width = wrapper.clientWidth;
-  const height = wrapper.clientHeight;
-  const zoom = workflowState.zoom;
-  const pan = workflowState.pan;
-  
-  ctx.clearRect(0, 0, width, height);
-  
-  const gridSize = 40 * zoom;
-  const offsetX = (pan.x % gridSize + gridSize) % gridSize;
-  const offsetY = (pan.y % gridSize + gridSize) % gridSize;
-  
-  ctx.strokeStyle = 'rgba(58, 68, 88, 0.15)';
-  ctx.lineWidth = 1;
-  
-  // Vertical lines
-  for (let x = offsetX; x < width; x += gridSize) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, height);
-    ctx.stroke();
+  // Scale canvas for mini-map
+  workflowState.scaleCanvas = document.getElementById('miniMap');
+  if (workflowState.scaleCanvas) {
+    workflowState.scaleCtx = workflowState.scaleCanvas.getContext('2d');
   }
   
-  // Horizontal lines
-  for (let y = offsetY; y < height; y += gridSize) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(width, y);
-    ctx.stroke();
-  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
   
-  // Draw origin crosshair
-  const originX = pan.x;
-  const originY = pan.y;
-  if (originX >= 0 && originX <= width && originY >= 0 && originY <= height) {
-    ctx.strokeStyle = 'rgba(124, 109, 255, 0.3)';
-    ctx.setLineDash([5, 5]);
-    ctx.beginPath();
-    ctx.moveTo(originX, 0);
-    ctx.lineTo(originX, height);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.moveTo(0, originY);
-    ctx.lineTo(width, originY);
-    ctx.stroke();
-    ctx.setLineDash([]);
-  }
+  // Mouse events
+  workflowState.canvas.addEventListener('mousedown', onMouseDown);
+  workflowState.canvas.addEventListener('mousemove', onMouseMove);
+  workflowState.canvas.addEventListener('mouseup', onMouseUp);
+  workflowState.canvas.addEventListener('wheel', onWheel, { passive: false });
+  workflowState.canvas.addEventListener('dblclick', onDoubleClick);
+  workflowState.canvas.addEventListener('contextmenu', onContextMenu);
+  
+  // Keyboard shortcuts
+  document.addEventListener('keydown', onKeyDown);
+  
+  // Drag and drop from palette
+  setupPaletteDragDrop();
+  
+  // Initial render
+  renderWorkflow();
 }
 
-function applyTransform() {
-  const container = document.getElementById('nodesContainer');
-  const edgesSvg = document.getElementById('edgesSvg');
-  const connectionPreview = document.getElementById('connectionPreview');
-  
-  const transform = `translate(${workflowState.pan.x}px, ${workflowState.pan.y}px) scale(${workflowState.zoom})`;
-  container.style.transform = transform;
-  container.style.transformOrigin = '0 0';
-  edgesSvg.style.transform = transform;
-  edgesSvg.style.transformOrigin = '0 0';
-  connectionPreview.style.transform = transform;
-  connectionPreview.style.transformOrigin = '0 0';
-  
-  document.getElementById('zoomLevel').textContent = Math.round(workflowState.zoom * 100) + '%';
-  drawGrid();
-  drawEdges();
-  updateMinimap();
+function resizeCanvas() {
+  if (!workflowState.canvas) return;
+  const rect = workflowState.canvas.parentElement.getBoundingClientRect();
+  workflowState.canvas.width = rect.width;
+  workflowState.canvas.height = rect.height;
+  renderWorkflow();
 }
 
-// Node Management
-function addNode(type, x, y) {
-  const nodeType = NODE_TYPES[type] || NODE_TYPES.skill;
-  const id = 'node_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+function renderNodePalette() {
+  const container = document.getElementById('nodePalette');
+  if (!container) return;
   
-  const node = {
-    id,
-    type,
-    x: (x - workflowState.pan.x) / workflowState.zoom,
-    y: (y - workflowState.pan.y) / workflowState.zoom,
-    label: nodeType.label,
-    config: {},
-    inputs: [],
-    outputs: ['output'],
-  };
-  
-  workflowState.nodes.push(node);
-  pushHistory();
-  renderNodes();
-  drawEdges();
-  updateMinimap();
-  return node;
+  container.innerHTML = Object.entries(NODE_TYPES).map(([type, def]) => `
+    <div class="palette-node" draggable="true" data-node-type="${type}" 
+         style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;cursor:grab;transition:var(--transition)"
+         onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <span style="font-size:14px">${def.icon}</span>
+      <span style="font-weight:500">${def.label}</span>
+    </div>
+  `).join('');
 }
 
-function renderNodes() {
-  const container = document.getElementById('nodesContainer');
-  container.innerHTML = workflowState.nodes.map(node => {
-    const nodeType = NODE_TYPES[node.type];
-    const isSelected = workflowState.selectedNode === node.id;
-    
-    return `
-      <div class="workflow-node ${node.type} ${isSelected ? 'selected' : ''}" 
-           id="node-${node.id}"
-           style="left:${node.x}px;top:${node.y}px"
-           data-node-id="${node.id}"
-           onmousedown="onNodeMouseDown(event, '${node.id}')"
-           oncontextmenu="showNodeContextMenu(event, '${node.id}')">
-        <div class="node-header" style="background:${nodeType.color};color:white">
-          <span class="node-icon">${nodeType.icon}</span>
-          <span class="node-type-label">${node.label}</span>
-          <span class="node-id" style="font-size:9px;opacity:0.7">${node.id.slice(-6)}</span>
-        </div>
-        <div class="node-body">
-          <div class="node-label" contenteditable="true" onblur="updateNodeLabel('${node.id}', this.textContent)">${escapeHtml(node.label)}</div>
-          <div class="node-ports">
-            <div class="port input-port" data-node="${node.id}" data-port="input" title="Input">●</div>
-            <div class="port output-port" data-node="${node.id}" data-port="output" title="Output">●</div>
-          </div>
-          ${node.config.skill ? `<div class="node-config">Skill: ${escapeHtml(node.config.skill)}</div>` : ''}
-        </div>
-      </div>
-    `;
-  }).join('');
-  
-  // Add port event listeners
-  document.querySelectorAll('.output-port').forEach(port => {
-    port.addEventListener('mousedown', (e) => startConnection(e, port.dataset.node, 'output'));
+function setupPaletteDragDrop() {
+  document.querySelectorAll('.palette-node').forEach(node => {
+    node.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('node-type', e.target.dataset.nodeType);
+      e.dataTransfer.effectAllowed = 'copy';
+    });
   });
-  document.querySelectorAll('.input-port').forEach(port => {
-    port.addEventListener('mousedown', (e) => startConnection(e, port.dataset.node, 'input'));
+  
+  if (!workflowState.canvas) return;
+  
+  workflowState.canvas.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
   });
-}
-
-// Edge Management
-function startConnection(e, nodeId, portType) {
-  e.stopPropagation();
-  e.preventDefault();
   
-  workflowState.isConnecting = true;
-  workflowState.connectionStart = { nodeId, portType };
-  
-  const preview = document.getElementById('connectionPreview');
-  preview.style.display = 'block';
-  
-  document.addEventListener('mousemove', updateConnectionPreview);
-  document.addEventListener('mouseup', endConnection);
-}
-
-function updateConnectionPreview(e) {
-  if (!workflowState.isConnecting) return;
-  
-  const wrapper = document.getElementById('canvasWrapper');
-  const rect = wrapper.getBoundingClientRect();
-  
-  const x = (e.clientX - rect.left - workflowState.pan.x) / workflowState.zoom;
-  const y = (e.clientY - rect.top - workflowState.pan.y) / workflowState.zoom;
-  
-  const startNode = workflowState.nodes.find(n => n.id === workflowState.connectionStart.nodeId);
-  if (!startNode) return;
-  
-  const startPort = startNode.outputs && startNode.outputs.length > 0 ? 'output' : 'output';
-  const startX = startNode.x + 200; // Approximate node width
-  const startY = startNode.y + 50;  // Approximate port position
-  
-  const path = document.getElementById('connectionPath');
-  const d = getBezierPath(startX, startY, x, y);
-  path.setAttribute('d', d);
-}
-
-function endConnection(e) {
-  if (!workflowState.isConnecting) return;
-  
-  const targetPort = e.target.closest('.port');
-  if (targetPort) {
-    const targetNodeId = targetPort.dataset.node;
-    const targetPortType = targetPort.dataset.port;
-    
-    // Prevent self-connection and invalid connections
-    if (targetNodeId !== workflowState.connectionStart.nodeId && 
-        targetPortType !== workflowState.connectionStart.portType) {
-      addEdge(workflowState.connectionStart.nodeId, targetNodeId);
+  workflowState.canvas.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (!workflowState.canvas) return;
+    const type = e.dataTransfer.getData('node-type');
+    if (type && NODE_TYPES[type]) {
+      const rect = workflowState.canvas.getBoundingClientRect();
+      const x = (e.clientX - rect.left - workflowState.pan.x) / workflowState.zoom;
+      const y = (e.clientY - rect.top - workflowState.pan.y) / workflowState.zoom;
+      addNode(type, x, y);
     }
-  }
-  
-  workflowState.isConnecting = false;
-  workflowState.connectionStart = null;
-  
-  document.getElementById('connectionPreview').style.display = 'none';
-  document.removeEventListener('mousemove', updateConnectionPreview);
-  document.removeEventListener('mouseup', endConnection);
+  });
 }
 
-function addEdge(fromNodeId, toNodeId) {
-  // Check if edge already exists
-  const exists = workflowState.edges.some(edge => 
-    edge.from === fromNodeId && edge.to === toNodeId
-  );
-  if (exists) {
-    showToast('Connection already exists', 'warning');
-    return;
-  }
-  
-  // Prevent cycles (simple check)
-  if (wouldCreateCycle(fromNodeId, toNodeId)) {
-    showToast('Connection would create a cycle', 'error');
-    return;
-  }
-  
-  const edge = {
-    id: 'edge_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-    from: fromNodeId,
-    to: toNodeId,
-    label: '',
-    style: 'solid',
+// Node management
+function addNode(type, x, y, config = {}) {
+  const def = NODE_TYPES[type];
+  const node = {
+    id: 'node_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+    type,
+    label: def.label,
+    color: def.color,
+    icon: def.icon,
+    x, y,
+    width: 180,
+    height: 40 + def.inputs * 20 + def.outputs * 20,
+    inputs: def.inputs,
+    outputs: def.outputs,
+    config: { ...def.config, ...config },
+    selected: false,
   };
   
-  workflowState.edges.push(edge);
-  pushHistory();
-  drawEdges();
-  updateMinimap();
-}
-
-function wouldCreateCycle(fromNodeId, toNodeId) {
-  // Simple cycle detection using DFS
-  const visited = new Set();
-  const stack = [toNodeId];
-  
-  while (stack.length > 0) {
-    const current = stack.pop();
-    if (current === fromNodeId) return true;
-    if (visited.has(current)) continue;
-    visited.add(current);
-    
-    // Find outgoing edges
-    workflowState.edges
-      .filter(e => e.from === current)
-      .forEach(e => stack.push(e.to));
-  }
-  
-  return false;
-}
-
-function drawEdges() {
-  const svg = document.getElementById('edgesSvg');
-  svg.innerHTML = workflowState.edges.map(edge => {
-    const fromNode = workflowState.nodes.find(n => n.id === edge.from);
-    const toNode = workflowState.nodes.find(n => n.id === edge.to);
-    if (!fromNode || !toNode) return '';
-    
-    const startX = fromNode.x + 200;
-    const startY = fromNode.y + 50;
-    const endX = toNode.x;
-    const endY = toNode.y + 50;
-    
-    const d = getBezierPath(startX, startY, endX, endY);
-    const isSelected = workflowState.selectedEdge === edge.id;
-    
-    return `
-      <path 
-        d="${d}" 
-        stroke="${isSelected ? 'var(--red)' : 'var(--border-secondary)'}" 
-        stroke-width="${isSelected ? 3 : 2}" 
-        fill="none" 
-        marker-end="url(#arrowhead)"
-        stroke-dasharray="${edge.style === 'dashed' ? '5,5' : 'none'}"
-        data-edge-id="${edge.id}"
-        onclick="selectEdge('${edge.id}', event)"
-      ></path>
-      ${edge.label ? `
-        <text x="${(startX + endX) / 2}" y="${(startY + endY) / 2 - 8}" 
-              text-anchor="middle" font-size="11" fill="var(--text-muted)" pointer-events="none">
-          ${escapeHtml(edge.label)}
-        </text>
-      ` : ''}
-    `;
-  }).join('');
-  
-  // Add arrowhead marker if not exists
-  if (!document.getElementById('arrowhead')) {
-    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-    defs.innerHTML = `
-      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-        <polygon points="0 0, 10 3.5, 0 7" fill="var(--border-secondary)"></polygon>
-      </marker>
-    `;
-    document.getElementById('edgesSvg').prepend(defs);
-  }
-}
-
-function getBezierPath(x1, y1, x2, y2) {
-  const dx = x2 - x1;
-  const dy = y2 - y1;
-  const ctrlDist = Math.min(Math.abs(dx) * 0.5, 100);
-  
-  const cx1 = x1 + ctrlDist;
-  const cy1 = y1;
-  const cx2 = x2 - ctrlDist;
-  const cy2 = y2;
-  
-  return `M ${x1} ${y1} C ${cx1} ${cy1} ${cx2} ${cy2} ${x2} ${y2}`;
-}
-
-function selectEdge(edgeId, e) {
-  e.stopPropagation();
-  workflowState.selectedEdge = edgeId;
-  workflowState.selectedNode = null;
-  drawEdges();
-  showEdgeInspector(edgeId);
-}
-
-function selectNode(nodeId) {
-  workflowState.selectedNode = nodeId;
-  workflowState.selectedEdge = null;
-  renderNodes();
-  drawEdges();
-  showNodeInspector(nodeId);
-}
-
-function closeInspector() {
-  document.getElementById('nodeInspector').style.display = 'none';
-  workflowState.selectedNode = null;
-  workflowState.selectedEdge = null;
-  renderNodes();
-  drawEdges();
-}
-
-function showNodeInspector(nodeId) {
-  const node = workflowState.nodes.find(n => n.id === nodeId);
-  if (!node) return;
-  
-  const inspector = document.getElementById('nodeInspector');
-  inspector.style.display = 'block';
-  
-  const typeConfig = NODE_TYPES[node.type];
-  
-  document.getElementById('inspectorTitle').innerHTML = `
-    <span style="color:${typeConfig.color}">${typeConfig.icon}</span>
-    ${typeConfig.label} Inspector
-  `;
-  
-  document.getElementById('inspectorContent').innerHTML = `
-    <div class="form-group">
-      <label class="form-label">Node ID</label>
-      <code style="font-size:11px;color:var(--text-muted)">${node.id}</code>
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">Type</label>
-      <select class="form-select" onchange="changeNodeType('${node.id}', this.value)">
-        ${Object.entries(NODE_TYPES).map(([key, cfg]) => 
-          `<option value="${key}" ${key === node.type ? 'selected' : ''}>${cfg.icon} ${cfg.label}</option>`
-        ).join('')}
-      </select>
-    </div>
-    
-    <div class="form-group">
-      <label class="form-label">Label</label>
-      <input type="text" class="form-input" value="${escapeHtml(node.label)}" 
-             onchange="updateNodeLabel('${node.id}', this.value)">
-    </div>
-    
-    ${node.type === 'skill' ? `
-      <div class="form-group">
-        <label class="form-label">Skill</label>
-        <input type="text" class="form-input" value="${escapeHtml(node.config.skill || '')}" 
-               placeholder="Enter skill name" onchange="updateNodeConfig('${node.id}', 'skill', this.value)">
-      </div>
-    ` : ''}
-    
-    ${node.type === 'agent' ? `
-      <div class="form-group">
-        <label class="form-label">Agent</label>
-        <select class="form-select" onchange="updateNodeConfig('${node.id}', 'agent', this.value)">
-          <option value="opencode" ${node.config.agent === 'opencode' ? 'selected' : ''}>🔧 opencode</option>
-          <option value="crush" ${node.config.agent === 'crush' ? 'selected' : ''}>🤖 crush</option>
-          <option value="hermes" ${node.config.agent === 'hermes' ? 'selected' : ''}>⚡ Hermes</option>
-          <option value="gemini" ${node.config.agent === 'gemini' ? 'selected' : ''}>🧠 Gemini CLI</option>
-          <option value="claude" ${node.config.agent === 'claude' ? 'selected' : ''}>🤖 Claude</option>
-        </select>
-      </div>
-    ` : ''}
-    
-    ${node.type === 'condition' ? `
-      <div class="form-group">
-        <label class="form-label">Condition</label>
-        <textarea class="form-input" rows="3" placeholder="e.g., previous_skill_score > 0.8" 
-                  onchange="updateNodeConfig('${node.id}', 'condition', this.value)">${escapeHtml(node.config.condition || '')}</textarea>
-      </div>
-    ` : ''}
-    
-    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:8px">
-      <button class="btn btn-danger" onclick="deleteNode('${node.id}')">🗑 Delete Node</button>
-      <button class="btn btn-ghost" onclick="duplicateNode('${node.id}')">📋 Duplicate</button>
-    </div>
-  `;
-  
-  inspector.style.display = 'block';
-}
-
-function showEdgeInspector(edgeId) {
-  const edge = workflowState.edges.find(e => e.id === edgeId);
-  if (!edge) return;
-  
-  const fromNode = workflowState.nodes.find(n => n.id === edge.from);
-  const toNode = workflowState.nodes.find(n => n.id === edge.to);
-  
-  const inspector = document.getElementById('nodeInspector');
-  inspector.style.display = 'block';
-  
-  document.getElementById('inspectorTitle').textContent = 'Edge Inspector';
-  document.getElementById('inspectorContent').innerHTML = `
-    <div class="form-group">
-      <label class="form-label">From</label>
-      <div style="font-size:13px;color:var(--text-secondary)">${fromNode ? fromNode.label : edge.from}</div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">To</label>
-      <div style="font-size:13px;color:var(--text-secondary)">${toNode ? toNode.label : edge.to}</div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Label</label>
-      <input type="text" class="form-input" value="${escapeHtml(edge.label)}" 
-             onchange="updateEdgeLabel('${edge.id}', this.value)">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Style</label>
-      <select class="form-select" onchange="updateEdgeStyle('${edge.id}', this.value)">
-        <option value="solid" ${edge.style === 'solid' ? 'selected' : ''}>Solid</option>
-        <option value="dashed" ${edge.style === 'dashed' ? 'selected' : ''}>Dashed</option>
-        <option value="dotted" ${edge.style === 'dotted' ? 'selected' : ''}>Dotted</option>
-      </select>
-    </div>
-    <div style="margin-top:16px">
-      <button class="btn btn-danger" onclick="deleteEdge('${edge.id}')">🗑 Delete Connection</button>
-    </div>
-  `;
-  
-  inspector.style.display = 'block';
-}
-
-function updateNodeLabel(nodeId, label) {
-  const node = workflowState.nodes.find(n => n.id === nodeId);
-  if (node) {
-    node.label = label;
-    pushHistory();
-    renderNodes();
-  }
-}
-
-function changeNodeType(nodeId, type) {
-  const node = workflowState.nodes.find(n => n.id === nodeId);
-  if (node) {
-    node.type = type;
-    node.label = NODE_TYPES[type].label;
-    pushHistory();
-    renderNodes();
-    showNodeInspector(nodeId);
-  }
-}
-
-function updateNodeConfig(nodeId, key, value) {
-  const node = workflowState.nodes.find(n => n.id === nodeId);
-  if (node) {
-    node.config[key] = value;
-    pushHistory();
-  }
-}
-
-function updateEdgeLabel(edgeId, label) {
-  const edge = workflowState.edges.find(e => e.id === edgeId);
-  if (edge) {
-    edge.label = label;
-    pushHistory();
-    drawEdges();
-  }
-}
-
-function updateEdgeStyle(edgeId, style) {
-  const edge = workflowState.edges.find(e => e.id === edgeId);
-  if (edge) {
-    edge.style = style;
-    pushHistory();
-    drawEdges();
-  }
+  saveHistory();
+  workflowState.nodes.push(node);
+  renderWorkflow();
+  updateStatusBar();
 }
 
 function deleteNode(nodeId) {
+  saveHistory();
   workflowState.nodes = workflowState.nodes.filter(n => n.id !== nodeId);
   workflowState.edges = workflowState.edges.filter(e => e.from !== nodeId && e.to !== nodeId);
-  pushHistory();
-  renderNodes();
-  drawEdges();
-  closeInspector();
-  updateMinimap();
+  workflowState.selectedNode = null;
+  renderWorkflow();
+  updateStatusBar();
 }
 
 function duplicateNode(nodeId) {
   const node = workflowState.nodes.find(n => n.id === nodeId);
-  if (node) {
-    const newNode = {
-      ...node,
-      id: 'node_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-      x: node.x + 40,
-      y: node.y + 40,
-    };
-    workflowState.nodes.push(newNode);
-    pushHistory();
-    renderNodes();
-    drawEdges();
-    updateMinimap();
-  }
+  if (!node) return;
+  saveHistory();
+  workflowState.nodes.push({
+    ...node,
+    id: 'node_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+    x: node.x + 20,
+    y: node.y + 20,
+    selected: false,
+  });
+  renderWorkflow();
+  updateStatusBar();
+}
+
+function selectNode(nodeId) {
+  workflowState.nodes.forEach(n => n.selected = n.id === nodeId);
+  workflowState.selectedNode = nodeId ? workflowState.nodes.find(n => n.id === nodeId) : null;
+  renderWorkflow();
+}
+
+function selectEdge(edgeId) {
+  workflowState.selectedEdge = edgeId;
+  renderWorkflow();
+}
+
+// Edge management
+function addEdge(fromNodeId, fromOutput, toNodeId, toInput) {
+  const edge = {
+    id: 'edge_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+    from: fromNodeId,
+    fromOutput,
+    to: toNodeId,
+    toInput,
+    selected: false,
+  };
+  saveHistory();
+  workflowState.edges.push(edge);
+  renderWorkflow();
+  updateStatusBar();
 }
 
 function deleteEdge(edgeId) {
+  saveHistory();
   workflowState.edges = workflowState.edges.filter(e => e.id !== edgeId);
-  pushHistory();
-  drawEdges();
-  closeInspector();
+  renderWorkflow();
+  updateStatusBar();
 }
 
-function deleteSelected() {
-  if (workflowState.selectedNode) {
-    deleteNode(workflowState.selectedNode);
-  } else if (workflowState.selectedEdge) {
-    deleteEdge(workflowState.selectedEdge);
-  }
-}
-
-// Mouse Event Handlers
-function onCanvasMouseDown(e) {
-  if (e.target.closest('.workflow-node, .port, .node-header, .node-body, .node-label, .node-ports, .port')) return;
-  
-  if (e.button === 1 || (e.button === 0 && e.altKey)) {
-    // Middle mouse or Alt+click for panning
-    workflowState.isPanning = true;
-    workflowState.panStart = { x: e.clientX, y: e.clientY };
-    document.getElementById('canvasWrapper').style.cursor = 'grabbing';
-    e.preventDefault();
-  }
-}
-
-function onCanvasMouseMove(e) {
-  if (workflowState.isPanning) {
-    const dx = e.clientX - workflowState.panStart.x;
-    const dy = e.clientY - workflowState.panStart.y;
-    
-    workflowState.pan.x += dx;
-    workflowState.pan.y += dy;
-    workflowState.panStart = { x: e.clientX, y: e.clientY };
-    
-    applyTransform();
-  }
-}
-
-function onCanvasMouseUp(e) {
-  if (workflowState.isPanning) {
-    workflowState.isPanning = false;
-    document.getElementById('canvasWrapper').style.cursor = 'crosshair';
-  }
-}
-
-function onCanvasWheel(e) {
-  if (e.ctrlKey || e.metaKey) {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    zoomAtPoint(e.clientX, e.clientY, delta);
-  }
-}
-
-function zoomAtPoint(clientX, clientY, factor) {
-  const wrapper = document.getElementById('canvasWrapper');
-  const rect = wrapper.getBoundingClientRect();
-  
-  const mouseX = (clientX - rect.left - workflowState.pan.x) / workflowState.zoom;
-  const mouseY = (clientY - rect.top - workflowState.pan.y) / workflowState.zoom;
-  
-  const newZoom = Math.max(0.1, Math.min(3, workflowState.zoom * factor));
-  
-  workflowState.pan.x = clientX - rect.left - mouseX * newZoom;
-  workflowState.pan.y = clientY - rect.top - mouseY * newZoom;
-  workflowState.zoom = newZoom;
-  
-  applyTransform();
-}
-
-function zoomIn() {
-  const wrapper = document.getElementById('canvasWrapper');
-  const rect = wrapper.getBoundingClientRect();
-  zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, 1.2);
-}
-
-function zoomOut() {
-  const wrapper = document.getElementById('canvasWrapper');
-  const rect = wrapper.getBoundingClientRect();
-  zoomAtPoint(rect.left + rect.width / 2, rect.top + rect.height / 2, 0.83);
-}
-
-function resetViewport() {
-  workflowState.zoom = 1;
-  workflowState.pan = { x: 0, y: 0 };
-  applyTransform();
-}
-
-function autoLayout() {
-  // Simple force-directed layout
-  const nodes = workflowState.nodes;
-  if (nodes.length === 0) return;
-  
-  const centerX = 0;
-  const centerY = 0;
-  const radius = Math.max(nodes.length * 50, 300);
-  
-  nodes.forEach((node, i) => {
-    const angle = (i / nodes.length) * Math.PI * 2;
-    node.x = centerX + Math.cos(angle) * radius;
-    node.y = centerY + Math.sin(angle) * radius;
-  });
-  
-  pushHistory();
-  renderNodes();
-  drawEdges();
-  updateMinimap();
-}
-
-function updateMinimap() {
-  const minimapCanvas = document.getElementById('minimapCanvas');
-  const ctx = minimapCanvas.getContext('2d');
-  const viewport = document.getElementById('minimapViewportEl');
-  const wrapper = document.getElementById('canvasWrapper');
-  
-  const width = minimapCanvas.width;
-  const height = minimapCanvas.height;
-  
-  ctx.clearRect(0, 0, width, height);
-  
-  // Draw nodes
-  const scaleX = width / 4000;
-  const scaleY = height / 4000;
-  
-  workflowState.nodes.forEach(node => {
-    const nx = width / 2 + node.x * scaleX;
-    const ny = height / 2 + node.y * scaleY;
-    
-    const typeConfig = NODE_TYPES[node.type];
-    ctx.fillStyle = typeConfig.color;
-    ctx.beginPath();
-    ctx.arc(nx, ny, 4, 0, Math.PI * 2);
-    ctx.fill();
-  });
-  
-  // Draw viewport rectangle
-  const vw = wrapper.clientWidth;
-  const vh = wrapper.clientHeight;
-  const vx = width / 2 - workflowState.pan.x * scaleX;
-  const vy = height / 2 - workflowState.pan.y * scaleY;
-  const vww = vw * scaleX / workflowState.zoom;
-  const vhh = vh * scaleY / workflowState.zoom;
-  
-  const minimapViewportEl = document.getElementById('minimapViewportEl');
-  minimapViewportEl.style.left = vx + 'px';
-  minimapViewportEl.style.top = vy + 'px';
-  minimapViewportEl.style.width = vww + 'px';
-  minimapViewportEl.style.height = vhh + 'px';
-}
-
-// History Management
-function pushHistory() {
+// History management
+function saveHistory() {
   const state = {
     nodes: JSON.parse(JSON.stringify(workflowState.nodes)),
     edges: JSON.parse(JSON.stringify(workflowState.edges)),
   };
-  
   workflowState.history = workflowState.history.slice(0, workflowState.historyIndex + 1);
+  if (workflowState.history.length >= 50) workflowState.history.shift();
+  else workflowState.historyIndex++;
   workflowState.history.push(state);
-  workflowState.historyIndex = workflowState.history.length - 1;
-  
-  // Limit history size
-  if (workflowState.history.length > 50) {
-    workflowState.history.shift();
-    workflowState.historyIndex--;
-  }
-  
-  updateHistoryButtons();
-  saveHistoryToStorage();
+  updateUndoRedoButtons();
 }
 
 function undo() {
@@ -895,10 +301,8 @@ function undo() {
     const state = workflowState.history[workflowState.historyIndex];
     workflowState.nodes = JSON.parse(JSON.stringify(state.nodes));
     workflowState.edges = JSON.parse(JSON.stringify(state.edges));
-    renderNodes();
-    drawEdges();
-    updateMinimap();
-    updateHistoryButtons();
+    renderWorkflow();
+    updateUndoRedoButtons();
   }
 }
 
@@ -908,619 +312,777 @@ function redo() {
     const state = workflowState.history[workflowState.historyIndex];
     workflowState.nodes = JSON.parse(JSON.stringify(state.nodes));
     workflowState.edges = JSON.parse(JSON.stringify(state.edges));
-    renderNodes();
-    drawEdges();
-    updateMinimap();
-    updateHistoryButtons();
+    renderWorkflow();
+    updateUndoRedoButtons();
   }
 }
 
-function updateHistoryButtons() {
+function updateUndoRedoButtons() {
   const undoBtn = document.getElementById('undoBtn');
   const redoBtn = document.getElementById('redoBtn');
   if (undoBtn) undoBtn.disabled = workflowState.historyIndex <= 0;
   if (redoBtn) redoBtn.disabled = workflowState.historyIndex >= workflowState.history.length - 1;
 }
 
-function saveHistoryToStorage() {
-  try {
-    localStorage.setItem('workflow_history', JSON.stringify({
-      history: workflowState.history,
-      index: workflowState.historyIndex,
-    }));
-  } catch (e) {}
+// Canvas rendering
+function renderWorkflow() {
+  if (!workflowState.ctx || !workflowState.canvas) return;
+  
+  const ctx = workflowState.ctx;
+  const canvas = workflowState.canvas;
+  const { pan, zoom } = workflowState;
+  
+  // Clear
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Apply pan/zoom
+  ctx.translate(pan.x, pan.y);
+  ctx.scale(zoom, zoom);
+  
+  // Draw grid
+  drawGrid(ctx, canvas.width / zoom, canvas.height / zoom, pan, zoom);
+  
+  // Draw edges first (behind nodes)
+  workflowState.edges.forEach(edge => drawEdge(ctx, edge));
+  
+  // Draw nodes
+  workflowState.nodes.forEach(node => drawNode(ctx, node));
+  
+  // Draw selection
+  if (workflowState.selectedNode) {
+    const node = workflowState.nodes.find(n => n.id === workflowState.selectedNode);
+    if (node) drawNodeSelection(ctx, node);
+  }
+  
+  // Draw mini-map
+  renderMiniMap();
 }
 
-function loadHistoryFromStorage() {
-  try {
-    const stored = localStorage.getItem('workflow_history');
-    if (stored) {
-      const data = JSON.parse(stored);
-      workflowState.history = data.history || [];
-      workflowState.historyIndex = data.index || 0;
-      updateHistoryButtons();
-      
-      // Restore current state
-      if (workflowState.history.length > 0 && workflowState.historyIndex >= 0) {
-        const state = workflowState.history[workflowState.historyIndex];
-        workflowState.nodes = JSON.parse(JSON.stringify(state.nodes));
-        workflowState.edges = JSON.parse(JSON.stringify(state.edges));
-        renderNodes();
-        drawEdges();
-        updateMinimap();
+function drawGrid(ctx, width, height, pan, zoom) {
+  const gridSize = 20 * zoom;
+  const offsetX = (pan.x % gridSize + gridSize) % gridSize;
+  const offsetY = (pan.y % gridSize + gridSize) % gridSize;
+  
+  ctx.strokeStyle = 'rgba(108, 92, 231, 0.05)';
+  ctx.lineWidth = 1;
+  
+  for (let x = offsetX; x < width; x += gridSize) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, height);
+    ctx.stroke();
+  }
+  for (let y = offsetY; y < height; y += gridSize) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(width, y);
+    ctx.stroke();
+  }
+}
+
+function drawNode(ctx, node) {
+  const def = NODE_TYPES[node.type];
+  const radius = 8;
+  
+  // Node body
+  ctx.fillStyle = node.color;
+  ctx.beginPath();
+  roundRect(ctx, node.x, node.y, node.width, node.height, radius);
+  ctx.fill();
+  
+  // Header bar
+  ctx.fillStyle = adjustColor(node.color, -30);
+  ctx.beginPath();
+  roundRectTop(ctx, node.x, node.y, node.width, 36, radius);
+  ctx.fill();
+  
+  // Icon and label
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 13px var(--font-sans)';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(node.icon + ' ' + node.label, node.x + 12, node.y + 18);
+  
+  // Input ports
+  for (let i = 0; i < node.inputs; i++) {
+    const y = node.y + 40 + i * 28 + 14;
+    ctx.fillStyle = '#45aaf2';
+    ctx.beginPath();
+    ctx.arc(node.x, y, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+  
+  // Output ports
+  for (let i = 0; i < node.outputs; i++) {
+    const y = node.y + 40 + i * 28 + 14;
+    ctx.fillStyle = '#fd79a8';
+    ctx.beginPath();
+    ctx.arc(node.x + node.width, y, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+  
+  // Selection indicator
+  if (node.selected) {
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    ctx.strokeRect(node.x - 2, node.y - 2, node.width + 4, node.height + 4);
+    ctx.setLineDash([]);
+  }
+}
+
+function drawEdge(ctx, edge) {
+  const fromNode = workflowState.nodes.find(n => n.id === edge.from);
+  const toNode = workflowState.nodes.find(n => n.id === edge.to);
+  if (!fromNode || !toNode) return;
+  
+  const fromOutput = fromNode.outputs > 1 ? edge.fromOutput || 0 : 0;
+  const toInput = toNode.inputs > 1 ? edge.toInput || 0 : 0;
+  
+  const startX = fromNode.x + fromNode.width;
+  const startY = fromNode.y + 40 + fromOutput * 28 + 14;
+  const endX = toNode.x;
+  const endY = toNode.y + 40 + toInput * 28 + 14;
+  
+  // Bezier curve
+  const cp1x = startX + 80;
+  const cp2x = endX - 80;
+  
+  ctx.strokeStyle = edge.selected ? '#ff4757' : '#45aaf2';
+  ctx.lineWidth = edge.selected ? 3 : 2;
+  ctx.setLineDash(edge.selected ? [] : [5, 5]);
+  
+  ctx.beginPath();
+  ctx.moveTo(startX, startY);
+  ctx.bezierCurveTo(cp1x, startY, cp2x, endY, endX, endY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  
+  // Arrow head
+  const angle = Math.atan2(endY - endY, endX - cp2x) || 0;
+  ctx.fillStyle = ctx.strokeStyle;
+  ctx.beginPath();
+  ctx.moveTo(endX, endY);
+  ctx.lineTo(endX - 10, endY - 5);
+  ctx.lineTo(endX - 10, endY + 5);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawNodeSelection(ctx, node) {
+  ctx.strokeStyle = '#ffff00';
+  ctx.lineWidth = 2;
+  ctx.setLineDash([5, 5]);
+  ctx.strokeRect(node.x - 4, node.y - 4, node.width + 8, node.height + 8);
+  ctx.setLineDash([]);
+}
+
+function renderMiniMap() {
+  if (!workflowState.scaleCanvas) return;
+  
+  const canvas = workflowState.scaleCanvas;
+  const ctx = workflowState.scaleCtx;
+  const scale = 0.1;
+  
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#0b0f14';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  ctx.scale(scale, scale);
+  ctx.translate(workflowState.pan.x, workflowState.pan.y);
+  
+  // Draw nodes as small rectangles
+  workflowState.nodes.forEach(node => {
+    ctx.fillStyle = node.color;
+    ctx.fillRect(node.x, node.y, node.width * 0.8, node.height * 0.8);
+  });
+  
+  // Viewport indicator
+  const viewport = {
+    x: -workflowState.pan.x / workflowState.zoom,
+    y: -workflowState.pan.y / workflowState.zoom,
+    w: workflowState.canvas.width / workflowState.zoom,
+    h: workflowState.canvas.height / workflowState.zoom,
+  };
+  
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 1 / 0.1;
+  ctx.strokeRect(viewport.x, viewport.y, viewport.w, viewport.h);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function roundRectTop(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x, y + h);
+  ctx.closePath();
+}
+
+function adjustColor(color, amount) {
+  const hex = color.replace('#', '');
+  const num = parseInt(hex, 16);
+  const r = Math.max(0, Math.min(255, (num >> 16) + amount));
+  const g = Math.max(0, Math.min(255, ((num >> 8) & 0x00FF) + amount));
+  const b = Math.max(0, Math.min(255, (num & 0x0000FF) + amount));
+  return '#' + (g | (b << 8) | (r << 16)).toString(16).padStart(6, '0');
+}
+
+// Mouse event handlers
+function onMouseDown(e) {
+  const rect = workflowState.canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left - workflowState.pan.x) / workflowState.zoom;
+  const y = (e.clientY - rect.top - workflowState.pan.y) / workflowState.zoom;
+  
+  if (e.button === 1 || (e.button === 0 && e.altKey)) {
+    // Pan
+    workflowState.isDragging = true;
+    workflowState.dragStart = { x: e.clientX - workflowState.pan.x, y: e.clientY - workflowState.pan.y };
+    workflowState.canvas.style.cursor = 'grabbing';
+    return;
+  }
+  
+  if (e.button === 0) {
+    // Check port clicks
+    const port = getPortAt(x, y);
+    if (port) {
+      startEdgeDrag(port);
+      return;
+    }
+    
+    // Check node click
+    const node = getNodeAt(x, y);
+    if (node) {
+      selectNode(node.id);
+      workflowState.isDragging = true;
+      workflowState.dragStart = { x, y, nodeX: node.x, nodeY: node.y };
+      return;
+    }
+    
+    // Check edge click
+    const edge = getEdgeAt(x, y);
+    if (edge) {
+      selectEdge(edge.id);
+      return;
+    }
+    
+    // Click on canvas - deselect
+    selectNode(null);
+    workflowState.selectedEdge = null;
+    renderWorkflow();
+  }
+}
+
+function onMouseMove(e) {
+  const rect = workflowState.canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left - workflowState.pan.x) / workflowState.zoom;
+  const y = (e.clientY - rect.top - workflowState.pan.y) / workflowState.zoom;
+  
+  if (workflowState.isDragging) {
+    if (workflowState.dragStart.nodeX !== undefined) {
+      // Dragging node
+      const node = workflowState.nodes.find(n => n.id === workflowState.selectedNode);
+      if (node) {
+        node.x = workflowState.dragStart.nodeX + (x - workflowState.dragStart.x);
+        node.y = workflowState.dragStart.nodeY + (y - workflowState.dragStart.y);
+        renderWorkflow();
+      }
+    } else {
+      // Panning
+      workflowState.pan.x = e.clientX - workflowState.dragStart.x;
+      workflowState.pan.y = e.clientY - workflowState.dragStart.y;
+      renderWorkflow();
+    }
+    return;
+  }
+  
+  // Update cursor
+  const port = getPortAt(x, y);
+  if (port) {
+    workflowState.canvas.style.cursor = 'crosshair';
+  } else if (getNodeAt(x, y)) {
+    workflowState.canvas.style.cursor = 'grab';
+  } else if (getEdgeAt(x, y)) {
+    workflowState.canvas.style.cursor = 'pointer';
+  } else {
+    workflowState.canvas.style.cursor = 'crosshair';
+  }
+  
+  // Update mouse position
+  document.getElementById('mousePos').textContent = `${Math.round(x)}, ${Math.round(y)}`;
+}
+
+function onMouseUp(e) {
+  if (e.button === 1 || (e.button === 0 && e.altKey)) {
+    workflowState.isDragging = false;
+    workflowState.canvas.style.cursor = 'crosshair';
+    return;
+  }
+  
+  if (workflowState.isDragging && workflowState.dragStart.port) {
+    // End edge drag
+    const rect = workflowState.canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left - workflowState.pan.x) / workflowState.zoom;
+    const y = (e.clientY - rect.top - workflowState.pan.y) / workflowState.zoom;
+    const targetPort = getPortAt(x, y);
+    
+    if (targetPort && targetPort.node.id !== workflowState.dragStart.port.node.id) {
+      // Check compatibility (output to input)
+      if (workflowState.dragStart.port.type === 'output' && targetPort.type === 'input') {
+        addEdge(workflowState.dragStart.port.node.id, workflowState.dragStart.port.index, targetPort.node.id, targetPort.index);
+      } else if (workflowState.dragStart.port.type === 'input' && targetPort.type === 'output') {
+        addEdge(targetPort.node.id, targetPort.index, workflowState.dragStart.port.node.id, workflowState.dragStart.port.index);
       }
     }
-  } catch (e) {}
+    workflowState.dragStart.port = null;
+  }
+  
+  workflowState.isDragging = false;
+  workflowState.canvas.style.cursor = 'crosshair';
+  renderWorkflow();
 }
 
-// Workflow Persistence
-async function loadWorkflows() {
-  try {
-    const stored = localStorage.getItem('workflow_designer_workflows');
-    if (stored) {
-      workflowState.workflows = JSON.parse(stored);
+function onWheel(e) {
+  e.preventDefault();
+  const rect = workflowState.canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+  
+  const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+  const newZoom = Math.max(0.1, Math.min(5, workflowState.zoom * zoomFactor));
+  
+  // Zoom towards mouse position
+  const worldX = (mouseX - workflowState.pan.x) / workflowState.zoom;
+  const worldY = (mouseY - workflowState.pan.y) / workflowState.zoom;
+  
+  workflowState.zoom = newZoom;
+  workflowState.pan.x = mouseX - worldX * newZoom;
+  workflowState.pan.y = mouseY - worldY * newZoom;
+  
+  renderWorkflow();
+  updateZoomDisplay();
+}
+
+function onDoubleClick(e) {
+  const rect = workflowState.canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left - workflowState.pan.x) / workflowState.zoom;
+  const y = (e.clientY - rect.top - workflowState.pan.y) / workflowState.zoom;
+  
+  const node = getNodeAt(x, y);
+  if (node) {
+    openNodeConfig(node);
+  }
+}
+
+function onContextMenu(e) {
+  e.preventDefault();
+  const rect = workflowState.canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left - workflowState.pan.x) / workflowState.zoom;
+  const y = (e.clientY - rect.top - workflowState.pan.y) / workflowState.zoom;
+  
+  const node = getNodeAt(x, y);
+  if (node) {
+    selectNode(node.id);
+    const menu = document.getElementById('nodeContextMenu');
+    menu.style.left = e.clientX + 'px';
+    menu.style.top = e.clientY + 'px';
+    menu.style.display = 'block';
+  } else {
+    document.getElementById('nodeContextMenu').style.display = 'none';
+  }
+}
+
+document.addEventListener('click', () => {
+  const menu = document.getElementById('nodeContextMenu');
+  if (menu) menu.style.display = 'none';
+});
+
+// Hit testing
+function getNodeAt(x, y) {
+  for (const node of [...workflowState.nodes].reverse()) {
+    if (x >= node.x && x <= node.x + node.width && y >= node.y && y <= node.y + node.height) {
+      return node;
     }
-    updateWorkflowSelect();
-  } catch (e) {}
+  }
+  return null;
 }
 
-function updateWorkflowSelect() {
-  const select = document.getElementById('workflowSelect');
-  if (!select) return;
-  
-  const currentValue = select.value;
-  select.innerHTML = '<option value="">Select or create workflow...</option>';
-  
-  Object.entries(workflowState.workflows).forEach(([id, wf]) => {
-    const opt = document.createElement('option');
-    opt.value = id;
-    opt.textContent = wf.name;
-    if (id === currentValue) opt.selected = true;
-    select.appendChild(opt);
-  });
+function getPortAt(x, y) {
+  for (const node of workflowState.nodes) {
+    // Input ports (left side)
+    for (let i = 0; i < node.inputs; i++) {
+      const px = node.x;
+      const py = node.y + 40 + i * 28 + 14;
+      if (Math.hypot(x - px, y - py) < 12) {
+        return { node, type: 'input', index: i, x: px, y: py };
+      }
+    }
+    // Output ports (right side)
+    for (let i = 0; i < node.outputs; i++) {
+      const px = node.x + node.width;
+      const py = node.y + 40 + i * 28 + 14;
+      if (Math.hypot(x - px, y - py) < 12) {
+        return { node, type: 'output', index: i, x: px, y: py };
+      }
+    }
+  }
+  return null;
 }
 
-function saveWorkflows() {
-  try {
-    localStorage.setItem('workflow_designer_workflows', JSON.stringify(workflowState.workflows));
-  } catch (e) {}
+function getEdgeAt(x, y) {
+  for (const edge of workflowState.edges) {
+    const fromNode = workflowState.nodes.find(n => n.id === edge.from);
+    const toNode = workflowState.nodes.find(n => n.id === edge.to);
+    if (!fromNode || !toNode) continue;
+    
+    const fromOutput = fromNode.outputs > 1 ? edge.fromOutput || 0 : 0;
+    const toInput = toNode.inputs > 1 ? edge.toInput || 0 : 0;
+    
+    const startX = fromNode.x + fromNode.width;
+    const startY = fromNode.y + 40 + fromOutput * 28 + 14;
+    const endX = toNode.x;
+    const endY = toNode.y + 40 + toInput * 28 + 14;
+    const cp1x = startX + 80;
+    const cp2x = endX - 80;
+    
+    // Sample points along curve
+    for (let t = 0; t <= 1; t += 0.02) {
+      const sx = Math.pow(1-t, 3)*startX + 3*Math.pow(1-t, 2)*t* (startX + 80) + 3*(1-t)*Math.pow(t, 2)*(endX - 80) + Math.pow(t, 3)*endX;
+      const sy = Math.pow(1-t, 3)*startY + 3*Math.pow(1-t, 2)*t*startY + 3*(1-t)*Math.pow(t, 2)*endY + Math.pow(t, 3)*endY;
+      if (Math.hypot(x - sx, y - sy) < 5) return edge;
+    }
+  }
+  return null;
+}
+
+function startEdgeDrag(port) {
+  workflowState.dragStart.port = port;
+  workflowState.isDragging = true;
+  workflowState.canvas.style.cursor = 'crosshair';
+}
+
+// Node config
+function openNodeConfig(node) {
+  const panel = document.getElementById('nodeConfigPanel');
+  const title = document.getElementById('configNodeTitle');
+  const body = document.getElementById('configNodeBody');
+  
+  title.textContent = `${node.icon} ${node.label} Configuration`;
+  body.innerHTML = renderNodeConfigForm(node);
+  
+  panel.style.display = 'block';
+  // Trigger animation
+  requestAnimationFrame(() => panel.style.transform = 'translateX(0)');
+}
+
+function closeNodeConfig() {
+  const panel = document.getElementById('nodeConfigPanel');
+  panel.style.transform = 'translateX(100%)';
+  setTimeout(() => panel.style.display = 'none', 300);
+}
+
+function renderNodeConfigForm(node) {
+  const def = NODE_TYPES[node.type];
+  let html = `
+    <div class="form-group">
+      <label class="form-label">Label</label>
+      <input class="form-input" value="${escapeHtml(node.label)}" onchange="updateNodeProperty('${node.id}', 'label', this.value)">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Type: ${def.label}</label>
+      <div class="form-hint">Node type cannot be changed</div>
+    </div>
+  `;
+  
+  // Type-specific config
+  if (node.type === 'agent' || node.type === 'skill') {
+    html += `
+      <div class="form-group"><label class="form-label">Prompt / Input</label><textarea class="form-textarea" rows="4" onchange="updateNodeProperty('${node.id}', 'config.prompt', this.value)">${escapeHtml(node.config.prompt || '')}</textarea></div>
+    `;
+  }
+  
+  if (node.type === 'agent') {
+    html += `
+      <div class="form-group">
+        <label class="form-label">Agent</label>
+        <select class="form-select" onchange="updateNodeProperty('${node.id}', 'config.agent', this.value)">
+          <option value="opencode" ${node.config.agent === 'opencode' ? 'selected' : ''}>opencode</option>
+          <option value="hermes" ${node.config.agent === 'hermes' ? 'selected' : ''}>hermes</option>
+          <option value="gemini" ${node.config.agent === 'gemini' ? 'selected' : ''}>Gemini CLI</option>
+          <option value="claude" ${node.config.agent === 'claude' ? 'selected' : ''}>Claude</option>
+        </select>
+      </div>
+    `;
+  }
+  
+  if (node.type === 'skill') {
+    html += `
+      <div class="form-group">
+        <label class="form-label">Skill</label>
+        <input class="form-input" value="${escapeHtml(node.config.skill || '')}" onchange="updateNodeProperty('${node.id}', 'config.skill', this.value)">
+      </div>
+    `;
+  }
+  
+  if (node.type === 'condition') {
+    html += `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Field</label><input class="form-input" value="${escapeHtml(node.config.field || '')}" onchange="updateNodeProperty('${node.id}', 'config.field', this.value)"></div>
+        <div class="form-group"><label class="form-label">Operator</label><select class="form-select" onchange="updateNodeProperty('${node.id}', 'config.operator', this.value)"><option value="equals" ${node.config.operator === 'equals' ? 'selected' : ''}>Equals</option><option value="contains" ${node.config.operator === 'contains' ? 'selected' : ''}>Contains</option><option value="gt" ${node.config.operator === 'gt' ? 'selected' : ''}>Greater Than</option><option value="lt" ${node.config.operator === 'lt' ? 'selected' : ''}>Less Than</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Value</label><input class="form-input" value="${escapeHtml(node.config.value || '')}" onchange="updateNodeProperty('${node.id}', 'config.value', this.value)"></div>
+    `;
+  }
+  
+  if (node.type === 'loop') {
+    html += `
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Count</label><input class="form-input" type="number" value="${node.config.count || 3}" onchange="updateNodeProperty('${node.id}', 'config.count', parseInt(this.value))"></div>
+        <div class="form-group"><label class="form-label">Collection</label><input class="form-input" value="${escapeHtml(node.config.collection || '')}" onchange="updateNodeProperty('${node.id}', 'config.collection', this.value)"></div>
+      </div>
+    `;
+  }
+  
+  if (node.type === 'transform') {
+    html += `
+      <div class="form-group"><label class="form-label">Transform Code</label><textarea class="form-textarea" rows="8" style="font-family:var(--font-mono);font-size:12px" onchange="updateNodeProperty('${node.id}', 'config.code', this.value)">${escapeHtml(node.config.code || 'return input;')}</textarea></div>
+    `;
+  }
+  
+  if (node.type === 'webhook') {
+    html += `
+      <div class="form-group"><label class="form-label">URL</label><input class="form-input" value="${escapeHtml(node.config.url || '')}" onchange="updateNodeProperty('${node.id}', 'config.url', this.value)"></div>
+      <div class="form-group"><label class="form-label">Method</label><select class="form-select" onchange="updateNodeProperty('${node.id}', 'config.method', this.value)"><option value="POST" ${node.config.method === 'POST' ? 'selected' : ''}>POST</option><option value="GET" ${node.config.method === 'GET' ? 'selected' : ''}>GET</option><option value="PUT" ${node.config.method === 'PUT' ? 'selected' : ''}>PUT</option></select></div>
+    `;
+  }
+  
+  html += `
+    <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:8px">
+      <button class="btn btn-danger btn-sm" onclick="deleteNode('${node.id}');closeNodeConfig()">🗑 Delete</button>
+      <button class="btn btn-ghost btn-sm" onclick="duplicateNode('${node.id}');closeNodeConfig()">📋 Duplicate</button>
+    </div>
+  `;
+  
+  return html;
+}
+
+function updateNodeProperty(nodeId, path, value) {
+  const node = workflowState.nodes.find(n => n.id === nodeId);
+  if (!node) return;
+  
+  const keys = path.split('.');
+  let obj = node;
+  for (let i = 0; i < keys.length - 1; i++) {
+    obj = obj[keys[i]];
+  }
+  obj[keys[keys.length - 1]] = value;
+  renderWorkflow();
+}
+
+// Keyboard shortcuts
+function onKeyDown(e) {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  
+  if (e.ctrlKey || e.metaKey) {
+    if (e.key === 'z') { e.preventDefault(); undo(); }
+    if (e.key === 'y') { e.preventDefault(); redo(); }
+    if (e.key === 's') { e.preventDefault(); saveWorkflow(); }
+  }
+  
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    if (workflowState.selectedNode) {
+      deleteNode(workflowState.selectedNode);
+    } else if (workflowState.selectedEdge) {
+      deleteEdge(workflowState.selectedEdge);
+    }
+  }
+  
+  if (e.key === 'Escape') {
+    closeNodeConfig();
+    document.getElementById('nodeContextMenu').style.display = 'none';
+  }
+}
+
+// Context menu actions
+function editNodeConfig() {
+  document.getElementById('nodeContextMenu').style.display = 'none';
+  if (workflowState.selectedNode) {
+    openNodeConfig(workflowState.nodes.find(n => n.id === workflowState.selectedNode));
+  }
+}
+
+function deleteSelectedNode() {
+  document.getElementById('nodeContextMenu').style.display = 'none';
+  if (workflowState.selectedNode) {
+    deleteNode(workflowState.selectedNode);
+  }
+}
+
+function addEdgeFromSelected() {
+  document.getElementById('nodeContextMenu').style.display = 'none';
+  if (workflowState.selectedNode) {
+    const node = workflowState.nodes.find(n => n.id === workflowState.selectedNode);
+    if (node.outputs > 1) {
+      // Show port selector
+      showToast('Select output port from node', 'info');
+    }
+  }
+}
+
+// Workflow operations
+function newWorkflow() {
+  if (workflowState.nodes.length > 0 && !confirm('Create new workflow? Unsaved changes will be lost.')) return;
+  saveHistory();
+  workflowState.nodes = [];
+  workflowState.edges = [];
+  renderWorkflow();
+  updateStatusBar();
 }
 
 async function saveWorkflow() {
-  const name = prompt('Workflow name:', workflowState.activeWorkflow ? workflowState.workflows[workflowState.activeWorkflow]?.name : 'New Workflow');
-  if (!name) return;
-  
-  const id = workflowState.activeWorkflow || 'wf_' + Date.now();
   const workflow = {
-    id,
-    name,
-    nodes: JSON.parse(JSON.stringify(workflowState.nodes)),
-    edges: JSON.parse(JSON.stringify(workflowState.edges)),
+    nodes: workflowState.nodes,
+    edges: workflowState.edges,
+    version: '1.0',
     created: new Date().toISOString(),
-    updated: new Date().toISOString(),
   };
-  
-  workflowState.workflows[id] = workflow;
-  workflowState.activeWorkflow = id;
-  saveWorkflows();
-  updateWorkflowSelect();
-  showToast('Workflow saved: ' + name, 'success');
+  const blob = new Blob([JSON.stringify(workflow, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `workflow-${Date.now()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Workflow saved', 'success');
 }
 
-async function loadWorkflow(id) {
-  if (!id || !workflowState.workflows[id]) {
-    // Clear canvas for new workflow
-    workflowState.nodes = [];
-    workflowState.edges = [];
-    workflowState.activeWorkflow = null;
-    pushHistory();
-    renderNodes();
-    drawEdges();
-    updateMinimap();
-    return;
-  }
-  
-  const wf = workflowState.workflows[id];
-  workflowState.nodes = JSON.parse(JSON.stringify(wf.nodes));
-  workflowState.edges = JSON.parse(JSON.stringify(wf.edges));
-  workflowState.activeWorkflow = id;
-  
-  pushHistory();
-  renderNodes();
-  drawEdges();
-  updateMinimap();
-  showToast('Loaded workflow: ' + wf.name, 'success');
-}
-
-function showCreateWorkflowModal() {
-  document.getElementById('workflowModal').style.display = 'flex';
-  renderWorkflowList();
-}
-
-function closeWorkflowModal() {
-  document.getElementById('workflowModal').style.display = 'none';
-}
-
-function renderWorkflowList() {
-  const container = document.getElementById('workflowList');
-  const workflows = Object.entries(workflowState.workflows);
-  
-  if (workflows.length === 0) {
-    container.innerHTML = '<div class="empty-state" style="padding:40px;text-align:center"><div class="empty-state-icon">📁</div><div class="empty-state-title">No workflows yet</div><div class="empty-state-desc">Create your first workflow to get started</div></div>';
-    return;
-  }
-  
-  container.innerHTML = workflows.map(([id, wf]) => `
-    <div class="card" style="margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">
-      <div style="flex:1">
-        <div style="font-weight:600">${escapeHtml(wf.name)}</div>
-        <div style="font-size:11px;color:var(--text-muted)">${wf.nodes?.length || 0} nodes, ${wf.edges?.length || 0} edges · ${new Date(wf.updated).toLocaleString()}</div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-primary btn-sm" onclick="loadWorkflow('${id}'); closeWorkflowModal()">Load</button>
-        <button class="btn btn-ghost btn-sm" onclick="renameWorkflow('${id}')">✏️ Rename</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteWorkflow('${id}')">🗑 Delete</button>
-      </div>
-    `).join('');
-}
-
-function createNewWorkflow() {
-  workflowState.nodes = [];
-  workflowState.edges = [];
-  workflowState.activeWorkflow = null;
-  pushHistory();
-  renderNodes();
-  drawEdges();
-  updateMinimap();
-  closeWorkflowModal();
-  showToast('New workflow created', 'success');
-}
-
-function renameWorkflow(id) {
-  const wf = workflowState.workflows[id];
-  const name = prompt('New name:', wf.name);
-  if (name) {
-    wf.name = name;
-    wf.updated = new Date().toISOString();
-    saveWorkflows();
-    renderWorkflowList();
-  }
-}
-
-function deleteWorkflow(id) {
-  if (confirm('Delete this workflow?')) {
-    delete workflowState.workflows[id];
-    if (workflowState.activeWorkflow === id) {
-      workflowState.activeWorkflow = null;
-      workflowState.nodes = [];
-      workflowState.edges = [];
-      pushHistory();
-      renderNodes();
-      drawEdges();
-    }
-    saveWorkflows();
-    renderWorkflowList();
-    updateWorkflowSelect();
-  }
-}
-
-async function validateWorkflow() {
-  const errors = [];
-  const warnings = [];
-  
-  if (workflowState.nodes.length === 0) {
-    errors.push('No nodes in workflow');
-  }
-  
-  // Check for start node
-  const startNodes = workflowState.nodes.filter(n => n.type === 'start');
-  if (startNodes.length === 0) {
-    warnings.push('No start node - workflow may not execute properly');
-  } else if (startNodes.length > 1) {
-    warnings.push('Multiple start nodes - only first will be used');
-  }
-  
-  // Check for disconnected nodes
-  const connectedNodes = new Set();
-  workflowState.edges.forEach(e => {
-    connectedNodes.add(e.from);
-    connectedNodes.add(e.to);
-  });
-  
-  workflowState.nodes.forEach(node => {
-    if (!connectedNodes.has(node.id) && workflowState.nodes.length > 1) {
-      warnings.push(`Node "${node.label}" is not connected`);
-    }
-  });
-  
-  // Check for cycles
-  if (hasCycles()) {
-    errors.push('Workflow contains cycles');
-  }
-  
-  // Check for unreachable end nodes
-  const endNodes = workflowState.nodes.filter(n => n.type === 'end');
-  if (endNodes.length === 0) {
-    warnings.push('No end node defined');
-  }
-  
-  let message = '';
-  if (errors.length > 0) message += '❌ Errors:\n' + errors.map(e => '  • ' + e).join('\n') + '\n\n';
-  if (warnings.length > 0) message += '⚠️ Warnings:\n' + warnings.map(w => '  • ' + w).join('\n');
-  if (errors.length === 0 && warnings.length === 0) message = '✅ Workflow is valid!';
-  
-  showModal('Workflow Validation', `<pre style="white-space:pre-wrap;font-size:12px">${escapeHtml(message)}</pre>`, 
-    `<button class="btn btn-primary" onclick="closeModal()">Close</button>`);
-}
-
-function hasCycles() {
-  const visited = new Set();
-  const recursionStack = new Set();
-  
-  function dfs(nodeId) {
-    visited.add(nodeId);
-    recursionStack.add(nodeId);
-    
-    const edges = workflowState.edges.filter(e => e.from === nodeId);
-    for (const edge of edges) {
-      if (!visited.has(edge.to)) {
-        if (dfs(edge.to)) return true;
-      } else if (recursionStack.has(edge.to)) {
-        return true;
-      }
-    }
-    
-    recursionStack.delete(nodeId);
-    return false;
-  }
-  
-  for (const node of workflowState.nodes) {
-    if (!visited.has(node.id)) {
-      if (dfs(node.id)) return true;
-    }
-  }
-  
-  return false;
-}
-
-async function executeWorkflow() {
-  if (workflowState.nodes.length === 0) {
-    showToast('No nodes to execute', 'warning');
-    return;
-  }
-  
-  if (hasCycles()) {
-    showToast('Cannot execute: workflow has cycles', 'error');
-    return;
-  }
-  
-  // Find start node
-  const startNodes = workflowState.nodes.filter(n => n.type === 'start');
-  if (startNodes.length === 0) {
-    showToast('No start node found', 'error');
-    return;
-  }
-  
-  // Topological sort for execution order
-  const executionOrder = topologicalSort();
-  if (!executionOrder) {
-    showToast('Cannot determine execution order (cycles?)', 'error');
-    return;
-  }
-  
-  showToast('Executing workflow...', 'info');
-  
-  // Execute each node in order
-  const results = {};
-  for (const nodeId of executionOrder) {
-    const node = workflowState.nodes.find(n => n.id === nodeId);
-    if (!node) continue;
-    
+async function loadWorkflow() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const text = await file.text();
     try {
-      let result;
-      switch (node.type) {
-        case 'skill':
-          result = await executeSkillNode(node);
-          break;
-        case 'agent':
-          result = await executeAgentNode(node);
-          break;
-        case 'condition':
-          result = await evaluateCondition(node, results);
-          break;
-        case 'parallel':
-          // Parallel execution would need special handling
-          result = { status: 'parallel_placeholder' };
-          break;
-        case 'handoff':
-          result = await executeHandoff(node, results);
-          break;
-        default:
-          result = { status: 'completed' };
-      }
-      results[nodeId] = { node, result };
-      
-      // Highlight executing node
-      highlightNode(nodeId, 'executing');
-      await new Promise(r => setTimeout(r, 500));
-      highlightNode(nodeId, 'completed');
+      const workflow = JSON.parse(text);
+      saveHistory();
+      workflowState.nodes = workflow.nodes || [];
+      workflowState.edges = workflow.edges || [];
+      renderWorkflow();
+      updateStatusBar();
+      showToast('Workflow loaded', 'success');
     } catch (err) {
-      results[nodeId] = { node, error: err.message };
-      highlightNode(nodeId, 'error');
-      showToast(`Node ${node.label} failed: ${err.message}`, 'error');
-      break;
+      showToast('Failed to load: ' + err.message, 'error');
     }
+  };
+  input.click();
+}
+
+async function runWorkflow() {
+  if (workflowState.nodes.length === 0) {
+    showToast('No nodes in workflow', 'error');
+    return;
   }
-  
-  showToast('Workflow execution completed', 'success');
+  showToast('Workflow execution would start here', 'info');
 }
 
-function topologicalSort() {
-  const inDegree = new Map();
-  const adjList = new Map();
-  
-  workflowState.nodes.forEach(node => {
-    inDegree.set(node.id, 0);
-    adjList.set(node.id, []);
-  });
-  
-  workflowState.edges.forEach(edge => {
-    adjList.get(edge.from).push(edge.to);
-    inDegree.set(edge.to, (inDegree.get(edge.to) || 0) + 1);
-  });
-  
-  const queue = [];
-  inDegree.forEach((degree, nodeId) => {
-    if (degree === 0) queue.push(nodeId);
-  });
-  
-  const result = [];
-  while (queue.length > 0) {
-    const nodeId = queue.shift();
-    result.push(nodeId);
-    
-    for (const neighbor of adjList.get(nodeId) || []) {
-      const newDegree = inDegree.get(neighbor) - 1;
-      inDegree.set(neighbor, newDegree);
-      if (newDegree === 0) queue.push(neighbor);
-    }
-  }
-  
-  return result.length === workflowState.nodes.length ? result : null;
+function zoomIn() {
+  zoomAt(workflowState.canvas.width / 2, workflowState.canvas.height / 2, 1.2);
 }
 
-async function executeSkillNode(node) {
-  const skillName = node.config.skill;
-  if (!skillName) throw new Error('No skill configured');
-  
-  const agent = node.config.agent || 'auto';
-  const input = node.config.input || '';
-  
-  const result = await api.runSkill(skillName, { input, agent });
-  return result;
+function zoomOut() {
+  zoomAt(workflowState.canvas.width / 2, workflowState.canvas.height / 2, 0.83);
 }
 
-async function executeAgentNode(node) {
-  const agent = node.config.agent || 'opencode';
-  const prompt = node.config.prompt || 'Continue the workflow';
-  
-  const result = await api.chat(agent, prompt);
-  return result;
+function zoomAt(x, y, factor) {
+  const rect = workflowState.canvas.getBoundingClientRect();
+  const newZoom = Math.max(0.1, Math.min(5, workflowState.zoom * factor));
+  const worldX = (x - workflowState.pan.x) / workflowState.zoom;
+  const worldY = (y - workflowState.pan.y) / workflowState.zoom;
+  workflowState.zoom = newZoom;
+  workflowState.pan.x = x - worldX * newZoom;
+  workflowState.pan.y = y - worldY * newZoom;
+  renderWorkflow();
+  updateZoomDisplay();
 }
 
-async function evaluateCondition(node, results) {
-  const condition = node.config.condition;
-  if (!condition) return false;
-  
-  // Simple condition evaluation (in production, use a proper expression evaluator)
-  try {
-    // Replace variable references with actual values
-    let expr = condition;
-    Object.entries(results).forEach(([id, data]) => {
-      if (data.result) {
-        const val = JSON.stringify(data.result);
-        expr = expr.replace(new RegExp(`\\$\{${id}\}`, 'g'), val);
-        expr = expr.replace(new RegExp(`\\$${id}`, 'g'), val);
-      }
-    });
-    
-    // Simple eval (in production, use a safe evaluator)
-    return eval(expr);
-  } catch (e) {
-    return false;
-  }
+function resetView() {
+  workflowState.zoom = 1;
+  workflowState.pan = { x: 0, y: 0 };
+  renderWorkflow();
+  updateZoomDisplay();
 }
 
-async function executeHandoff(node, results) {
-  // Handoff execution would create a handoff record
-  return { status: 'handoff_created' };
+function updateZoomDisplay() {
+  const el = document.getElementById('zoomLevel');
+  if (el) el.textContent = Math.round(workflowState.zoom * 100) + '%';
+  const zp = document.getElementById('zoomPercent');
+  if (zp) zp.textContent = Math.round(workflowState.zoom * 100) + '%';
 }
 
-function highlightNode(nodeId, status) {
-  const el = document.getElementById(`node-${nodeId}`);
-  if (!el) return;
+function updateStatusBar() {
+  document.getElementById('nodeCount').textContent = workflowState.nodes.length;
+  document.getElementById('edgeCount').textContent = workflowState.edges.length;
   
-  el.classList.remove('executing', 'completed', 'error');
-  el.classList.add(status);
-}
-
-function topologicalSort() {
-  const inDegree = new Map();
-  const adjList = new Map();
-  
-  workflowState.nodes.forEach(node => {
-    inDegree.set(node.id, 0);
-    adjList.set(node.id, []);
-  });
-  
-  workflowState.edges.forEach(edge => {
-    adjList.get(edge.from).push(edge.to);
-    inDegree.set(edge.to, (inDegree.get(edge.to) || 0) + 1);
-  });
-  
-  const queue = [];
-  inDegree.forEach((degree, nodeId) => {
-    if (degree === 0) queue.push(nodeId);
-  });
-  
-  const result = [];
-  while (queue.length > 0) {
-    const nodeId = queue.shift();
-    result.push(nodeId);
-    
-    for (const neighbor of adjList.get(nodeId) || []) {
-      const newDegree = inDegree.get(neighbor) - 1;
-      inDegree.set(neighbor, newDegree);
-      if (newDegree === 0) queue.push(neighbor);
-    }
-  }
-  
-  return result.length === workflowState.nodes.length ? result : null;
-}
-
-function highlightNode(nodeId, status) {
-  const el = document.getElementById(`node-${nodeId}`);
-  if (!el) return;
-  
-  el.classList.remove('executing', 'completed', 'error');
-  el.classList.add(status);
-}
-
-function setupKeyboardShortcuts() {
-  document.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
-    
-    if (e.ctrlKey || e.metaKey) {
-      switch (e.key) {
-        case 'z':
-          if (e.shiftKey) { e.preventDefault(); redo(); }
-          else { e.preventDefault(); undo(); }
-          break;
-        case 'y':
-          e.preventDefault(); redo();
-          break;
-        case 's':
-          e.preventDefault(); saveWorkflow();
-          break;
-        case 'a':
-          // Select all - not implemented
-          break;
-      }
+  const selInfo = document.getElementById('selectionInfo');
+  if (selInfo) {
+    if (workflowState.selectedNode) {
+      const node = workflowState.nodes.find(n => n.id === workflowState.selectedNode);
+      selInfo.textContent = node ? `Selected: ${node.label}` : '';
+    } else if (workflowState.selectedEdge) {
+      selInfo.textContent = 'Edge selected';
     } else {
-      switch (e.key) {
-        case 'Delete':
-        case 'Backspace':
-          deleteSelected();
-          break;
-        case 'Escape':
-          closeInspector();
-          closeWorkflowModal();
-          break;
-      }
+      selInfo.textContent = '';
     }
-  });
-}
-  
-  function onNodeMouseDown(e, nodeId) {
-  
-  if (e.button === 0) {
-    selectNode(nodeId);
-    
-    const node = workflowState.nodes.find(n => n.id === nodeId);
-    if (!node) return;
-    
-    // Drag handling
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const startNodeX = node.x;
-    const startNodeY = node.y;
-    
-    function onMouseMove(moveEvent) {
-      const dx = (moveEvent.clientX - startX) / workflowState.zoom;
-      const dy = (moveEvent.clientY - startY) / workflowState.zoom;
-      
-      node.x = startNodeX + dx;
-      node.y = startNodeY + dy;
-      
-      renderNodes();
-      drawEdges();
-      updateMinimap();
-    }
-    
-    function onMouseUp() {
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-      pushHistory();
-    }
-    
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
   }
 }
 
-function showNodeContextMenu(e, nodeId) {
-  e.preventDefault();
-  e.stopPropagation();
-  
-  selectNode(nodeId);
-  
-  const menu = document.createElement('div');
-  menu.style.cssText = `
-    position:fixed;top:${e.clientY}px;left:${e.clientX}px;
-    background:var(--bg-card);border:1px solid var(--border);
-    border-radius:var(--radius);padding:8px;z-index:1000;
-    min-width:180px;box-shadow:0 4px 20px rgba(0,0,0,0.3);
-  `;
-  menu.innerHTML = `
-    <div onclick="duplicateNode('${nodeId}')" style="padding:8px 12px;cursor:pointer">📋 Duplicate</div>
-    <div onclick="deleteNode('${nodeId}')" style="padding:8px 12px;cursor:pointer;color:var(--red)">🗑 Delete</div>
-    <hr style="margin:8px 0;border-color:var(--border)">
-    <div onclick="showNodeInspector('${nodeId}')" style="padding:8px 12px;cursor:pointer">⚙️ Inspect</div>
-  `;
-  document.body.appendChild(menu);
-  
-  function closeMenu() {
-    menu.remove();
-    document.removeEventListener('click', closeMenu);
-  }
-  setTimeout(() => document.addEventListener('click', closeMenu), 0);
+// Export/Import
+function exportWorkflow() {
+  saveWorkflow();
 }
 
-function showModal(title, bodyHtml, footerHtml) {
-  const container = document.getElementById('modalContainer');
-  container.innerHTML = `
-    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-      <div class="modal">
-        <div class="modal-header">
-          <span class="modal-title">${title}</span>
-          <button class="modal-close" onclick="closeModal()">✕</button>
-        </div>
-        <div class="modal-body">${bodyHtml}</div>
-        ${footerHtml ? `<div class="modal-footer">${footerHtml}</div>` : ''}
-      </div>
-    </div>
-  `;
+function importWorkflow() {
+  loadWorkflow();
 }
 
-function closeModal() {
-  document.getElementById('modalContainer').innerHTML = '';
-}
-
-function closeWorkflowModal() {
-  document.getElementById('workflowModal').style.display = 'none';
-}
-
-
-// Initialize on load
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.location.hash === '#workflow-designer') {
-    renderWorkflowDesigner();
-  }
-});
-
-// Export for global access
-window.WorkflowDesigner = {
-  render: renderWorkflowDesigner,
-  state: workflowState,
-  NODE_TYPES,
-};
+window.renderWorkflowDesigner = renderWorkflowDesigner;
+window.newWorkflow = newWorkflow;
+window.saveWorkflow = saveWorkflow;
+window.loadWorkflow = loadWorkflow;
+window.runWorkflow = runWorkflow;
+window.zoomIn = zoomIn;
+window.zoomOut = zoomOut;
+window.resetView = resetView;
+window.undo = undo;
+window.redo = redo;
+window.updateNodeProperty = updateNodeProperty;
+window.openNodeConfig = openNodeConfig;
+window.closeNodeConfig = closeNodeConfig;
+window.editNodeConfig = editNodeConfig;
+window.deleteSelectedNode = deleteSelectedNode;
+window.addEdgeFromSelected = addEdgeFromSelected;

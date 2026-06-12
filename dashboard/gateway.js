@@ -94,5 +94,25 @@ window.gwRestartGateway  = gwRestartGateway;
 window.gwUpdateTokens    = gwUpdateTokens;
 window.gwUpdateProfileUI = gwUpdateProfileUI;
 
+// Fix #19: global openProfileSwitcher always available (was only defined inside hermes-workspace.js)
+// If the real implementation is loaded (by navigating to hermes-workspace), call it.
+// Otherwise navigate to hermes-workspace first so it loads the real function.
+window.openProfileSwitcher = function() {
+  if (typeof window._hwOpenProfileSwitcher === 'function') {
+    window._hwOpenProfileSwitcher();
+  } else {
+    // Navigate to hermes-workspace; once rendered, the real implementation registers itself
+    if (typeof navigate === 'function') {
+      navigate('hermes-workspace');
+      // Retry after a brief delay for the page script to load
+      setTimeout(() => {
+        if (typeof window._hwOpenProfileSwitcher === 'function') {
+          window._hwOpenProfileSwitcher();
+        }
+      }, 600);
+    }
+  }
+};
+
 // Auto-init on DOMContentLoaded
 window.addEventListener('DOMContentLoaded', gwInit);

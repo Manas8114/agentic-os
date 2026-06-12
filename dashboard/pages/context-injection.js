@@ -93,6 +93,7 @@ function getContextInjectionHTML() {
 async function loadContextRules() {
   try {
     const data = await api.getContextRules();
+    if (!data) return; // Auth required
     contextState.rules = data.rules || [];
     renderContextRules();
   } catch (err) {

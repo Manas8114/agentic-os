@@ -1,0 +1,29 @@
+{
+  "criteria": [
+    {
+      "name": "Completeness",
+      "weight": 0.25,
+      "description": "All requirement sections present"
+    },
+    {
+      "name": "Clarity",
+      "weight": 0.2,
+      "description": "Requirements are unambiguous and testable"
+    },
+    {
+      "name": "Prioritization",
+      "weight": 0.15,
+      "description": "MoSCoW prioritization applied correctly"
+    },
+    {
+      "name": "Technical Accuracy",
+      "weight": 0.2,
+      "description": "Tech stack suggestions match requirements"
+    },
+    {
+      "name": "Completeness of User Stories",
+      "weight": 0.2,
+      "description": "User stories cover all core features"
+    }
+  ]
+}

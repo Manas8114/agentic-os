@@ -1,0 +1,18 @@
+{
+  "criteria": [
+    "research_depth",
+    "source_quality",
+    "citation_accuracy",
+    "synthesis_clarity",
+    "actionable_insights",
+    "confidence_calibration"
+  ],
+  "weights": {
+    "research_depth": 0.25,
+    "source_quality": 0.2,
+    "citation_accuracy": 0.15,
+    "synthesis_clarity": 0.15,
+    "actionable_insights": 0.15,
+    "confidence_calibration": 0.1
+  }
+}

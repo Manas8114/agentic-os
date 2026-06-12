@@ -181,7 +181,7 @@ function renderStats() {
         <div><strong>${withEval}</strong> <span style="color:var(--text-muted);font-size:12px">with eval</span></div>
       </div>
       <div style="display:flex;gap:8px;font-size:11px">
-        ${Object.entries(agentMeta).map(([key, meta]) => {
+        ${Object.entries(agentMetaSkillsRegistry).map(([key, meta]) => {
           const count = skillsRegistryState.allSkills.filter(s => (s.primary_agent || 'opencode').toLowerCase() === key).length;
           return `<span class="badge" style="background:var(--${meta.color}-dim);color:var(--${meta.color})" title="${meta.name}">${meta.icon} ${count}</span>`;
         }).join('')}

@@ -954,6 +954,64 @@ function deleteGoal(id) {
 }
 
 // Global functions for modals
+async function createGoal() {
+  const title = document.getElementById('newGoalTitle').value.trim();
+  if (!title) { showToast('Title is required', 'error'); return; }
+  
+  const tagsStr = document.getElementById('newGoalTags').value.trim();
+  const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [];
+  
+  try {
+    await api.createGoal({
+      title,
+      description: document.getElementById('newGoalDesc').value.trim(),
+      category: document.getElementById('newGoalCategory').value,
+      target_date: document.getElementById('newGoalDate').value,
+      tags
+    });
+    showToast('Goal created!', 'success');
+    closeModal();
+    renderGoals();
+  } catch (err) {
+    showToast('Failed to create goal: ' + err.message, 'error');
+  }
+}
+
+function showCreateGoalModal() {
+  showModal('Create New Goal', `
+    <div style="max-height:500px;overflow-y:auto">
+      <div class="form-group"><label class="form-label">Title *</label><input class="form-input" id="newGoalTitle" placeholder="e.g., Launch new product"></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="newGoalDesc" rows="3" placeholder="Brief description..."></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="newGoalCategory">${GOAL_CATEGORIES.map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
+        <div class="form-group"><label class="form-label">Target Date</label><input class="form-input" id="newGoalDate" type="date"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Tags</label><input class="form-input" id="newGoalTags" placeholder="tag1, tag2"></div>
+    </div>
+  `, '<button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="createGoal()">Create</button>');
+}
+
+function updateGoalProgress(id, delta) {
+  const goal = goalsState.goals.find(g => g.id === id);
+  if (!goal) return;
+  goal.progress = Math.max(0, Math.min(100, (goal.progress || 0) + delta));
+  saveGoalsToStorage();
+  renderGoals();
+  showToast(`Progress updated to ${goal.progress}%`, 'success');
+}
+
+function completeGoal(id) {
+  const goal = goalsState.goals.find(g => g.id === id);
+  if (!goal) return;
+  goal.progress = 100;
+  goal.status = 'completed';
+  goal.completed_at = new Date().toISOString();
+  saveGoalsToStorage();
+  renderGoals();
+  showToast('Goal completed! 🎉', 'success');
+}
+
+// Global functions for modals
 window.switchGoalsTab = switchGoalsTab;
 window.showCreateGoalModal = showCreateGoalModal;
 window.showCreateOKRModal = showCreateOKRModal;

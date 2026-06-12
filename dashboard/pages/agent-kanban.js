@@ -79,9 +79,7 @@ async function loadAgentKanban() {
     // Add assignee filter to API call
     const agent = agentKanbanState.activeAgent;
     let url = `/api/kanban/board?assignee=${encodeURIComponent(agent)}`;
-    const data = await fetch(url, {
-      headers: { 'X-API-Key': 'dev-api-key-change-in-production' }
-    }).then(r => r.json());
+    const data = await api.get(url);
     
     agentKanbanState.columnsObj = data.columns || {};
     agentKanbanState.allTasks = Object.values(agentKanbanState.columnsObj).flat();

@@ -8,6 +8,7 @@
 <link rel="manifest" href="/dashboard/manifest.json">
 <meta name="theme-color" content="#0b0f14">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Agentic OS">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,6 +17,7 @@
 <link rel="stylesheet" href="/dashboard/styles-premium.css">
 <link rel="stylesheet" href="/dashboard/styles-v2.css">
 <script src="/dashboard/chart.umd.min.js"></script>
+<script src="/dashboard/d3.min.js"></script>
 </head>
 <body class="has-gateway-bar">
   <!-- Gateway Status Bar -->
@@ -85,12 +87,20 @@
       <a href="#chat" class="nav-item" data-page="chat"><span class="nav-icon">💬</span><span class="nav-label">AI Chat</span></a>
       <a href="#dashboard" class="nav-item active" data-page="dashboard"><span class="nav-icon">◉</span><span class="nav-label">Dashboard</span></a>
       <div class="sidebar-section"><div class="sidebar-section-label">Agents</div></div>
-      <a href="#agent-config" class="nav-item" data-page="agent-config"><span class="nav-icon">⚙️</span><span class="nav-label">Agent Config</span></a>
+      <a href="#agent-control-room/opencode" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🔧</span><span class="nav-label">opencode</span></a>
+      <a href="#agent-control-room/hermes" class="nav-item" data-page="agent-control-room"><span class="nav-icon">⚡</span><span class="nav-label">Hermes</span></a>
+      <a href="#agent-control-room/gemini" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🧠</span><span class="nav-label">Gemini CLI</span></a>
+      <a href="#agent-control-room/claude" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🤖</span><span class="nav-label">Claude</span></a>
+      <a href="#agent-control-room/codex" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🐙</span><span class="nav-label">Codex</span></a>
+      <a href="#agent-control-room/antigravity" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🔭</span><span class="nav-label">Antigravity</span></a>
+      <a href="#agent-control-room/openclaw" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🕸</span><span class="nav-label">OpenClaw</span></a>
+      <a href="#agent-control-room/odysseus" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🧭</span><span class="nav-label">Odysseus</span></a>
+      <a href="#agent-control-room/jarvis" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🎙</span><span class="nav-label">Jarvis</span></a>
       <a href="#hermes-workspace" class="nav-item" data-page="hermes-workspace"><span class="nav-icon">⚡</span><span class="nav-label">Hermes Workspace</span><span class="nav-badge new-badge" style="background:var(--green);color:#000;font-size:8px">V2</span></a>
       <a href="#command-room" class="nav-item" data-page="command-room"><span class="nav-icon">🏛</span><span class="nav-label">Command Room</span><span class="nav-badge new-badge" style="background:var(--accent);color:#fff;font-size:8px">V2</span></a>
       <a href="#agent-skills-registry" class="nav-item" data-page="agent-skills-registry"><span class="nav-icon">📚</span><span class="nav-label">Skills Registry</span></a>
       <a href="#skills" class="nav-item" data-page="skills"><span class="nav-icon">⚡</span><span class="nav-label">Skills</span><span class="nav-badge" id="skillCount">0</span></a>
-      <a href="#skill-library" class="nav-item" data-page="skill-library"><span class="nav-icon">📚</span><span class="nav-label">Skill Library</span></a>
+      <div class="sidebar-section"><div class="sidebar-section-label">Management</div></div>
       <a href="#memory" class="nav-item" data-page="memory"><span class="nav-icon">🧠</span><span class="nav-label">Memory</span></a>
       <a href="#memory-verification" class="nav-item" data-page="memory-verification"><span class="nav-icon">🔍</span><span class="nav-label">Memory Verify</span></a>
       <a href="#scheduler" class="nav-item" data-page="scheduler"><span class="nav-icon">⏱</span><span class="nav-label">Scheduler</span></a>
@@ -100,7 +110,6 @@
       <a href="#agent-kanban" class="nav-item" data-page="agent-kanban"><span class="nav-icon">🤖</span><span class="nav-label">Agent Kanban</span></a>
       <a href="#goals" class="nav-item" data-page="goals"><span class="nav-icon">🎯</span><span class="nav-label">Goals</span></a>
       <a href="#journal" class="nav-item" data-page="journal"><span class="nav-icon">📓</span><span class="nav-label">Journal</span></a>
-      <a href="#skill-chain" class="nav-item" data-page="skill-chain"><span class="nav-icon">⛓</span><span class="nav-label">Skill Chains</span></a>
       <a href="#handoffs" class="nav-item" data-page="handoffs"><span class="nav-icon">🔄</span><span class="nav-label">Handoffs</span></a>
       <div class="sidebar-section"><div class="sidebar-section-label">Monitoring</div></div>
       <a href="#agent-health" class="nav-item" data-page="agent-health"><span class="nav-icon">🏥</span><span class="nav-label">Agent Health</span><span class="nav-badge" id="agentHealthCount">0</span></a>
@@ -116,6 +125,9 @@
       <a href="#smart-router" class="nav-item" data-page="smart-router"><span class="nav-icon">🧭</span><span class="nav-label">Smart Router</span></a>
       <a href="#learning-analytics" class="nav-item" data-page="learning-analytics"><span class="nav-icon">📊</span><span class="nav-label">Learning Analytics</span></a>
       <a href="#session-replay" class="nav-item" data-page="session-replay"><span class="nav-icon">🔄</span><span class="nav-label">Session Replay</span></a>
+      <div class="sidebar-section"><div class="sidebar-section-label">Factory</div></div>
+      <a href="#factory-idea-factory" class="nav-item" data-page="factory-idea-factory"><span class="nav-icon">🏭</span><span class="nav-label">Idea Factory</span><span class="nav-badge new-badge" style="background:var(--accent);color:#fff;font-size:8px">NEW</span></a>
+      <a href="#multi-agent-chat" class="nav-item" data-page="multi-agent-chat"><span class="nav-icon">🤖</span><span class="nav-label">Agent Discussion</span></a>
       <div class="sidebar-section"><div class="sidebar-section-label">Management</div></div>
         <a href="#agent-plugin-marketplace" class="nav-item" data-page="agent-plugin-marketplace"><span class="nav-icon">🏪</span><span class="nav-label">Plugin Marketplace</span></a>
         <a href="#cost" class="nav-item" data-page="cost"><span class="nav-icon">💰</span><span class="nav-label">Cost Analytics</span></a>
@@ -153,6 +165,7 @@
         <button class="topbar-profile" id="topbarProfile" onclick="openProfileSwitcher()" title="Switch Hermes profile">
           👤 <span id="topbarProfileName">Default</span>
         </button>
+        <button class="topbar-btn" onclick="logout()" title="Sign out" style="margin-left:8px;padding:6px 10px;background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-secondary);cursor:pointer;font-size:12px" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background=''">⏻ Sign Out</button>
       </div>
     </div>
     <div id="pageContent" class="page-content">
@@ -168,9 +181,14 @@
   <script src="/dashboard/command-palette.js"></script>
   <script src="/dashboard/notification-center.js"></script>
   <script src="/dashboard/dockable-panels.js"></script>
-  <script src="/dashboard/studio.js"></script>
+  <script src="/dashboard/pages/studio.js"></script>
   <script src="/dashboard/pages/workflow-designer.js"></script>
   <script src="/dashboard/pages/video-generator.js"></script>
+  <script src="/dashboard/pages/skill-chain.js"></script>
+  <script src="/dashboard/pages/agent-control-room.js"></script>
+  <script src="/dashboard/knowledge-graph-d3.js"></script>
+  <script src="/dashboard/pages/factory-idea-factory.js"></script>
+  <script src="/dashboard/pages/multi-agent-chat.js"></script>
   <script src="/dashboard/gateway.js"></script>
   <script src="/dashboard/app.js"></script>
 </body>

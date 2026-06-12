@@ -1,5 +1,9 @@
+// ─── utils.js — Agentic OS shared UI utilities ────────────────────────────────
+
+// Fix #22: null guard so showToast never crashes if container is missing
 function showToast(message, type = 'info') {
   const container = document.getElementById('toastContainer');
+  if (!container) return;
   const icons = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
@@ -59,6 +63,23 @@ function toggleSidebar() {
   }
 }
 
+// Fix #1: single canonical loadTheme (no duplicate below)
+function loadTheme() {
+  const html = document.documentElement;
+  const current = localStorage.getItem('theme') || 'dark';
+  html.setAttribute('data-theme', current);
+  const sidebarCollapsed = localStorage.getItem('sidebarCollapsed');
+  if (sidebarCollapsed === 'true') {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) {
+      sidebar.classList.add('collapsed');
+      const icon = sidebar.querySelector('.toggle-icon');
+      if (icon) icon.style.transform = 'rotate(180deg)';
+    }
+  }
+}
+
+// Fix #1: single canonical toggleTheme
 function toggleTheme() {
   const html = document.documentElement;
   const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -66,20 +87,9 @@ function toggleTheme() {
   localStorage.setItem('theme', next);
 }
 
-function loadTheme() {
-  const saved = localStorage.getItem('theme');
-  if (saved) document.documentElement.setAttribute('data-theme', saved);
-  const sidebarCollapsed = localStorage.getItem('sidebarCollapsed');
-  if (sidebarCollapsed === 'true') {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.classList.add('collapsed');
-    const icon = sidebar.querySelector('.toggle-icon');
-    if (icon) icon.style.transform = 'rotate(180deg)';
-  }
-}
-
 function showModal(title, bodyHtml, footerHtml) {
   const container = document.getElementById('modalContainer');
+  if (!container) return;
   container.innerHTML = `
     <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
       <div class="modal">
@@ -95,7 +105,8 @@ function showModal(title, bodyHtml, footerHtml) {
 }
 
 function closeModal() {
-  document.getElementById('modalContainer').innerHTML = '';
+  const c = document.getElementById('modalContainer');
+  if (c) c.innerHTML = '';
 }
 
 function handleGlobalSearch(value) {
@@ -103,12 +114,14 @@ function handleGlobalSearch(value) {
   if (window.location.hash !== '#skills') navigate('skills');
 }
 
+// Fix #1: single canonical renderSkeleton
 function renderSkeleton(count = 3) {
   return Array(count).fill(0).map(() =>
     `<div class="card"><div class="skeleton" style="height:20px;width:60%;margin-bottom:12px"></div><div class="skeleton" style="height:14px;width:90%;margin-bottom:8px"></div><div class="skeleton" style="height:14px;width:40%"></div></div>`
   ).join('');
 }
 
+// Fix #1: single canonical PAGE_TITLES declaration (was duplicated)
 const PAGE_TITLES = {
   dashboard: { title: 'Dashboard', breadcrumb: 'Overview' },
   skills: { title: 'Skills Hub', breadcrumb: 'Browse & execute skills' },
@@ -152,4 +165,39 @@ const PAGE_TITLES = {
   'video-generator': { title: 'Video Generator', breadcrumb: 'Multi-provider video generation with job management' },
   'hermes-workspace': { title: 'Hermes Workspace V2', breadcrumb: 'Full control room: Chat · Memory · Skills · Inspector · Swarm' },
   'command-room': { title: 'Command Room', breadcrumb: 'Virtual office: Round-table · Grid · Office views' },
+  'factory-idea-factory': { title: 'Idea Factory', breadcrumb: 'AI-powered idea generation & research' },
+  'multi-agent-chat': { title: 'Agent Discussion', breadcrumb: 'Multi-agent collaborative chat' },
+  'agent-control-room': { title: 'Agent Control Room', breadcrumb: 'Full agent configuration & control' },
 };
+
+window.AGENT_META = {
+  opencode: { color: 'var(--blue)', icon: 'terminal', type: 'Code / DevOps' },
+  hermes: { color: 'var(--accent)', icon: 'brain', type: 'Memory / System' },
+  gemini: { color: 'var(--green)', icon: 'search', type: 'Research / Data' },
+  codex: { color: 'var(--purple)', icon: 'code', type: 'Code / Agentic' },
+  claude: { color: 'var(--orange)', icon: 'sparkle', type: 'Reasoning / Chat' },
+  antigravity: { color: 'var(--cyan)', icon: 'telescope', type: 'Research / Discovery' },
+  openclaw: { color: 'var(--red)', icon: 'spider', type: 'Orchestration' },
+  odysseus: { color: 'var(--teal)', icon: 'compass', type: 'Planning / Research' },
+  jarvis: { color: 'var(--yellow)', icon: 'mic', type: 'Voice / Executive' },
+};
+
+window.getAvailableModels = function() {
+  return [
+    { id: 'openai/gpt-4o', name: 'GPT-4o (OpenAI)' },
+    { id: 'anthropic/claude-3-opus', name: 'Claude 3 Opus (Anthropic)' },
+    { id: 'anthropic/claude-3-sonnet', name: 'Claude 3 Sonnet (Anthropic)' },
+    { id: 'anthropic/claude-3-haiku', name: 'Claude 3 Haiku (Anthropic)' },
+    { id: 'google/gemini-pro', name: 'Gemini Pro (Google)' },
+    { id: 'google/gemini-flash', name: 'Gemini Flash (Google)' },
+    { id: 'meta/llama-3-70b-instruct', name: 'Llama 3 70B (Meta)' },
+    { id: 'openrouter/owl-alpha', name: 'Owl Alpha (OpenRouter, Free)' },
+  ];
+};
+
+// Fix #2: logout function — was missing, called from index.html
+function logout() {
+  localStorage.removeItem('agentic_os_token');
+  localStorage.removeItem('agentic_os_user');
+  window.location.reload();
+}

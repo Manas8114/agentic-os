@@ -7,12 +7,9 @@ let wsReconnectDelay = 1000;
 const WS_MAX_RECONNECT_DELAY = 30000;
 const WS_URL = (location.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + location.host + '/ws';
 
+// Fix #18: consistent getAuthToken — falls back to local-dev-key, never throws
 function getAuthToken() {
-  // Try to get JWT token from localStorage
-  const token = localStorage.getItem('agentic_os_token');
-  if (token) return token;
-  // Fallback to dev API key
-  return 'dev-api-key-change-in-production';
+  return localStorage.getItem('agentic_os_token') || 'local-dev-key';
 }
 
 function buildWSUrl(baseUrl) {
@@ -27,9 +24,14 @@ function buildWSUrl(baseUrl) {
 
 async function loadPage(name) {
   if (pageCache[name]) return pageCache[name];
+  // Handle sub-routes like agent-control-room/hermes -> agent-control-room
+  const cacheKey = name.split('/')[0];
+  if (pageCache[cacheKey]) return pageCache[cacheKey];
   try {
-    await loadScript(`${PAGE_BASE}${name}.js`);
-    pageCache[name] = true;
+    // Load the base page script (e.g., agent-control-room.js for agent-control-room/hermes)
+    await loadScript(`${PAGE_BASE}${cacheKey}.js`);
+    pageCache[cacheKey] = true;
+    pageCache[name] = true; // Also cache the full path
   } catch (err) {
     showToast(`Failed to load page: ${name}`, 'error');
     throw err;
@@ -50,15 +52,20 @@ function loadScript(src) {
 async function navigate(page) {
   const hash = page || window.location.hash.slice(1) || 'dashboard';
   if (!hash) { window.location.hash = 'dashboard'; return; }
+  const basePage = hash.split('/')[0];
+  window.currentPage = hash;
 
   const bar = document.getElementById('topLoadingBar');
   if (bar) { bar.classList.add('active'); bar.style.width = '30%'; }
 
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  const navItem = document.querySelector(`[data-page="${hash}"]`);
+  const navItem = Array.from(document.querySelectorAll('.nav-item'))
+    .find(el => el.getAttribute('href') === `#${hash}`)
+    || Array.from(document.querySelectorAll('.nav-item'))
+      .find(el => el.dataset.page === basePage);
   if (navItem) navItem.classList.add('active');
 
-  const info = PAGE_TITLES[hash] || { title: 'Unknown', breadcrumb: '' };
+  const info = PAGE_TITLES[hash] || PAGE_TITLES[basePage] || { title: 'Unknown', breadcrumb: '' };
   document.getElementById('pageTitle').textContent = info.title;
   document.getElementById('pageBreadcrumb').textContent = info.breadcrumb;
 
@@ -67,12 +74,17 @@ async function navigate(page) {
 
   try {
     await loadPage(hash);
-    const renderFn = window[`render${capitalize(hash.replace(/-./g, m => m[1].toUpperCase()))}`];
+    const renderName = basePage
+      .split('-')
+      .filter(Boolean)
+      .map(capitalize)
+      .join('');
+    const renderFn = window[`render${renderName}`];
     if (renderFn) {
       content.innerHTML = '';
       content.className = 'page-content page-enter';
       if (bar) bar.style.width = '70%';
-      await renderFn();
+      await renderFn(hash);
       if (bar) { bar.style.width = '100%'; setTimeout(() => { bar.style.width = '0'; bar.classList.remove('active'); }, 400); }
     } else {
       content.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">Page not found</div><div class="empty-state-desc">The page "${hash}" doesn't have a render function</div></div>`;
@@ -89,7 +101,9 @@ function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
 function initWebSocket() {
   if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
 
-  ws = new WebSocket(buildWSUrl(WS_URL));
+  // Always connect — use stored token or fall back to local-dev-key
+  const wsUrl = buildWSUrl(WS_URL);
+  ws = new WebSocket(wsUrl);
 
   ws.onopen = () => {
     console.log('[WS] Connected');
@@ -212,6 +226,8 @@ window.wsReconnect = function() {
   wsReconnectDelay = 1000;
   initWebSocket();
 };
+
+window.renderPage = navigate;
 
 window.addEventListener('hashchange', () => navigate());
 window.addEventListener('DOMContentLoaded', () => {

@@ -1,0 +1,11 @@
+{
+  "name": "antigravity",
+  "version": "1.0.0",
+  "system_prompt": "You are the research and discovery specialist within Agentic OS. You handle: web research, deep discovery, experimentation, competitive analysis, technology scouting, and hypothesis-driven investigation. You excel at synthesizing information from multiple sources and identifying novel approaches.",
+  "allowed_tools": ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "WebSearch"],
+  "max_turns": 100,
+  "auto_approve": false,
+  "model": "openrouter/auto",
+  "temperature": 0.8,
+  "max_tokens": 8192
+}

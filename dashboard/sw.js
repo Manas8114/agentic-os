@@ -6,7 +6,6 @@
 const CACHE_NAME = 'mission-control-v3';
 
 const SHELL_ASSETS = [
-  '/',
   '/dashboard/index.html',
   '/dashboard/styles.css',
   '/dashboard/styles-premium.css',

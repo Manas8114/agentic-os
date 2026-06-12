@@ -1,35 +1,38 @@
 // Auth token helper - must be defined before api object since api.js loads before app.js
-function getAuthToken() {
+function getAuthHeaders() {
   const token = localStorage.getItem('agentic_os_token');
-  if (token) return token;
-  return 'dev-api-key-change-in-production';
+  // If it's a JWT (has 3 parts separated by dots), use Bearer token
+  if (token && token.split('.').length === 3) {
+    return { 'Authorization': `Bearer ${token}` };
+  }
+  return { 'X-API-Key': token || 'local-dev-key' };
 }
 
 const api = {
   async get(path) {
-    const r = await fetch(path, { headers: { 'X-API-Key': getAuthToken() } });
+    const r = await fetch(path, { headers: { ...getAuthHeaders() } });
     if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `Request failed: ${r.status}`); }
     return r.json();
   },
   async post(path, body = {}, controller) {
-    const opts = { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-API-Key': getAuthToken() }, body: JSON.stringify(body) };
+    const opts = { method: 'POST', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() }, body: JSON.stringify(body) };
     if (controller) opts.signal = controller.signal;
     const r = await fetch(path, opts);
     if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `Request failed: ${r.status}`); }
     return r.json();
   },
   async put(path, body = {}) {
-    const r = await fetch(path, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-API-Key': getAuthToken() }, body: JSON.stringify(body) });
+    const r = await fetch(path, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() }, body: JSON.stringify(body) });
     if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `Request failed: ${r.status}`); }
     return r.json();
   },
   async patch(path, body = {}) {
-    const r = await fetch(path, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-API-Key': getAuthToken() }, body: JSON.stringify(body) });
+    const r = await fetch(path, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() }, body: JSON.stringify(body) });
     if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `Request failed: ${r.status}`); }
     return r.json();
   },
   async del(path) {
-    const r = await fetch(path, { method: 'DELETE', headers: { 'X-API-Key': getAuthToken() } });
+    const r = await fetch(path, { method: 'DELETE', headers: { ...getAuthHeaders() } });
     if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `Request failed: ${r.status}`); }
     return r.json();
   },
@@ -50,7 +53,7 @@ const api = {
   getPlugins: () => api.get('/api/plugins'),
   installPlugin: (name) => api.post('/api/plugins/install', { name }),
   uninstallPlugin: (name) => api.post('/api/plugins/uninstall', { name }),
-  getBackups: () => api.get('/api/backups'),
+  getBackups: () => api.get('/api/backup'),
   createBackup: () => api.post('/api/backup'),
   restoreBackup: (file) => api.post('/api/backup/restore', { file }),
   getPrompts: () => api.get('/api/prompts'),

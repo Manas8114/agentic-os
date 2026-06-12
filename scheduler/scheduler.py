@@ -166,6 +166,30 @@ def execute_agent(agent: str, prompt: str) -> str:
         except Exception as e:
             return f"⚠ Error communicating with claude: {str(e)}"
 
+    elif agent == "codex":
+        try:
+            code, out, err = run_cli(["codex", "exec", prompt], timeout=60)
+        except subprocess.TimeoutExpired:
+            return f"⏱ Codex timed out.\n\nTry running `codex exec \"{prompt[:60]}\"` directly.\n\n**Message:** {prompt[:100]}"
+        if code == 0:
+            return (out or "").strip() or f"**Codex**\n\nProcessed your query.\n\n**Message:** {prompt}"
+        err_msg = (err or "").strip()
+        if "auth" in err_msg.lower() or "login" in err_msg.lower():
+            return f"**Codex needs auth**\n\nRun `codex auth login` to authenticate.\n\n**Details:** {err_msg[:200]}"
+        return err_msg or f"codex returned exit code {code}"
+
+    elif agent == "openclaw":
+        return f"**OpenClaw**\n\nRouting and orchestration agent. Coordinates task decomposition and agent handoffs.\n\n**Task:** {prompt[:200]}"
+
+    elif agent == "jarvis":
+        return f"**Jarvis**\n\nVoice-first executive assistant. Handles scheduling, task management, and agent coordination.\n\n**Command:** {prompt[:200]}"
+
+    elif agent == "odysseus":
+        return f"**Odysseus**\n\nAutonomous planning and research agent. Handles multi-step planning, deep research, and goal decomposition.\n\n**Objective:** {prompt[:200]}"
+
+    elif agent == "antigravity":
+        return f"**Antigravity**\n\nResearch and discovery specialist. Handles web research, experimentation, competitive analysis, and technology scouting.\n\n**Investigation:** {prompt[:200]}"
+
     else:
         return f"Unknown agent: {agent}"
 

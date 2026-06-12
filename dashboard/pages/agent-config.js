@@ -10,6 +10,11 @@ const agentMetaConfig = {
   hermes: { icon: '⚡', name: 'Hermes', desc: 'Memory & Scheduling', color: 'purple', configFile: 'agents/hermes/hermes.json' },
   gemini: { icon: '🧠', name: 'Gemini CLI', desc: 'Research & Analysis', color: 'green', configFile: 'agents/gemini/gemini-extension.json' },
   claude: { icon: '🤖', name: 'Claude', desc: 'Strategy & Architecture', color: 'orange', configFile: 'agents/claude/claude.json' },
+  codex: { icon: '🐙', name: 'Codex', desc: 'Code & CI/CD', color: 'teal', configFile: 'agents/codex/codex.json' },
+  antigravity: { icon: '🔭', name: 'Antigravity', desc: 'Research & Discovery', color: 'indigo', configFile: 'agents/antigravity/antigravity.json' },
+  openclaw: { icon: '🕸', name: 'OpenClaw', desc: 'Routing & Orchestration', color: 'violet', configFile: 'agents/openclaw/openclaw.json' },
+  odysseus: { icon: '🧭', name: 'Odysseus', desc: 'Planning & Execution', color: 'amber', configFile: 'agents/odysseus/odysseus.json' },
+  jarvis: { icon: '🎙', name: 'Jarvis', desc: 'Voice Assistant', color: 'pink', configFile: 'agents/jarvis/jarvis.json' },
 };
 
 async function renderAgentConfig() {
@@ -97,6 +102,11 @@ function checkApiKey(agentName) {
   switch (agentName) {
     case 'opencode':
     case 'hermes':
+    case 'codex':
+    case 'jarvis':
+    case 'odysseus':
+    case 'openclaw':
+    case 'antigravity':
       return keys.openrouter_key && keys.openrouter_key.length > 10;
     case 'gemini':
       return keys.gemini_key && keys.gemini_key.length > 10;
@@ -124,7 +134,7 @@ function switchAgentTab(agentName) {
 function renderTab(agentName) {
   const container = document.getElementById('agentTabContent');
   const config = agentConfigState.agents[agentName] || {};
-  const meta = agentMeta[agentName];
+  const meta = agentMetaConfig[agentName];
 
   container.innerHTML = `
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:24px">
@@ -211,13 +221,13 @@ function renderApiKeyForm(agentName) {
   // Different keys for different agents
   let fields = '';
 
-  if (['opencode', 'hermes'].includes(agentName)) {
+  if (['opencode', 'hermes', 'codex', 'jarvis', 'odysseus', 'openclaw', 'antigravity'].includes(agentName)) {
     const key = agentConfigState.apiKeys.openrouter_key || '';
     fields += `
       <div class="form-group">
         <label class="form-label">OpenRouter API Key</label>
         <input id="api_openrouter" class="form-input" type="password" value="${escapeHtml(key)}" placeholder="sk-or-v1-...">
-        <div class="form-hint">Used by opencode and Hermes for OpenRouter models</div>
+        <div class="form-hint">Used by ${agentName} for OpenRouter models</div>
       </div>
     `;
   }
@@ -312,6 +322,29 @@ function getAvailableModels(agentName) {
       { value: 'claude-3-opus-20240229', label: 'Claude 3 Opus' },
       { value: 'claude-3-sonnet-20240229', label: 'Claude 3 Sonnet' },
     ],
+    codex: [
+      { value: 'gpt-4o', label: 'GPT-4o' },
+      { value: 'gpt-4o-mini', label: 'GPT-4o Mini' },
+      { value: 'claude-3-5-sonnet', label: 'Claude 3.5 Sonnet' },
+    ],
+    antigravity: [
+      { value: 'openrouter/auto', label: 'Auto (OpenRouter)' },
+      { value: 'openrouter/owl-alpha', label: 'Owl Alpha' },
+      { value: 'perplexity/sonar', label: 'Perplexity Sonar' },
+    ],
+    openclaw: [
+      { value: 'openrouter/auto', label: 'Auto (OpenRouter)' },
+      { value: 'openrouter/owl-alpha', label: 'Owl Alpha' },
+    ],
+    odysseus: [
+      { value: 'openrouter/auto', label: 'Auto (OpenRouter)' },
+      { value: 'openrouter/owl-alpha', label: 'Owl Alpha' },
+      { value: 'anthropic/claude-3.5-sonnet', label: 'Claude 3.5 Sonnet' },
+    ],
+    jarvis: [
+      { value: 'openrouter/owl-alpha', label: 'Owl Alpha' },
+      { value: 'openrouter/auto', label: 'Auto (OpenRouter)' },
+    ],
   };
   return modelLists[agentName] || [{ value: 'default', label: 'Default' }];
 }
@@ -391,7 +424,7 @@ async function saveAllAgentConfigs() {
     for (const [name, config] of Object.entries(agentConfigState.agents)) {
       if (name === 'opencode') continue; // Skip opencode for now
       
-      const meta = agentMeta[name];
+      const meta = agentMetaConfig[name];
       const configData = {
         ...config,
         binary: document.getElementById(`config_${name}_binary`)?.value || config.binary,

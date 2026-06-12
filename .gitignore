@@ -11,3 +11,7 @@ audit/*
 data/settings.json
 data/chat-history.json
 data/cost-history.json
+
+# Garbage pip install artifacts
+=*
+nul

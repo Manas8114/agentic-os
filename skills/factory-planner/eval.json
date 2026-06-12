@@ -1,0 +1,9 @@
+{
+    "criteria": [
+        {"name": "Task Granularity", "weight": 0.25, "description": "Tasks are atomic and executable"},
+        {"name": "Dependency Accuracy", "weight": 0.25, "description": "Dependencies correctly identified"},
+        {"name": "Agent Assignment", "weight": 0.20, "description": "Right agent for each task type"},
+        {"name": "Estimation Quality", "weight": 0.15, "description": "Effort estimates match historical data"},
+        {"name": "Milestone Clarity", "weight": 0.15, "description": "Milestones are measurable deliverables"}
+    ]
+}

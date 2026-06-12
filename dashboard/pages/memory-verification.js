@@ -79,8 +79,13 @@ async function runVerification() {
 
   try {
     const data = await api.verifyMemory();
-    memoryVerifyState.checks = data.checks || [];
-    memoryVerifyState.overallStatus = data.overall_status || 'unknown';
+    // API returns checks as object with named keys, convert to array
+    const checksObj = data.checks || {};
+    memoryVerifyState.checks = Object.entries(checksObj).map(([key, check]) => ({
+      check: key,
+      ...check
+    }));
+    memoryVerifyState.overallStatus = data.overall || 'unknown';
     memoryVerifyState.summary = data.summary || { passed: 0, warnings: 0, failed: 0, total: 0 };
     memoryVerifyState.lastRun = data.timestamp;
     

@@ -409,4 +409,4 @@ async function loadHandoffs() {
   }
 }
 
-window.renderSkillChainPage = renderSkillChainPage;
+window.renderSkillChain = renderSkillChainPage;

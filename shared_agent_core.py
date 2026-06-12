@@ -32,6 +32,7 @@ class AgentType(Enum):
     CODEX = "codex"
     JARVIS = "jarvis"
     ODYSSEUS = "odysseus"
+    ANTIGRAVITY = "antigravity"
 
 
 @dataclass
@@ -81,6 +82,9 @@ AGENT_CAPABILITY_PROFILES: Dict[AgentType, AgentCapabilities] = {
     ),
     AgentType.ODYSSEUS: AgentCapabilities(
         planning=True, reasoning=True, skills=True, memory=True, web_search=True
+    ),
+    AgentType.ANTIGRAVITY: AgentCapabilities(
+        web_search=True, reasoning=True, skills=True, planning=True, multimodal=True
     ),
 }
 
@@ -831,6 +835,18 @@ def create_agent_core(base_dir: Path, agent_type: AgentType,
             auto_approve=False,
             allowed_tools=["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Task", "WebSearch"],
             capabilities=AGENT_CAPABILITY_PROFILES[AgentType.ODYSSEUS],
+        ),
+        AgentType.ANTIGRAVITY: AgentConfig(
+            name="antigravity",
+            agent_type=AgentType.ANTIGRAVITY,
+            system_prompt="You are the research and discovery specialist within Agentic OS. Handle: web research, deep discovery, experimentation, competitive analysis, technology scouting, and hypothesis-driven investigation. You excel at synthesizing information from multiple sources and identifying novel approaches.",
+            model="openrouter/auto",
+            max_turns=100,
+            auto_approve=False,
+            temperature=0.8,
+            max_tokens=8192,
+            allowed_tools=["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Task", "WebSearch"],
+            capabilities=AGENT_CAPABILITY_PROFILES[AgentType.ANTIGRAVITY],
         ),
     }
     

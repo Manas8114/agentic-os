@@ -899,7 +899,7 @@ async function hwLaunchSwarm() {
   document.getElementById('hwSwarmStatus').classList.add('badge-success');
   document.getElementById('hwSwarmBtn').disabled = true;
   document.getElementById('hwSwarmBtn').textContent = '⏳ Running…';
-  const cancelBtn = document.getElementById('hwSwarmCancelBtn');
+  let cancelBtn = document.getElementById('hwSwarmCancelBtn');
   if (cancelBtn) cancelBtn.style.display = 'inline-flex';
 
   const log = document.getElementById('hwSwarmActivity');
@@ -948,7 +948,7 @@ Complete your role's task and pass a clear summary to the next agent.`;
   HW.swarmAbortController = null;
   const btn = document.getElementById('hwSwarmBtn');
   if (btn) { btn.disabled = false; btn.textContent = '🐝 Launch Swarm'; }
-  const cancelBtn = document.getElementById('hwSwarmCancelBtn');
+  cancelBtn = document.getElementById('hwSwarmCancelBtn');
   if (cancelBtn) cancelBtn.style.display = 'none';
   const status = document.getElementById('hwSwarmStatus');
   if (status) { status.textContent = '✅ Completed'; status.classList.remove('badge-success'); }
@@ -962,7 +962,7 @@ function hwCancelSwarm() {
   HW.swarmRunning = false;
   const btn = document.getElementById('hwSwarmBtn');
   if (btn) { btn.disabled = false; btn.textContent = '🐝 Launch Swarm'; }
-  const cancelBtn = document.getElementById('hwSwarmCancelBtn');
+  cancelBtn = document.getElementById('hwSwarmCancelBtn');
   if (cancelBtn) cancelBtn.style.display = 'none';
   const status = document.getElementById('hwSwarmStatus');
   if (status) { status.textContent = '⚫ Cancelled'; status.classList.remove('badge-success'); }
