@@ -94,7 +94,11 @@ const NotificationCenter = (function() {
 
     // Also show as toast if not persistent
     if (!persistent) {
-      showToast(message, priority === 'critical' || priority === 'high' ? 'error' : priority);
+      if (window._originalShowToast) {
+        window._originalShowToast(message, priority === 'critical' || priority === 'high' ? 'error' : priority);
+      } else {
+        showToast(message, priority === 'critical' || priority === 'high' ? 'error' : priority);
+      }
     }
 
     // Auto-dismiss based on priority TTL

@@ -32,79 +32,79 @@ const NODE_TYPES = {
 async function renderWorkflowDesigner() {
   const content = document.getElementById('pageContent');
   content.innerHTML = `
-    <div class="page-header">
-      <div class="page-header-left">
-        <h1 class="page-title">Workflow Designer</h1>
-        <p class="page-subtitle">Visual drag-and-drop workflow builder with node-based editing</p>
+    <div class="mc-header">
+      <div>
+        <h1 class="mc-title">Workflow Designer</h1>
+        <p class="mc-subtitle">Visual drag-and-drop workflow builder with node-based editing</p>
       </div>
-      <div class="page-header-right" style="display:flex;gap:8px">
-        <button class="btn btn-ghost btn-sm" onclick="newWorkflow()">🆕 New</button>
-        <button class="btn btn-ghost btn-sm" onclick="saveWorkflow()">💾 Save</button>
-        <button class="btn btn-ghost btn-sm" onclick="loadWorkflow()">📂 Load</button>
-        <button class="btn btn-primary btn-sm" onclick="runWorkflow()">▶️ Run</button>
+      <div style="display:flex;gap:8px">
+        <button class="mc-btn" onclick="newWorkflow()">🆕 New</button>
+        <button class="mc-btn" onclick="saveWorkflow()">💾 Save</button>
+        <button class="mc-btn" onclick="loadWorkflow()">📂 Load</button>
+        <button class="mc-btn primary" onclick="runWorkflow()">▶️ Run</button>
       </div>
     </div>
 
     <!-- Toolbar -->
-    <div class="card" style="margin-bottom:8px">
-      <div class="card-body" style="padding:8px 16px">
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-          <!-- Node Palette -->
-          <div style="display:flex;gap:4px;flex-wrap:wrap" id="nodePalette"></div>
-          
-          <div style="flex:1"></div>
-          
-          <!-- Zoom Controls -->
-          <div style="display:flex;align-items:center;gap:8px">
-            <button class="btn btn-ghost btn-icon" onclick="zoomOut()" title="Zoom Out">🔍⁻</button>
-            <span id="zoomLevel" style="font-size:13px;font-family:var(--font-mono);min-width:60px;text-align:center">100%</span>
-            <button class="btn btn-ghost btn-icon" onclick="zoomIn()" title="Zoom In">🔍⁺</button>
-            <button class="btn btn-ghost btn-icon" onclick="resetView()" title="Reset View">⌖</button>
-            <button class="btn btn-ghost btn-icon" onclick="undo()" title="Undo (Ctrl+Z)" id="undoBtn" disabled>↶</button>
-            <button class="btn btn-ghost btn-icon" onclick="redo()" title="Redo (Ctrl+Y)" id="redoBtn" disabled>↷</button>
-          </div>
+    <!-- Toolbar -->
+    <div class="mc-card" style="margin-bottom:8px;padding:8px 16px;">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <!-- Node Palette -->
+        <div style="display:flex;gap:4px;flex-wrap:wrap" id="nodePalette"></div>
+        
+        <div style="flex:1"></div>
+        
+        <!-- Zoom Controls -->
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="mc-btn" onclick="zoomOut()" title="Zoom Out" style="padding:4px 8px;">🔍⁻</button>
+          <span id="zoomLevel" style="font-size:13px;font-family:var(--font-mono);min-width:60px;text-align:center;color:var(--text-primary);">100%</span>
+          <button class="mc-btn" onclick="zoomIn()" title="Zoom In" style="padding:4px 8px;">🔍⁺</button>
+          <button class="mc-btn" onclick="resetView()" title="Reset View" style="padding:4px 8px;">⌖</button>
+          <button class="mc-btn" onclick="undo()" title="Undo (Ctrl+Z)" id="undoBtn" disabled style="padding:4px 8px;">↶</button>
+          <button class="mc-btn" onclick="redo()" title="Redo (Ctrl+Y)" id="redoBtn" disabled style="padding:4px 8px;">↷</button>
         </div>
       </div>
     </div>
 
     <!-- Main Canvas Area -->
-    <div class="card" style="height:calc(100vh - 300px);min-height:500px;overflow:hidden;position:relative">
+    <!-- Main Canvas Area -->
+    <div class="mc-card" style="height:calc(100vh - 300px);min-height:500px;overflow:hidden;position:relative;padding:0;">
       <!-- Mini-map -->
       <canvas id="miniMap" style="position:absolute;top:16px;right:16px;width:200px;height:150px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-primary);z-index:10;box-shadow:var(--shadow-lg);display:none"></canvas>
       
       <!-- Main Canvas -->
-      <canvas id="workflowCanvas" style="width:100%;height:100%;cursor:crosshair;touch-action:none"></canvas>
+      <canvas id="workflowCanvas" style="width:100%;height:100%;cursor:crosshair;touch-action:none;background:var(--bg-primary);"></canvas>
       
       <!-- Context Menu -->
-      <div id="nodeContextMenu" class="context-menu" style="display:none;position:absolute;z-index:100">
-        <div class="context-menu-item" onclick="editNodeConfig()"><span>⚙</span> Configure</div>
-        <div class="context-menu-item" onclick="duplicateNode()"><span>📋</span> Duplicate</div>
-        <div class="context-menu-item" onclick="deleteSelectedNode()"><span>🗑</span> Delete</div>
-        <div class="context-menu-separator"></div>
-        <div class="context-menu-item" onclick="addEdgeFromSelected()"><span>🔗</span> Connect</div>
+      <div id="nodeContextMenu" class="context-menu" style="display:none;position:absolute;z-index:100;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-lg);padding:4px;min-width:160px;">
+        <div class="context-menu-item" style="padding:8px 12px;cursor:pointer;font-size:13px;color:var(--text-primary);border-radius:var(--radius);" onclick="editNodeConfig()" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''"><span>⚙</span> Configure</div>
+        <div class="context-menu-item" style="padding:8px 12px;cursor:pointer;font-size:13px;color:var(--text-primary);border-radius:var(--radius);" onclick="duplicateNode()" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''"><span>📋</span> Duplicate</div>
+        <div class="context-menu-item" style="padding:8px 12px;cursor:pointer;font-size:13px;color:var(--red);border-radius:var(--radius);" onclick="deleteSelectedNode()" onmouseover="this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.background=''"><span>🗑</span> Delete</div>
+        <div class="context-menu-separator" style="height:1px;background:var(--border);margin:4px 0;"></div>
+        <div class="context-menu-item" style="padding:8px 12px;cursor:pointer;font-size:13px;color:var(--text-primary);border-radius:var(--radius);" onclick="addEdgeFromSelected()" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''"><span>🔗</span> Connect</div>
       </div>
       
       <!-- Node Config Panel (slide-in) -->
-      <div id="nodeConfigPanel" class="slide-panel" style="display:none;position:absolute;top:0;right:0;width:360px;height:100%;background:var(--bg-card);border-left:1px solid var(--border);box-shadow:var(--shadow-xl);z-index:20;overflow-y:auto">
-        <div style="padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <h3 id="configNodeTitle">Node Configuration</h3>
-          <button class="btn btn-ghost btn-icon" onclick="closeNodeConfig()" title="Close">✕</button>
+      <div id="nodeConfigPanel" class="slide-panel" style="display:none;position:absolute;top:0;right:0;width:360px;height:100%;background:var(--bg-card);border-left:1px solid var(--border);box-shadow:var(--shadow-xl);z-index:20;overflow-y:auto;transition:transform 0.3s ease;">
+        <div style="padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.02);">
+          <h3 id="configNodeTitle" style="margin:0;font-size:14px;font-weight:600;color:var(--text-primary);">Node Configuration</h3>
+          <button class="mc-btn" onclick="closeNodeConfig()" title="Close" style="padding:4px 8px;border:none;">✕</button>
         </div>
         <div id="configNodeBody" style="padding:16px"></div>
       </div>
     </div>
 
     <!-- Status Bar -->
-    <div class="card" style="margin-top:8px">
-      <div class="card-body" style="padding:8px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+    <div class="mc-card" style="margin-top:8px;padding:8px 16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
         <div style="display:flex;gap:16px;font-size:12px;color:var(--text-muted)">
-          <span>Nodes: <strong id="nodeCount">0</strong></span>
-          <span>Edges: <strong id="edgeCount">0</strong></span>
-          <span>Zoom: <strong id="zoomPercent">100%</strong></span>
+          <span>Nodes: <strong id="nodeCount" style="color:var(--text-primary);">0</strong></span>
+          <span>Edges: <strong id="edgeCount" style="color:var(--text-primary);">0</strong></span>
+          <span>Zoom: <strong id="zoomPercent" style="color:var(--text-primary);">100%</strong></span>
         </div>
         <div style="display:flex;gap:8px;font-size:12px;color:var(--text-muted)">
           <span id="mousePos">0, 0</span>
-          <span id="selectionInfo"></span>
+          <span id="selectionInfo" style="color:var(--accent);"></span>
         </div>
       </div>
     </div>
@@ -164,9 +164,9 @@ function renderNodePalette() {
   
   container.innerHTML = Object.entries(NODE_TYPES).map(([type, def]) => `
     <div class="palette-node" draggable="true" data-node-type="${type}" 
-         style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;cursor:grab;transition:var(--transition)"
+         style="display:flex;align-items:center;gap:6px;padding:6px 10px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;cursor:grab;transition:var(--transition);color:var(--text-primary);"
          onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-      <span style="font-size:14px">${def.icon}</span>
+      <span style="font-size:14px;color:${def.color}">${def.icon}</span>
       <span style="font-weight:500">${def.label}</span>
     </div>
   `).join('');
@@ -807,28 +807,28 @@ function closeNodeConfig() {
 function renderNodeConfigForm(node) {
   const def = NODE_TYPES[node.type];
   let html = `
-    <div class="form-group">
-      <label class="form-label">Label</label>
-      <input class="form-input" value="${escapeHtml(node.label)}" onchange="updateNodeProperty('${node.id}', 'label', this.value)">
+    <div style="margin-bottom:12px;">
+      <label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Label</label>
+      <input class="mc-input" value="${escapeHtml(node.label)}" onchange="updateNodeProperty('${node.id}', 'label', this.value)" style="width:100%;">
     </div>
-    <div class="form-group">
-      <label class="form-label">Type: ${def.label}</label>
-      <div class="form-hint">Node type cannot be changed</div>
+    <div style="margin-bottom:12px;">
+      <label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Type: <span style="color:var(--text-primary);">${def.label}</span></label>
+      <div style="font-size:11px;color:var(--text-muted);">Node type cannot be changed</div>
     </div>
   `;
   
   // Type-specific config
   if (node.type === 'agent' || node.type === 'skill') {
     html += `
-      <div class="form-group"><label class="form-label">Prompt / Input</label><textarea class="form-textarea" rows="4" onchange="updateNodeProperty('${node.id}', 'config.prompt', this.value)">${escapeHtml(node.config.prompt || '')}</textarea></div>
+      <div style="margin-bottom:12px;"><label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Prompt / Input</label><textarea class="mc-input" rows="4" onchange="updateNodeProperty('${node.id}', 'config.prompt', this.value)" style="width:100%;resize:vertical;">${escapeHtml(node.config.prompt || '')}</textarea></div>
     `;
   }
   
   if (node.type === 'agent') {
     html += `
-      <div class="form-group">
-        <label class="form-label">Agent</label>
-        <select class="form-select" onchange="updateNodeProperty('${node.id}', 'config.agent', this.value)">
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Agent</label>
+        <select class="mc-input" onchange="updateNodeProperty('${node.id}', 'config.agent', this.value)" style="width:100%;">
           <option value="opencode" ${node.config.agent === 'opencode' ? 'selected' : ''}>opencode</option>
           <option value="hermes" ${node.config.agent === 'hermes' ? 'selected' : ''}>hermes</option>
           <option value="gemini" ${node.config.agent === 'gemini' ? 'selected' : ''}>Gemini CLI</option>
@@ -840,49 +840,49 @@ function renderNodeConfigForm(node) {
   
   if (node.type === 'skill') {
     html += `
-      <div class="form-group">
-        <label class="form-label">Skill</label>
-        <input class="form-input" value="${escapeHtml(node.config.skill || '')}" onchange="updateNodeProperty('${node.id}', 'config.skill', this.value)">
+      <div style="margin-bottom:12px;">
+        <label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Skill</label>
+        <input class="mc-input" value="${escapeHtml(node.config.skill || '')}" onchange="updateNodeProperty('${node.id}', 'config.skill', this.value)" style="width:100%;">
       </div>
     `;
   }
   
   if (node.type === 'condition') {
     html += `
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Field</label><input class="form-input" value="${escapeHtml(node.config.field || '')}" onchange="updateNodeProperty('${node.id}', 'config.field', this.value)"></div>
-        <div class="form-group"><label class="form-label">Operator</label><select class="form-select" onchange="updateNodeProperty('${node.id}', 'config.operator', this.value)"><option value="equals" ${node.config.operator === 'equals' ? 'selected' : ''}>Equals</option><option value="contains" ${node.config.operator === 'contains' ? 'selected' : ''}>Contains</option><option value="gt" ${node.config.operator === 'gt' ? 'selected' : ''}>Greater Than</option><option value="lt" ${node.config.operator === 'lt' ? 'selected' : ''}>Less Than</option></select></div>
+      <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <div style="flex:1;"><label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Field</label><input class="mc-input" value="${escapeHtml(node.config.field || '')}" onchange="updateNodeProperty('${node.id}', 'config.field', this.value)" style="width:100%;"></div>
+        <div style="flex:1;"><label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Operator</label><select class="mc-input" onchange="updateNodeProperty('${node.id}', 'config.operator', this.value)" style="width:100%;"><option value="equals" ${node.config.operator === 'equals' ? 'selected' : ''}>Equals</option><option value="contains" ${node.config.operator === 'contains' ? 'selected' : ''}>Contains</option><option value="gt" ${node.config.operator === 'gt' ? 'selected' : ''}>Greater Than</option><option value="lt" ${node.config.operator === 'lt' ? 'selected' : ''}>Less Than</option></select></div>
       </div>
-      <div class="form-group"><label class="form-label">Value</label><input class="form-input" value="${escapeHtml(node.config.value || '')}" onchange="updateNodeProperty('${node.id}', 'config.value', this.value)"></div>
+      <div style="margin-bottom:12px;"><label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Value</label><input class="mc-input" value="${escapeHtml(node.config.value || '')}" onchange="updateNodeProperty('${node.id}', 'config.value', this.value)" style="width:100%;"></div>
     `;
   }
   
   if (node.type === 'loop') {
     html += `
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Count</label><input class="form-input" type="number" value="${node.config.count || 3}" onchange="updateNodeProperty('${node.id}', 'config.count', parseInt(this.value))"></div>
-        <div class="form-group"><label class="form-label">Collection</label><input class="form-input" value="${escapeHtml(node.config.collection || '')}" onchange="updateNodeProperty('${node.id}', 'config.collection', this.value)"></div>
+      <div style="display:flex;gap:12px;margin-bottom:12px;">
+        <div style="flex:1;"><label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Count</label><input class="mc-input" type="number" value="${node.config.count || 3}" onchange="updateNodeProperty('${node.id}', 'config.count', parseInt(this.value))" style="width:100%;"></div>
+        <div style="flex:2;"><label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Collection</label><input class="mc-input" value="${escapeHtml(node.config.collection || '')}" onchange="updateNodeProperty('${node.id}', 'config.collection', this.value)" style="width:100%;"></div>
       </div>
     `;
   }
   
   if (node.type === 'transform') {
     html += `
-      <div class="form-group"><label class="form-label">Transform Code</label><textarea class="form-textarea" rows="8" style="font-family:var(--font-mono);font-size:12px" onchange="updateNodeProperty('${node.id}', 'config.code', this.value)">${escapeHtml(node.config.code || 'return input;')}</textarea></div>
+      <div style="margin-bottom:12px;"><label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Transform Code</label><textarea class="mc-input" rows="8" style="font-family:var(--font-mono);font-size:12px;width:100%;resize:vertical;" onchange="updateNodeProperty('${node.id}', 'config.code', this.value)">${escapeHtml(node.config.code || 'return input;')}</textarea></div>
     `;
   }
   
   if (node.type === 'webhook') {
     html += `
-      <div class="form-group"><label class="form-label">URL</label><input class="form-input" value="${escapeHtml(node.config.url || '')}" onchange="updateNodeProperty('${node.id}', 'config.url', this.value)"></div>
-      <div class="form-group"><label class="form-label">Method</label><select class="form-select" onchange="updateNodeProperty('${node.id}', 'config.method', this.value)"><option value="POST" ${node.config.method === 'POST' ? 'selected' : ''}>POST</option><option value="GET" ${node.config.method === 'GET' ? 'selected' : ''}>GET</option><option value="PUT" ${node.config.method === 'PUT' ? 'selected' : ''}>PUT</option></select></div>
+      <div style="margin-bottom:12px;"><label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">URL</label><input class="mc-input" value="${escapeHtml(node.config.url || '')}" onchange="updateNodeProperty('${node.id}', 'config.url', this.value)" style="width:100%;"></div>
+      <div style="margin-bottom:12px;"><label style="display:block;font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:6px;">Method</label><select class="mc-input" onchange="updateNodeProperty('${node.id}', 'config.method', this.value)" style="width:100%;"><option value="POST" ${node.config.method === 'POST' ? 'selected' : ''}>POST</option><option value="GET" ${node.config.method === 'GET' ? 'selected' : ''}>GET</option><option value="PUT" ${node.config.method === 'PUT' ? 'selected' : ''}>PUT</option></select></div>
     `;
   }
   
   html += `
     <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:8px">
-      <button class="btn btn-danger btn-sm" onclick="deleteNode('${node.id}');closeNodeConfig()">🗑 Delete</button>
-      <button class="btn btn-ghost btn-sm" onclick="duplicateNode('${node.id}');closeNodeConfig()">📋 Duplicate</button>
+      <button class="mc-btn" style="color:var(--red);border-color:rgba(239,68,68,0.3);" onclick="deleteNode('${node.id}');closeNodeConfig()">🗑 Delete</button>
+      <button class="mc-btn" onclick="duplicateNode('${node.id}');closeNodeConfig()">📋 Duplicate</button>
     </div>
   `;
   

@@ -135,6 +135,14 @@
       "author": "Agentic OS",
       "installed": "2026-06-12T00:00:00Z",
       "type": "built-in"
+    },
+    {
+      "name": "notebooklm-research",
+      "version": "1.0.0",
+      "description": "NotebookLM MCP Integration for Audio Overviews and Deep Dives",
+      "author": "Agentic OS",
+      "installed": "2026-06-13T00:00:00Z",
+      "type": "built-in"
     }
   ]
 }

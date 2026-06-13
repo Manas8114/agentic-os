@@ -114,7 +114,7 @@ function renderIdeaStage() {
         </div>
         
         <div class="flex" style="gap:12px;margin-top:24px">
-          <button class="btn btn-primary" style="flex:1" onclick="generateRequirements()">
+          <button id="genReqBtn" class="btn btn-primary" style="flex:1" onclick="generateRequirements()">
             <span id="genReqBtnText">🚀 Generate Requirements</span>
             <span id="genReqBtnSpinner" class="loading-spinner" style="width:16px;height:16px;display:none;margin-left:8px"></span>
           </button>

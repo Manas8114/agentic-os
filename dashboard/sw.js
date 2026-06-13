@@ -3,7 +3,7 @@
 // API calls are network-first with graceful fallback.
 // ──────────────────────────────────────────────────────────────────────────────
 
-const CACHE_NAME = 'mission-control-v3';
+const CACHE_NAME = 'mission-control-v4';
 
 const SHELL_ASSETS = [
   '/dashboard/index.html',
@@ -65,7 +65,9 @@ self.addEventListener('fetch', (event) => {
           return response;
         }
         const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        if (request.url.startsWith('http')) {
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        }
         return response;
       });
     })

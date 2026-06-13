@@ -1,12 +1,12 @@
 async function renderSettings() {
   const content = document.getElementById('pageContent');
   content.innerHTML = `
-    <div class="page-header">
-      <div class="page-header-left">
-        <h1 class="page-title">Settings</h1>
-        <p class="page-subtitle">Configure Agentic OS behavior</p>
+    <div class="mc-header">
+      <div>
+        <h1 class="mc-title">Settings</h1>
+        <p class="mc-subtitle">Configure Agentic OS behavior</p>
       </div>
-      <button class="btn btn-primary" onclick="saveAllSettings()">💾 Save All</button>
+      <button class="mc-btn primary" onclick="saveAllSettings()">💾 Save All</button>
     </div>
     <div id="settingsForm"><div class="loading"><div class="loading-spinner"></div></div></div>
   `;
@@ -18,96 +18,96 @@ async function renderSettings() {
     const limits = settings.free_tier_limits || {};
     const apiKeys = settings.api_keys || {};
 
-    document.getElementById('settingsForm').innerHTML = `
-      <div class="card">
-        <div class="card-header"><span class="card-title">🤖 Agent Preferences</span></div>
-        <div class="grid grid-3">
+    (document.getElementById('settingsForm') || {}).innerHTML = `
+      <div class="mc-card" style="margin-bottom:16px;">
+        <div style="font-weight:600;font-size:14px;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px;">🤖 Agent Preferences</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;">
           ${['opencode', 'hermes', 'gemini'].map(a => `
-            <div class="card" style="padding:14px">
-              <div class="flex items-center gap-2 mb-2">
-                <div class="agent-dot ${prefs[a] && prefs[a].enabled !== false ? 'online' : 'offline'}" style="width:10px;height:10px"></div>
-                <strong style="font-size:13px">${a}</strong>
+            <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:6px;padding:14px;">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+                <div class="agent-dot ${prefs[a] && prefs[a].enabled !== false ? 'online' : 'offline'}" style="width:10px;height:10px;border-radius:50%;background:${prefs[a] && prefs[a].enabled !== false ? 'var(--green)' : 'var(--text-muted)'};box-shadow:${prefs[a] && prefs[a].enabled !== false ? '0 0 8px var(--green)' : 'none'}"></div>
+                <strong style="font-size:13px;color:var(--text-primary);text-transform:capitalize;">${a}</strong>
               </div>
-              <label class="switch" style="margin:8px 0">
-                <input type="checkbox" id="agent_${a}" ${prefs[a] && prefs[a].enabled !== false ? 'checked' : ''} onchange="toggleAgent('${a}')">
-                <span class="switch-slider"></span>
+              <label class="switch" style="margin:8px 0;display:inline-block;position:relative;width:40px;height:22px;">
+                <input type="checkbox" id="agent_${a}" ${prefs[a] && prefs[a].enabled !== false ? 'checked' : ''} onchange="toggleAgent('${a}')" style="opacity:0;width:0;height:0;">
+                <span class="switch-slider" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:var(--bg-panel);border:1px solid var(--border);transition:.4s;border-radius:34px;"></span>
               </label>
-              <div class="form-group" style="margin-bottom:0;margin-top:8px">
-                <label class="form-label">Binary Path</label>
-                <input id="bin_${a}" class="form-input" value="${(prefs[a] && prefs[a].binary) || a}" style="font-size:12px">
+              <div style="margin-top:12px;">
+                <label style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;display:block;">Binary Path</label>
+                <input id="bin_${a}" class="mc-input" value="${(prefs[a] && prefs[a].binary) || a}">
               </div>
             </div>
           `).join('')}
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header"><span class="card-title">🎨 Dashboard</span></div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Port</label>
-            <input id="setPort" class="form-input" type="number" value="${dashboard.port || 8080}">
+      <div class="mc-card" style="margin-bottom:16px;">
+        <div style="font-weight:600;font-size:14px;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px;">🎨 Dashboard</div>
+        <div style="display:flex;gap:16px;margin-bottom:16px;">
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Port</label>
+            <input id="setPort" class="mc-input" type="number" value="${dashboard.port || 8080}">
           </div>
-          <div class="form-group">
-            <label class="form-label">Host</label>
-            <input id="setHost" class="form-input" value="${dashboard.host || '127.0.0.1'}">
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Host</label>
+            <input id="setHost" class="mc-input" value="${dashboard.host || '127.0.0.1'}">
           </div>
         </div>
-        <div class="form-group">
+        <div>
           <label class="switch" style="width:auto;display:flex;align-items:center;gap:10px">
             <input type="checkbox" id="setDarkMode" ${dashboard.dark_mode !== false ? 'checked' : ''}>
             <span class="switch-slider" style="position:relative;display:inline-block;width:40px;height:22px"></span>
-            <span style="font-size:13px">Dark Mode</span>
+            <span style="font-size:13px;color:var(--text-primary);">Dark Mode</span>
           </label>
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-header"><span class="card-title">🔑 API Keys</span></div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Gemini API Key</label>
-            <input id="keyGemini" class="form-input" type="password" value="${apiKeys.gemini || ''}" placeholder="Enter Gemini API key">
+      <div class="mc-card" style="margin-bottom:16px;">
+        <div style="font-weight:600;font-size:14px;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px;">🔑 API Keys</div>
+        <div style="display:flex;gap:16px;">
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Gemini API Key</label>
+            <input id="keyGemini" class="mc-input" type="password" value="${apiKeys.gemini || ''}" placeholder="Enter Gemini API key">
           </div>
-          <div class="form-group">
-            <label class="form-label">OpenRouter API Key</label>
-            <input id="keyOpenrouter" class="form-input" type="password" value="${apiKeys.openrouter || ''}" placeholder="Enter OpenRouter API key">
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header"><span class="card-title">💰 Free Tier Limits</span></div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Gemini Flash — Requests/Day</label>
-            <input id="limGReqs" class="form-input" type="number" value="${(limits.gemini_flash && limits.gemini_flash.requests_per_day) || 1500}">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Gemini Flash — Tokens/Day</label>
-            <input id="limGTokens" class="form-input" type="number" value="${(limits.gemini_flash && limits.gemini_flash.tokens_per_day) || 1000000}">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">OpenRouter Free — Requests/Day</label>
-            <input id="limORReqs" class="form-input" type="number" value="${(limits.openrouter_free && limits.openrouter_free.requests_per_day) || 100}">
-          </div>
-          <div class="form-group">
-            <label class="form-label">OpenRouter Free — Tokens/Day</label>
-            <input id="limORTokens" class="form-input" type="number" value="${(limits.openrouter_free && limits.openrouter_free.tokens_per_day) || 200000}">
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">OpenRouter API Key</label>
+            <input id="keyOpenrouter" class="mc-input" type="password" value="${apiKeys.openrouter || ''}" placeholder="Enter OpenRouter API key">
           </div>
         </div>
       </div>
 
-      <div class="card" style="border-color:var(--red)">
-        <div class="card-header"><span class="card-title" style="color:var(--red)">⚠ Danger Zone</span></div>
-        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">Reset all settings to factory defaults.</p>
-        <button class="btn btn-danger" onclick="resetSettings()">Reset to Defaults</button>
+      <div class="mc-card" style="margin-bottom:16px;">
+        <div style="font-weight:600;font-size:14px;color:var(--text-primary);margin-bottom:16px;display:flex;align-items:center;gap:8px;">💰 Free Tier Limits</div>
+        <div style="display:flex;gap:16px;margin-bottom:16px;">
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Gemini Flash — Requests/Day</label>
+            <input id="limGReqs" class="mc-input" type="number" value="${(limits.gemini_flash && limits.gemini_flash.requests_per_day) || 1500}">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">Gemini Flash — Tokens/Day</label>
+            <input id="limGTokens" class="mc-input" type="number" value="${(limits.gemini_flash && limits.gemini_flash.tokens_per_day) || 1000000}">
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;">
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">OpenRouter Free — Requests/Day</label>
+            <input id="limORReqs" class="mc-input" type="number" value="${(limits.openrouter_free && limits.openrouter_free.requests_per_day) || 100}">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:12px;color:var(--text-secondary);margin-bottom:4px;display:block;">OpenRouter Free — Tokens/Day</label>
+            <input id="limORTokens" class="mc-input" type="number" value="${(limits.openrouter_free && limits.openrouter_free.tokens_per_day) || 200000}">
+          </div>
+        </div>
+      </div>
+
+      <div class="mc-card" style="border-color:rgba(239,68,68,0.3);background:rgba(239,68,68,0.02);">
+        <div style="font-weight:600;font-size:14px;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:8px;">⚠ Danger Zone</div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">Reset all settings to factory defaults.</p>
+        <button class="mc-btn" onclick="resetSettings()" style="color:var(--red);border-color:rgba(239,68,68,0.3);">Reset to Defaults</button>
       </div>
     `;
   } catch (err) {
-    document.getElementById('settingsForm').innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
+    (document.getElementById('settingsForm') || {}).innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
   }
 }
 
@@ -155,12 +155,18 @@ async function saveAllSettings() {
 
 async function resetSettings() {
   showModal('Reset to Defaults', `
-    <div class="card" style="background:var(--red-dim);border-color:transparent">
-      <div class="flex items-center gap-2"><span style="font-size:18px">⚠</span><div><strong style="font-size:13px">Warning</strong><div style="font-size:12px;color:var(--text-secondary);margin-top:2px">This will reset all settings to factory defaults and cannot be undone.</div></div></div>
+    <div style="background:rgba(239,68,68,0.1);border-radius:6px;padding:16px;">
+      <div style="display:flex;align-items:flex-start;gap:12px;">
+        <span style="font-size:18px;color:var(--red);">⚠</span>
+        <div>
+          <strong style="font-size:13px;color:var(--red);">Warning</strong>
+          <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">This will reset all settings to factory defaults and cannot be undone.</div>
+        </div>
+      </div>
     </div>
   `, `
-    <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-    <button class="btn btn-danger" onclick="confirmReset()">Reset</button>
+    <button class="mc-btn" onclick="closeModal()">Cancel</button>
+    <button class="mc-btn" onclick="confirmReset()" style="color:var(--red);border-color:rgba(239,68,68,0.3);">Reset</button>
   `);
 }
 

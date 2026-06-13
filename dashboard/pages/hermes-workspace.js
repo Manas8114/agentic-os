@@ -338,7 +338,7 @@ async function hwLoadMemoryFiles() {
     window._hwBrainFiles = data;
     hwRenderMemoryGrid(data);
   } catch (err) {
-    document.getElementById('hwMemContent').innerHTML =
+    (document.getElementById('hwMemContent') || {}).innerHTML =
       `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
   }
 }
@@ -432,7 +432,7 @@ async function hwLoadSkills() {
     if (sel) cats.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
     hwRenderSkillsGrid(skills);
   } catch (err) {
-    document.getElementById('hwSkillsGrid').innerHTML =
+    (document.getElementById('hwSkillsGrid') || {}).innerHTML =
       `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
   }
 }
@@ -544,7 +544,7 @@ async function hwRenderFiles(container) {
 
   const excluded = JSON.parse(localStorage.getItem('hw_excluded_files') || '[]');
 
-  document.getElementById('hwFilesContent').innerHTML = `
+  (document.getElementById('hwFilesContent') || {}).innerHTML = `
     <div class="card">
       <div class="card-header"><span class="card-title">Hermes Context Files</span></div>
       <div class="table-wrapper">
@@ -742,7 +742,7 @@ async function hwLoadTasks() {
       { id: 'blocked',     label: '🚫 Blocked',      color: 'var(--red)' },
       { id: 'done',        label: '✅ Done',          color: 'var(--green)' },
     ];
-    document.getElementById('hwTasksBoard').innerHTML = `
+    (document.getElementById('hwTasksBoard') || {}).innerHTML = `
       <div style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px">
         ${COLS.map(col => {
           const tasks = (cols[col.id] || []).filter(t => !t.assignee || t.assignee.toLowerCase().includes('hermes') || col.id === 'triage');
@@ -767,7 +767,7 @@ async function hwLoadTasks() {
       </div>
     `;
   } catch (err) {
-    document.getElementById('hwTasksBoard').innerHTML =
+    (document.getElementById('hwTasksBoard') || {}).innerHTML =
       `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
   }
 }

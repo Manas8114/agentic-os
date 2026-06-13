@@ -100,7 +100,7 @@ async function loadSkills() {
     applyFilters();
   } catch (err) {
     showToast('Failed to load skills: ' + err.message, 'error');
-    document.getElementById('skillsGrid').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--red)">Failed to load: ${escapeHtml(err.message)}</div>`;
+    (document.getElementById('skillsGrid') || {}).innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--red)">Failed to load: ${escapeHtml(err.message)}</div>`;
   }
 }
 

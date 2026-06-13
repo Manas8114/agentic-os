@@ -1,0 +1,11 @@
+{
+  "id": "SEO-EAC5AFE3",
+  "title": "Generate SEO: 5G",
+  "body": "Automatically generating informational content for keyword: 5G. Tone: professional.\n\nERROR: GEMINI_API_KEY is missing and sentence-transformers is not installed. Real embeddings require a valid API key.",
+  "status": "ready",
+  "tags": [
+    "seo",
+    "programmatic"
+  ],
+  "updated": "2026-06-13T15:07:30.170746+00:00"
+}

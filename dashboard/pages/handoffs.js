@@ -82,7 +82,7 @@ async function refreshHandoffs() {
     filterHandoffs();
   } catch (e) {
     console.error(e);
-    document.getElementById('handoffsList').innerHTML = `<div class="empty-state" style="padding:40px"><div class="empty-state-icon">⚠</div><div class="empty-state-title">Failed to load handoffs</div></div>`;
+    (document.getElementById('handoffsList') || {}).innerHTML = `<div class="empty-state" style="padding:40px"><div class="empty-state-icon">⚠</div><div class="empty-state-title">Failed to load handoffs</div></div>`;
   }
 }
 
@@ -131,7 +131,7 @@ function viewHandoffDetail(id) {
   const handoff = handoffsState.handoffs.find(h => h.id === id);
   if (!handoff) return;
   document.getElementById('handoffDetailTitle').textContent = `Handoff ${handoff.id}`;
-  document.getElementById('handoffDetailBody').innerHTML = `
+  (document.getElementById('handoffDetailBody') || {}).innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
       <div><strong>From Agent:</strong><div style="font-family:var(--font-mono);font-size:12px">${handoff.from_agent}</div></div>
       <div><strong>To Agent:</strong><div style="font-family:var(--font-mono);font-size:12px">${handoff.to_agent}</div></div>
@@ -165,8 +165,9 @@ function viewHandoffDetail(id) {
 
 function closeHandoffDetail() {
   const detail = document.getElementById('handoffDetail');
-  detail.style.display = 'none';
-  detail.innerHTML = '';
+  if (detail) detail.style.display = 'none';
+  const body = document.getElementById('handoffDetailBody');
+  if (body) body.innerHTML = '';
 }
 
 async function updateHandoffStatus(id, status) {

@@ -1,519 +1,440 @@
-// Dockable Panels — Resizable, collapsible, draggable split panes with layout persistence
+// Dockable Panels - Resizable/collapsible split panes with localStorage persistence
+// Provides draggable splitters, min/max enforcement, and state persistence
+
 const DockablePanels = (function() {
-  const STORAGE_KEY = 'agentic_panel_layouts';
-  const MIN_PANEL_SIZE = 180; // pixels
-  const HANDLE_SIZE = 6; // pixels
+  const STORAGE_KEY = 'agentic_os_dockable_panels';
+  const MIN_SIZE = 120; // minimum pixels for panel
+  const SPLITTER_SIZE = 8; // drag handle size
+  let instances = new Map();
 
-  let layouts = {};
-  let activePanels = new Map(); // containerId -> panel data
-  let resizeObserver = null;
-
-  // Load layouts from localStorage
-  function loadLayouts() {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) layouts = JSON.parse(stored);
-    } catch (e) {
-      console.warn('Failed to load panel layouts:', e);
-      layouts = {};
-    }
-  }
-
-  // Save layouts to localStorage
-  function saveLayouts() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(layouts));
-    } catch (e) {
-      console.warn('Failed to save panel layouts:', e);
-    }
-  }
-
-  // Get saved layout for a container
-  function getSavedLayout(containerId) {
-    return layouts[containerId] || null;
-  }
-
-  // Save layout for a container
-  function saveLayout(containerId, layout) {
-    layouts[containerId] = layout;
-    saveLayouts();
-  }
-
-  // Initialize a split container
-  function init(container, options = {}) {
-    const containerId = options.id || container.id || 'split-' + Math.random().toString(36).substr(2, 9);
-    container.id = containerId;
-    container.classList.add('dockable-split');
-
-    const {
-      direction = 'horizontal', // 'horizontal' or 'vertical'
-      panels = [], // array of { id, element, minSize, maxSize, collapsed, collapsedSize }
-      defaultSizes = [], // percentages or pixels
-      onResize = null,
-      onCollapse = null,
-      persist = true,
-    } = options;
-
-    // Apply direction
-    container.style.flexDirection = direction === 'horizontal' ? 'row' : 'column';
-
-    // Load saved layout
-    const saved = persist ? getSavedLayout(containerId) : null;
-
-    // Build panel data
-    const panelData = panels.map((p, i) => {
-      const savedPanel = saved?.panels?.[i];
-      return {
-        id: p.id || `panel-${i}`,
-        element: p.element,
-        minSize: p.minSize || MIN_PANEL_SIZE,
-        maxSize: p.maxSize || Infinity,
-        collapsed: savedPanel?.collapsed ?? p.collapsed ?? false,
-        collapsedSize: p.collapsedSize || 32,
-        size: savedPanel?.size ?? (defaultSizes[i] || (100 / panels.length)),
-        isPixel: typeof (savedPanel?.size ?? defaultSizes[i]) === 'number' && (savedPanel?.size ?? defaultSizes[i]) > 100,
+  // ─── Core State Management ───────────────────────────────────────
+  function saveState() {
+    const state = {};
+    instances.forEach((instance, id) => {
+      state[id] = {
+        orientation: instance.orientation,
+        sizes: instance.panels.map(p => p.size),
+        collapsed: instance.panels.map(p => p.collapsed || false),
+        order: instance.panels.map(p => p.id)
       };
     });
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.warn('Failed to save panel state:', e);
+    }
+  }
 
-    activePanels.set(containerId, {
-      container,
-      direction,
-      panels: panelData,
-      onResize,
-      onCollapse,
-      persist,
-    });
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch {
+      return {};
+    }
+  }
 
-    // Wrap panels and add handles
-    buildUI(container, panelData, direction, containerId);
+  // ─── Panel Instance ────────────────────────────────────────────────
+  class PanelInstance {
+    constructor(container, options = {}) {
+      this.id = options.id || 'dockable-' + Math.random().toString(36).substr(2, 9);
+      this.container = container;
+      this.orientation = options.orientation || 'horizontal'; // 'horizontal' | 'vertical'
+      this.panels = [];
+      this.splitters = [];
+      this._dragState = null;
+      this._initialized = false;
 
-    // Apply initial sizes
-    setTimeout(() => applySizes(containerId), 0);
+      // Apply stored state
+      const saved = loadState()[this.id];
+      if (saved) {
+        this.orientation = saved.orientation || this.orientation;
+      }
 
-    // Setup resize observer for responsive behavior
-    if (!resizeObserver) {
-      resizeObserver = new ResizeObserver(entries => {
-        for (const entry of entries) {
-          const cid = entry.target.id;
-          if (activePanels.has(cid)) {
-            applySizes(cid);
+      this._init();
+      instances.set(this.id, this);
+    }
+
+    _init() {
+      if (this._initialized) return;
+      this._initialized = true;
+
+      // Setup container
+      this.container.style.display = 'flex';
+      this.container.style.overflow = 'hidden';
+      this.container.style.position = 'relative';
+      this.container.classList.add('dockable-container');
+      this.container.dataset.dockableId = this.id;
+
+      if (this.orientation === 'horizontal') {
+        this.container.style.flexDirection = 'row';
+        this.container.style.height = '100%';
+      } else {
+        this.container.style.flexDirection = 'column';
+        this.container.style.width = '100%';
+      }
+
+      // Process existing children as panels
+      const children = Array.from(this.container.children);
+      children.forEach((child, index) => {
+        if (child.classList.contains('dockable-splitter')) return; // skip splitters
+        this.addPanel(child, { id: child.id || `panel-${index}` });
+      });
+
+      // Restore saved sizes
+      const saved = loadState()[this.id];
+      if (saved && saved.sizes) {
+        saved.sizes.forEach((size, i) => {
+          if (this.panels[i]) this.panels[i].size = size;
+        });
+        if (saved.collapsed) {
+          saved.collapsed.forEach((collapsed, i) => {
+            if (this.panels[i]) this.panels[i].collapsed = collapsed;
+          });
+        }
+        this._applySizes();
+      }
+    }
+
+    addPanel(element, options = {}) {
+      const panel = {
+        id: options.id || `panel-${this.panels.length}`,
+        element,
+        size: options.size || null, // null = auto (flex: 1)
+        minSize: options.minSize || MIN_SIZE,
+        maxSize: options.maxSize || null,
+        collapsed: false,
+        order: this.panels.length
+      };
+
+      // Style the panel
+      element.style.flex = '0 0 auto';
+      element.style.overflow = 'auto';
+      element.style.position = 'relative';
+      element.dataset.dockablePanel = panel.id;
+
+      // Add collapse button if not present
+      if (!element.querySelector('.dockable-collapse-btn')) {
+        this._addCollapseButton(element, panel);
+      }
+
+      this.panels.push(panel);
+      this._insertSplitterIfNeeded();
+      this._applySizes();
+      return panel;
+    }
+
+    removePanel(panelId) {
+      const index = this.panels.findIndex(p => p.id === panelId);
+      if (index === -1) return;
+
+      const panel = this.panels[index];
+      panel.element.remove();
+      this.panels.splice(index, 1);
+
+      // Remove associated splitter
+      if (index < this.splitters.length) {
+        this.splitters[index].remove();
+        this.splitters.splice(index, 1);
+      } else if (this.splitters.length > 0) {
+        this.splitters[this.splitters.length - 1].remove();
+        this.splitters.pop();
+      }
+
+      // Re-index
+      this.panels.forEach((p, i) => { p.order = i; });
+      this._applySizes();
+      saveState();
+    }
+
+    _addCollapseButton(element, panel) {
+      const btn = document.createElement('button');
+      btn.className = 'dockable-collapse-btn';
+      btn.innerHTML = '◀';
+      btn.style.cssText = `
+        position:absolute; top:8px; right:8px; z-index:10;
+        width:24px; height:24px; border-radius:4px;
+        background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1);
+        color:var(--text-secondary); font-size:12px; cursor:pointer;
+        display:flex; align-items:center; justify-content:center;
+        opacity:0; transition:opacity 0.2s;
+      `;
+      btn.title = 'Collapse panel';
+      element.style.position = 'relative';
+      element.appendChild(btn);
+
+      element.addEventListener('mouseenter', () => btn.style.opacity = '1');
+      element.addEventListener('mouseleave', () => btn.style.opacity = '0');
+
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleCollapse(panel.id);
+      });
+
+      panel.collapseBtn = btn;
+    }
+
+    _insertSplitterIfNeeded() {
+      // Add splitters between panels
+      while (this.splitters.length < this.panels.length - 1) {
+        const splitterIndex = this.splitters.length;
+        const splitter = document.createElement('div');
+        splitter.className = 'dockable-splitter';
+        splitter.dataset.splitterIndex = splitterIndex;
+        splitter.style.cssText = `
+          flex: 0 0 ${SPLITTER_SIZE}px;
+          background: transparent;
+          cursor: ${this.orientation === 'horizontal' ? 'col-resize' : 'row-resize'};
+          position: relative;
+          z-index: 100;
+          transition: background 0.15s;
+        `;
+
+        // Visual handle
+        const handle = document.createElement('div');
+        handle.style.cssText = `
+          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+          width: 2px; height: 40px; border-radius: 1px;
+          background: var(--border); opacity: 0.5;
+          transition: opacity 0.2s, width 0.2s, background 0.2s;
+        `;
+        if (this.orientation === 'vertical') {
+          handle.style.width = '40px';
+          handle.style.height = '2px';
+        }
+        splitter.appendChild(handle);
+
+        // Hover effect
+        splitter.addEventListener('mouseenter', () => {
+          handle.style.opacity = '1';
+          handle.style.width = this.orientation === 'horizontal' ? '4px' : '40px';
+          handle.style.height = this.orientation === 'horizontal' ? '40px' : '4px';
+          handle.style.background = 'var(--accent)';
+        });
+        splitter.addEventListener('mouseleave', () => {
+          if (!this._dragState || this._dragState.splitterIndex !== splitterIndex) {
+            handle.style.opacity = '0.5';
+            handle.style.width = this.orientation === 'horizontal' ? '2px' : '40px';
+            handle.style.height = this.orientation === 'horizontal' ? '40px' : '2px';
+            handle.style.background = 'var(--border)';
           }
+        });
+
+        // Drag events
+        splitter.addEventListener('mousedown', (e) => this._startDrag(e, splitterIndex));
+        document.addEventListener('mousemove', (e) => this._onDrag(e));
+        document.addEventListener('mouseup', () => this._endDrag());
+
+        this.container.insertBefore(splitter, this.panels[splitterIndex + 1].element);
+        this.splitters.push(splitter);
+      }
+    }
+
+    _startDrag(e, splitterIndex) {
+      if (this.panels[splitterIndex].collapsed || this.panels[splitterIndex + 1].collapsed) return;
+
+      this._dragState = {
+        splitterIndex,
+        startX: e.clientX,
+        startY: e.clientY,
+        leftSize: this.panels[splitterIndex].element.offsetWidth || this.panels[splitterIndex].element.offsetHeight,
+        rightSize: this.panels[splitterIndex + 1].element.offsetWidth || this.panels[splitterIndex + 1].element.offsetHeight,
+        orientation: this.orientation,
+        containerSize: this.orientation === 'horizontal'
+          ? this.container.offsetWidth
+          : this.container.offsetHeight
+      };
+
+      // Visual feedback
+      const splitter = this.splitters[splitterIndex];
+      splitter.style.background = 'var(--accent-glow)';
+      splitter.querySelector('div').style.opacity = '1';
+      splitter.querySelector('div').style.background = 'var(--accent)';
+      document.body.style.cursor = this.orientation === 'horizontal' ? 'col-resize' : 'row-resize';
+      document.body.style.userSelect = 'none';
+
+      e.preventDefault();
+    }
+
+    _onDrag(e) {
+      if (!this._dragState) return;
+
+      const delta = this.orientation === 'horizontal'
+        ? e.clientX - this._dragState.startX
+        : e.clientY - this._dragState.startY;
+
+      const leftPanel = this.panels[this._dragState.splitterIndex];
+      const rightPanel = this.panels[this._dragState.splitterIndex + 1];
+
+      const newLeftSize = Math.max(leftPanel.minSize, this._dragState.leftSize + delta);
+      const newRightSize = Math.max(rightPanel.minSize, this._dragState.rightSize - delta);
+
+      // Check max constraints
+      if (leftPanel.maxSize && newLeftSize > leftPanel.maxSize) return;
+      if (rightPanel.maxSize && newRightSize > rightPanel.maxSize) return;
+
+      // Check container bounds
+      const total = newLeftSize + newRightSize;
+      if (total > this._dragState.containerSize - SPLITTER_SIZE) return;
+
+      leftPanel.size = newLeftSize;
+      rightPanel.size = newRightSize;
+      this._applySizes();
+    }
+
+    _endDrag() {
+      if (!this._dragState) return;
+
+      const splitter = this.splitters[this._dragState.splitterIndex];
+      if (splitter) {
+        splitter.style.background = 'transparent';
+        const handle = splitter.querySelector('div');
+        handle.style.opacity = '0.5';
+        handle.style.width = this.orientation === 'horizontal' ? '2px' : '40px';
+        handle.style.height = this.orientation === 'horizontal' ? '40px' : '2px';
+        handle.style.background = 'var(--border)';
+      }
+
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      this._dragState = null;
+      saveState();
+    }
+
+    toggleCollapse(panelId) {
+      const panel = this.panels.find(p => p.id === panelId);
+      if (!panel) return;
+
+      if (panel.collapsed) {
+        // Expand
+        panel.collapsed = false;
+        panel.element.style.display = '';
+        panel.element.style.flex = `0 0 ${panel.size || 300}px`;
+        if (panel.collapseBtn) panel.collapseBtn.innerHTML = this.orientation === 'horizontal' ? '◀' : '▲';
+      } else {
+        // Collapse
+        panel.collapsed = true;
+        panel.size = panel.element.offsetWidth || panel.element.offsetHeight;
+        panel.element.style.display = 'none';
+        panel.element.style.flex = '0 0 0';
+        if (panel.collapseBtn) panel.collapseBtn.innerHTML = this.orientation === 'horizontal' ? '▶' : '▼';
+      }
+
+      // Also hide/show associated splitter
+      const index = this.panels.indexOf(panel);
+      if (index > 0 && this.splitters[index - 1]) {
+        this.splitters[index - 1].style.display = panel.collapsed ? 'none' : '';
+      }
+      if (index < this.splitters.length && this.splitters[index]) {
+        this.splitters[index].style.display = panel.collapsed ? 'none' : '';
+      }
+
+      this._applySizes();
+      saveState();
+    }
+
+    setOrientation(orientation) {
+      if (orientation === this.orientation) return;
+      this.orientation = orientation;
+      this.container.style.flexDirection = orientation === 'horizontal' ? 'row' : 'column';
+      this.splitters.forEach(s => {
+        s.style.cursor = orientation === 'horizontal' ? 'col-resize' : 'row-resize';
+        const handle = s.querySelector('div');
+        handle.style.width = orientation === 'horizontal' ? '2px' : '40px';
+        handle.style.height = orientation === 'horizontal' ? '40px' : '2px';
+      });
+      this._applySizes();
+      saveState();
+    }
+
+    _applySizes() {
+      this.panels.forEach((panel, i) => {
+        if (panel.collapsed) {
+          panel.element.style.flex = '0 0 0';
+          panel.element.style.display = 'none';
+        } else if (panel.size) {
+          panel.element.style.flex = `0 0 ${panel.size}px`;
+          panel.element.style.display = '';
+        } else {
+          // Auto size (remaining space)
+          panel.element.style.flex = '1 1 auto';
+          panel.element.style.display = '';
+        }
+      });
+
+      // Update splitter visibility
+      this.splitters.forEach((splitter, i) => {
+        const leftCollapsed = this.panels[i]?.collapsed;
+        const rightCollapsed = this.panels[i + 1]?.collapsed;
+        splitter.style.display = (leftCollapsed || rightCollapsed) ? 'none' : '';
+      });
+
+      // Update collapse button icons
+      this.panels.forEach(panel => {
+        if (panel.collapseBtn) {
+          panel.collapseBtn.innerHTML = panel.collapsed
+            ? (this.orientation === 'horizontal' ? '▶' : '▼')
+            : (this.orientation === 'horizontal' ? '◀' : '▲');
         }
       });
     }
-    resizeObserver.observe(container);
 
-    return {
-      containerId,
-      setSizes: (sizes) => setSizes(containerId, sizes),
-      getSizes: () => getSizes(containerId),
-      collapse: (panelId) => toggleCollapse(containerId, panelId, true),
-      expand: (panelId) => toggleCollapse(containerId, panelId, false),
-      toggleCollapse: (panelId) => toggleCollapse(containerId, panelId),
-      destroy: () => destroy(containerId),
-    };
-  }
-
-  function buildUI(container, panels, direction, containerId) {
-    container.innerHTML = '';
-
-    for (let i = 0; i < panels.length; i++) {
-      const panel = panels[i];
-      const wrapper = document.createElement('div');
-      wrapper.className = 'dockable-panel-wrapper';
-      wrapper.dataset.panelId = panel.id;
-      wrapper.style.flex = '0 0 auto';
-      wrapper.style.display = 'flex';
-      wrapper.style.flexDirection = 'column';
-      wrapper.style.overflow = 'hidden';
-      wrapper.style.minWidth = '0';
-      wrapper.style.minHeight = '0';
-
-      // Add header with collapse button
-      const header = document.createElement('div');
-      header.className = 'dockable-panel-header';
-      header.style.display = 'flex';
-      header.style.alignItems = 'center';
-      header.style.justifyContent = 'space-between';
-      header.style.padding = '8px 12px';
-      header.style.background = 'var(--bg-secondary)';
-      header.style.borderBottom = '1px solid var(--border)';
-      header.style.flexShrink = '0';
-      header.innerHTML = `
-        <span class="dockable-panel-title" style="font-weight:600;font-size:13px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${panel.element.dataset.panelTitle || panel.id}</span>
-        <button class="dockable-collapse-btn" aria-label="Collapse panel" style="background:none;border:none;color:var(--text-muted);cursor:pointer;padding:4px;border-radius:var(--radius-sm);font-size:14px;line-height:1;transition:var(--transition)" title="Collapse/Expand">
-          ${direction === 'horizontal' ? '◀' : '▲'}
-        </button>
-      `;
-      wrapper.appendChild(header);
-
-      // Panel content area
-      const content = document.createElement('div');
-      content.className = 'dockable-panel-content';
-      content.style.flex = '1';
-      content.style.overflow = 'auto';
-      content.style.minHeight = '0';
-      content.style.minWidth = '0';
-      content.appendChild(panel.element);
-      wrapper.appendChild(content);
-
-      container.appendChild(wrapper);
-
-      // Add handle between panels (except after last)
-      if (i < panels.length - 1) {
-        const handle = document.createElement('div');
-        handle.className = 'dockable-handle';
-        handle.dataset.containerId = containerId;
-        handle.dataset.index = i;
-        handle.style.flex = '0 0 ' + HANDLE_SIZE + 'px';
-        handle.style.background = 'var(--border)';
-        handle.style.cursor = direction === 'horizontal' ? 'col-resize' : 'row-resize';
-        handle.style.position = 'relative';
-        handle.style.transition = 'background 0.2s';
-        handle.style.zIndex = '10';
-
-        // Handle hover effect
-        handle.innerHTML = `
-          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:24px;height:24px;background:var(--accent-glow);border-radius:50%;opacity:0;transition:opacity 0.2s;pointer-events:none"></div>
-        `;
-        handle.addEventListener('mouseenter', () => {
-          handle.style.background = 'var(--accent)';
-          handle.querySelector('div').style.opacity = '1';
-        });
-        handle.addEventListener('mouseleave', () => {
-          if (!handle.classList.contains('dragging')) {
-            handle.style.background = 'var(--border)';
-            handle.querySelector('div').style.opacity = '0';
-          }
-        });
-
-        handle.addEventListener('mousedown', startResize);
-        handle.addEventListener('touchstart', startResize, { passive: false });
-
-        container.appendChild(handle);
-      }
-    }
-
-    // Collapse button handlers
-    container.querySelectorAll('.dockable-collapse-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const wrapper = e.target.closest('.dockable-panel-wrapper');
-        const panelId = wrapper.dataset.panelId;
-        toggleCollapse(containerId, panelId);
+    destroy() {
+      this.splitters.forEach(s => s.remove());
+      this.panels.forEach(p => {
+        if (p.collapseBtn) p.collapseBtn.remove();
       });
-    });
-  }
-
-  function startResize(e) {
-    e.preventDefault();
-    const handle = e.target.closest('.dockable-handle');
-    if (!handle) return;
-
-    const containerId = handle.dataset.containerId;
-    const index = parseInt(handle.dataset.index);
-    const data = activePanels.get(containerId);
-    if (!data) return;
-
-    const isHorizontal = data.direction === 'horizontal';
-    const startPos = isHorizontal ? e.clientX : e.clientY;
-    const panels = data.panels;
-
-    // Get current sizes in pixels
-    const container = data.container;
-    const rect = container.getBoundingClientRect();
-    const containerSize = isHorizontal ? rect.width : rect.height;
-
-    const panel1 = panels[index];
-    const panel2 = panels[index + 1];
-    const wrapper1 = container.querySelector(`[data-panel-id="${panel1.id}"]`);
-    const wrapper2 = container.querySelector(`[data-panel-id="${panel2.id}"]`);
-
-    const startSize1 = isHorizontal ? wrapper1.offsetWidth : wrapper1.offsetHeight;
-    const startSize2 = isHorizontal ? wrapper2.offsetWidth : wrapper2.offsetHeight;
-
-    handle.classList.add('dragging');
-    handle.style.background = 'var(--accent)';
-    document.body.style.cursor = isHorizontal ? 'col-resize' : 'row-resize';
-    document.body.style.userSelect = 'none';
-
-    function onMove(e) {
-      const currentPos = isHorizontal ? e.clientX : e.clientY;
-      const delta = currentPos - startPos;
-
-      let newSize1 = startSize1 + delta;
-      let newSize2 = startSize2 - delta;
-
-      // Enforce min sizes
-      if (newSize1 < panel1.minSize) {
-        newSize1 = panel1.minSize;
-        newSize2 = startSize1 + startSize2 - newSize1;
-      }
-      if (newSize2 < panel2.minSize) {
-        newSize2 = panel2.minSize;
-        newSize1 = startSize1 + startSize2 - newSize2;
-      }
-
-      // Enforce max sizes
-      if (newSize1 > panel1.maxSize) {
-        newSize1 = panel1.maxSize;
-        newSize2 = startSize1 + startSize2 - newSize1;
-      }
-      if (newSize2 > panel2.maxSize) {
-        newSize2 = panel2.maxSize;
-        newSize1 = startSize1 + startSize2 - newSize2;
-      }
-
-      // Apply sizes
-      applyPixelSizes(containerId, index, newSize1, newSize2);
-    }
-
-    function onUp() {
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup', onUp);
-      document.removeEventListener('touchmove', onMove);
-      document.removeEventListener('touchend', onUp);
-      handle.classList.remove('dragging');
-      handle.style.background = 'var(--border)';
-      document.body.style.cursor = '';
-      document.body.style.userSelect = '';
-
-      // Save layout
-      if (data.persist) saveCurrentLayout(containerId);
-
-      if (data.onResize) data.onResize(getSizes(containerId));
-    }
-
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup', onUp);
-    document.addEventListener('touchmove', onMove, { passive: false });
-    document.addEventListener('touchend', onUp);
-  }
-
-  function applyPixelSizes(containerId, index, size1, size2) {
-    const data = activePanels.get(containerId);
-    if (!data) return;
-
-    const container = data.container;
-    const isHorizontal = data.direction === 'horizontal';
-    const rect = container.getBoundingClientRect();
-    const containerSize = isHorizontal ? rect.width : rect.height;
-
-    const pct1 = (size1 / containerSize) * 100;
-    const pct2 = (size2 / containerSize) * 100;
-
-    data.panels[index].size = pct1;
-    data.panels[index].isPixel = false;
-    data.panels[index + 1].size = pct2;
-    data.panels[index + 1].isPixel = false;
-
-    const wrapper1 = container.querySelector(`[data-panel-id="${data.panels[index].id}"]`);
-    const wrapper2 = container.querySelector(`[data-panel-id="${data.panels[index + 1].id}"]`);
-
-    if (isHorizontal) {
-      wrapper1.style.flex = `0 0 ${pct1}%`;
-      wrapper2.style.flex = `0 0 ${pct2}%`;
-    } else {
-      wrapper1.style.flex = `0 0 ${pct1}%`;
-      wrapper2.style.flex = `0 0 ${pct2}%`;
+      instances.delete(this.id);
     }
   }
 
-  function applySizes(containerId) {
-    const data = activePanels.get(containerId);
-    if (!data) return;
+  // ─── Public API ────────────────────────────────────────────────────
+  function create(container, options) {
+    return new PanelInstance(container, options);
+  }
 
-    const container = data.container;
-    const isHorizontal = data.direction === 'horizontal';
-    const rect = container.getBoundingClientRect();
-    const containerSize = isHorizontal ? rect.width : rect.height;
+  function get(id) {
+    return instances.get(id);
+  }
 
-    if (containerSize < 50) return; // Not rendered yet
+  function destroy(id) {
+    const instance = instances.get(id);
+    if (instance) instance.destroy();
+  }
 
-    data.panels.forEach((panel, i) => {
-      const wrapper = container.querySelector(`[data-panel-id="${panel.id}"]`);
-      if (!wrapper) return;
+  function saveAll() {
+    saveState();
+  }
 
-      let size = panel.size;
-      if (panel.isPixel) {
-        size = (panel.size / containerSize) * 100;
-        panel.size = size;
-        panel.isPixel = false;
-      }
-
-      // Handle collapsed panels
-      if (panel.collapsed) {
-        const collapsedPct = (panel.collapsedSize / containerSize) * 100;
-        wrapper.style.flex = `0 0 ${collapsedPct}%`;
-        wrapper.classList.add('collapsed');
-        const btn = wrapper.querySelector('.dockable-collapse-btn');
-        if (btn) btn.textContent = isHorizontal ? '▶' : '▼';
-      } else {
-        wrapper.style.flex = `0 0 ${size}%`;
-        wrapper.classList.remove('collapsed');
-        const btn = wrapper.querySelector('.dockable-collapse-btn');
-        if (btn) btn.textContent = isHorizontal ? '◀' : '▲';
-      }
-
-      // Enforce min/max
-      const currentSize = isHorizontal ? wrapper.offsetWidth : wrapper.offsetHeight;
-      if (currentSize < panel.minSize && !panel.collapsed) {
-        const minPct = (panel.minSize / containerSize) * 100;
-        wrapper.style.flex = `0 0 ${minPct}%`;
-        // Redistribute from siblings
-        redistributeSpace(containerId, i, minPct);
+  // Auto-initialize containers with data-dockable attribute
+  function autoInit() {
+    document.querySelectorAll('[data-dockable]').forEach(container => {
+      if (!instances.has(container.dataset.dockable)) {
+        const orientation = container.dataset.dockableOrientation || 'horizontal';
+        create(container, { id: container.dataset.dockable, orientation });
       }
     });
   }
 
-  function redistributeSpace(containerId, fixedIndex, fixedSize) {
-    const data = activePanels.get(containerId);
-    if (!data) return;
-
-    const container = data.container;
-    const isHorizontal = data.direction === 'horizontal';
-    const rect = container.getBoundingClientRect();
-    const containerSize = isHorizontal ? rect.width : rect.height;
-
-    const fixedPct = fixedSize;
-    const remainingPct = 100 - fixedPct;
-
-    // Count flexible panels
-    let flexibleCount = 0;
-    let flexibleTotal = 0;
-    data.panels.forEach((p, i) => {
-      if (i !== fixedIndex && !p.collapsed) {
-        flexibleCount++;
-        flexibleTotal += p.size;
-      }
-    });
-
-    if (flexibleCount === 0) return;
-
-    const scale = remainingPct / flexibleTotal;
-
-    data.panels.forEach((p, i) => {
-      if (i === fixedIndex || p.collapsed) return;
-      p.size = p.size * scale;
-      const wrapper = container.querySelector(`[data-panel-id="${p.id}"]`);
-      if (wrapper) wrapper.style.flex = `0 0 ${p.size}%`;
-    });
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoInit);
+  } else {
+    autoInit();
   }
 
-  function toggleCollapse(containerId, panelId, force = null) {
-    const data = activePanels.get(containerId);
-    if (!data) return;
-
-    const panel = data.panels.find(p => p.id === panelId);
-    if (!panel) return;
-
-    const newState = force !== null ? force : !panel.collapsed;
-    if (newState === panel.collapsed) return;
-
-    panel.collapsed = newState;
-    applySizes(containerId);
-
-    if (data.persist) saveCurrentLayout(containerId);
-    if (data.onCollapse) data.onCollapse(panelId, newState);
-  }
-
-  function setSizes(containerId, sizes) {
-    const data = activePanels.get(containerId);
-    if (!data) return;
-
-    const total = sizes.reduce((a, b) => a + b, 0);
-    data.panels.forEach((p, i) => {
-      p.size = (sizes[i] / total) * 100;
-      p.isPixel = false;
-    });
-    applySizes(containerId);
-
-    if (data.persist) saveCurrentLayout(containerId);
-    if (data.onResize) data.onResize(getSizes(containerId));
-  }
-
-  function getSizes(containerId) {
-    const data = activePanels.get(containerId);
-    if (!data) return [];
-
-    const container = data.container;
-    const isHorizontal = data.direction === 'horizontal';
-    const rect = container.getBoundingClientRect();
-    const containerSize = isHorizontal ? rect.width : rect.height;
-
-    return data.panels.map(p => {
-      const wrapper = container.querySelector(`[data-panel-id="${p.id}"]`);
-      if (!wrapper) return Math.round(p.size / 100 * containerSize);
-      return isHorizontal ? wrapper.offsetWidth : wrapper.offsetHeight;
-    });
-  }
-
-  function saveCurrentLayout(containerId) {
-    const data = activePanels.get(containerId);
-    if (!data || !data.persist) return;
-
-    const layout = {
-      direction: data.direction,
-      panels: data.panels.map(p => ({
-        id: p.id,
-        size: p.size,
-        isPixel: p.isPixel,
-        collapsed: p.collapsed,
-        minSize: p.minSize,
-        maxSize: p.maxSize,
-      })),
-    };
-    saveLayout(containerId, layout);
-  }
-
-  function destroy(containerId) {
-    const data = activePanels.get(containerId);
-    if (data && resizeObserver) {
-      resizeObserver.unobserve(data.container);
-    }
-    activePanels.delete(containerId);
-  }
-
-  // Initialize on load
-  loadLayouts();
-
-  // Public API
   return {
-    init,
-    loadLayouts,
-    saveLayouts,
-    getSavedLayout,
+    create,
+    get,
+    destroy,
+    saveAll,
+    autoInit
   };
 })();
 
-// Auto-initialize on elements with data-dockable attribute
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('[data-dockable]').forEach(el => {
-    const options = {};
-    try {
-      options.direction = el.dataset.dockableDirection || 'horizontal';
-      options.defaultSizes = el.dataset.dockableSizes ? JSON.parse(el.dataset.dockableSizes) : [];
-      options.persist = el.dataset.dockablePersist !== 'false';
-    } catch (e) {}
-
-    // Find panel children
-    const panels = Array.from(el.children).filter(c => c.classList.contains('dockable-panel') || c.dataset.panelId);
-    if (panels.length >= 2) {
-      DockablePanels.init(el, {
-        direction: options.direction,
-        panels: panels.map((p, i) => ({
-          id: p.dataset.panelId || `panel-${i}`,
-          element: p,
-          minSize: parseInt(p.dataset.minSize) || 180,
-          maxSize: parseInt(p.dataset.maxSize) || Infinity,
-          collapsed: p.dataset.collapsed === 'true',
-        })),
-        defaultSizes: options.defaultSizes,
-        persist: options.persist,
-      });
-    }
-  });
-});
-
-// Expose globally
+// Global exposure
 window.DockablePanels = DockablePanels;
+
+// Also expose a simple function for creating dockable panels anywhere
+window.makeDockable = function(container, options) {
+  return DockablePanels.create(container, options);
+};

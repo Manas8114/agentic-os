@@ -481,7 +481,7 @@ function updateFrameThumbnail(index, input) {
     reader.onload = (e) => {
       videoGenState.storyboard[index].thumbnail = e.target.result;
       saveVideoProject();
-      document.getElementById('storyboardFrames').innerHTML = renderStoryboardFrames();
+      (document.getElementById('storyboardFrames') || {}).innerHTML = renderStoryboardFrames();
     };
     reader.readAsDataURL(input.files[0]);
   }
@@ -489,7 +489,7 @@ function updateFrameThumbnail(index, input) {
 
 function saveFrameEditor() {
   editor.style.display = 'none';
-  document.getElementById('storyboardFrames').innerHTML = renderStoryboardFrames();
+  (document.getElementById('storyboardFrames') || {}).innerHTML = renderStoryboardFrames();
   showToast('Frame saved', 'success');
 }
 
@@ -497,7 +497,7 @@ function moveStoryboardFrame(index, direction) {
   const newIndex = index + direction;
   if (newIndex < 0 || newIndex >= videoGenState.storyboard.length) return;
   [videoGenState.storyboard[index], videoGenState.storyboard[newIndex]] = [videoGenState.storyboard[newIndex], videoGenState.storyboard[index]];
-  document.getElementById('storyboardFrames').innerHTML = renderStoryboardFrames();
+  (document.getElementById('storyboardFrames') || {}).innerHTML = renderStoryboardFrames();
   saveVideoProject();
   showToast('Frame moved', 'success');
 }
@@ -505,7 +505,7 @@ function moveStoryboardFrame(index, direction) {
 function deleteStoryboardFrame(index) {
   if (!confirm('Delete this frame?')) return;
   videoGenState.storyboard.splice(index, 1);
-  document.getElementById('storyboardFrames').innerHTML = renderStoryboardFrames();
+  (document.getElementById('storyboardFrames') || {}).innerHTML = renderStoryboardFrames();
   saveVideoProject();
   showToast('Frame deleted', 'success');
 }
@@ -517,7 +517,7 @@ function addStoryboardFrame() {
     visualNotes: '',
     audioCues: '',
   });
-  document.getElementById('storyboardFrames').innerHTML = renderStoryboardFrames();
+  (document.getElementById('storyboardFrames') || {}).innerHTML = renderStoryboardFrames();
   saveVideoProject();
   showToast('Frame added', 'success');
 }
@@ -532,7 +532,7 @@ function generateStoryboardFromScript() {
     visualNotes: '',
     audioCues: '',
   }));
-  document.getElementById('storyboardFrames').innerHTML = renderStoryboardFrames();
+  (document.getElementById('storyboardFrames') || {}).innerHTML = renderStoryboardFrames();
   switchVideoGenTab('storyboard');
   saveVideoProject();
   showToast(`Generated ${scenes.length} frames from script`, 'success');
@@ -547,7 +547,7 @@ function importStoryboard() {
     reader.onload = (e) => {
       try {
         videoGenState.storyboard = JSON.parse(e.target.result);
-        document.getElementById('storyboardFrames').innerHTML = renderStoryboardFrames();
+        (document.getElementById('storyboardFrames') || {}).innerHTML = renderStoryboardFrames();
         saveVideoProject();
         showToast('Storyboard imported', 'success');
       } catch { showToast('Invalid JSON', 'error'); }
@@ -564,7 +564,7 @@ function editScene(index) {
   document.getElementById('sceneEditor').style.display = 'block';
   document.getElementById('scenePreview').style.display = 'none';
   document.getElementById('sceneEditorTitle').textContent = `Editing: ${videoGenState.scenes[index].title || 'Scene ' + (index + 1)}`;
-  document.getElementById('sceneEditor').innerHTML = renderSceneEditor();
+  (document.getElementById('sceneEditor') || {}).innerHTML = renderSceneEditor();
   // Initialize dropdowns
   document.getElementById('sceneTitle').value = videoGenState.scenes[index].title || '';
   document.getElementById('sceneDuration').value = videoGenState.scenes[index].duration || 3;
@@ -606,7 +606,7 @@ function createScenesFromStoryboard() {
     .filter(c => c.length > 1 && c.length < 20)
     .map(name => ({ name: name.trim(), voice: 'default' }));
   
-  document.getElementById('scenesList').innerHTML = renderScenesList();
+  (document.getElementById('scenesList') || {}).innerHTML = renderScenesList();
   showToast(`Created ${videoGenState.scenes.length} scenes from storyboard`, 'success');
   saveVideoProject();
 }
@@ -617,7 +617,7 @@ function duplicateScene() {
   if (idx >= 0) {
     const copy = { ...videoGenState.scenes[idx], title: (videoGenState.scenes[idx].title || 'Scene') + ' (copy)' };
     videoGenState.scenes.splice(idx + 1, 0, copy);
-    document.getElementById('scenesList').innerHTML = renderScenesList();
+    (document.getElementById('scenesList') || {}).innerHTML = renderScenesList();
     saveVideoProject();
     showToast('Scene duplicated', 'success');
   }
@@ -630,7 +630,7 @@ function deleteScene() {
   videoGenState.selectedScene = null;
   document.getElementById('sceneEditor').style.display = 'none';
   document.getElementById('scenePreview').style.display = 'block';
-  document.getElementById('scenesList').innerHTML = renderScenesList();
+  (document.getElementById('scenesList') || {}).innerHTML = renderScenesList();
   saveVideoProject();
   showToast('Scene deleted', 'success');
 }
@@ -646,7 +646,7 @@ function addAllScenesToQueue() {
       });
     }
   });
-  document.getElementById('renderQueue').innerHTML = renderRenderQueue();
+  (document.getElementById('renderQueue') || {}).innerHTML = renderRenderQueue();
   showToast('All scenes added to queue', 'success');
 }
 
@@ -654,7 +654,7 @@ async function renderQueueItem(index) {
   const item = videoGenState.renderQueue[index];
   item.status = 'rendering';
   item.startTime = Date.now();
-  document.getElementById('renderQueue').innerHTML = renderRenderQueue();
+  (document.getElementById('renderQueue') || {}).innerHTML = renderRenderQueue();
   
   // Simulate render progress
   let progress = 0;
@@ -665,11 +665,11 @@ async function renderQueueItem(index) {
       clearInterval(interval);
       item.status = 'completed';
       item.completedAt = new Date().toISOString();
-      document.getElementById('renderQueue').innerHTML = renderRenderQueue();
+      (document.getElementById('renderQueue') || {}).innerHTML = renderRenderQueue();
       showToast('Render complete!', 'success');
     } else {
       item.progress = Math.min(99, progress);
-      document.getElementById('renderProgress').innerHTML = renderRenderProgress();
+      (document.getElementById('renderProgress') || {}).innerHTML = renderRenderProgress();
     }
   }, 500);
 }
@@ -680,7 +680,7 @@ function downloadRender(index) {
 
 function retryRender(index) {
   videoGenState.renderQueue[index].status = 'pending';
-  document.getElementById('renderQueue').innerHTML = renderRenderQueue();
+  (document.getElementById('renderQueue') || {}).innerHTML = renderRenderQueue();
 }
 
 function startRender() {
@@ -688,7 +688,7 @@ function startRender() {
   if (!pending.length) { showToast('Queue is empty', 'error'); return; }
   
   pending.forEach(item => item.status = 'pending');
-  document.getElementById('renderQueue').innerHTML = renderRenderQueue();
+  (document.getElementById('renderQueue') || {}).innerHTML = renderRenderQueue();
   
   // Process queue sequentially
   (async () => {
@@ -727,7 +727,7 @@ async function publishVideo() {
   // Simulate publish
   setTimeout(() => {
     showToast('Video published successfully!', 'success');
-    document.getElementById('publishStatus').innerHTML = `
+    (document.getElementById('publishStatus') || {}).innerHTML = `
       <div class="grid grid-2">
         ${['YouTube', 'TikTok', 'Instagram', 'Twitter', 'LinkedIn'].map(p => `
           <div class="card"><div class="card-body" style="display:flex;align-items:center;gap:12px">
@@ -841,7 +841,7 @@ function generateScriptFromStory() {
 }
 
 function generateStoryboard() { showToast('Use "Auto-Generate from Script" on Storyboard tab', 'info'); }
-function addStoryboardFrame() { videoGenState.storyboard.push({ description: '', duration: 3 }); document.getElementById('storyboardFrames').innerHTML = renderStoryboardFrames(); saveVideoProject(); showToast('Frame added', 'success'); }
+function addStoryboardFrame() { videoGenState.storyboard.push({ description: '', duration: 3 }); (document.getElementById('storyboardFrames') || {}).innerHTML = renderStoryboardFrames(); saveVideoProject(); showToast('Frame added', 'success'); }
 function createScenesFromStoryboard() { /* already defined above */ }
 function analyzeScript() { /* already defined above */ }
 function startRender() { /* already defined */ }

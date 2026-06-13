@@ -180,7 +180,7 @@ async function loadConversations() {
     filterConversations();
   } catch (err) {
     showToast('Failed to load conversations: ' + err.message, 'error');
-    document.getElementById('threadList').innerHTML = `<div class="empty-state" style="padding:20px"><div class="empty-state-icon">⚠</div><div class="empty-state-title">Failed to load</div></div>`;
+    (document.getElementById('threadList') || {}).innerHTML = `<div class="empty-state" style="padding:20px"><div class="empty-state-icon">⚠</div><div class="empty-state-title">Failed to load</div></div>`;
   }
 }
 

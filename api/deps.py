@@ -224,9 +224,23 @@ def find_cli_binary(name: str) -> str:
     return name  # fallback to name, let subprocess handle it
 
 
+def strip_ansi(text: str) -> str:
+    """Remove ANSI escape sequences from text."""
+    if not text:
+        return ""
+    import re
+    ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
+    return ansi_escape.sub('', text)
+
+
 def clean_hermes_output(raw: str) -> str:
     if not raw:
         return ""
+    # Strip ANSI escape sequences (color codes, cursor movement, etc.)
+    import re
+    ansi_escape = re.compile(r'\x1b\[[0-9;]*m')
+    raw = ansi_escape.sub('', raw)
+    
     lines = raw.split('\n')
     in_box = False
     content_lines = []
@@ -249,8 +263,9 @@ def clean_hermes_output(raw: str) -> str:
 def execute_agent(agent: str, message: str) -> str:
     try:
         if agent == "opencode":
+            opencode_bin = find_cli_binary("opencode")
             try:
-                code, out, err = run_cli(["opencode", "run", "--format", "json", message], timeout=30)
+                code, out, err = run_cli([opencode_bin, "run", "--format", "json", message], timeout=30)
             except subprocess.TimeoutExpired:
                 return f"⏱ Agent 'opencode' timed out.\n\nOpenCode's model is taking too long. Try running `opencode run \"{message[:60]}\"` directly in your terminal.\n\n**Message:** {message[:100]}"
             if code == 0:
@@ -274,8 +289,9 @@ def execute_agent(agent: str, message: str) -> str:
             return err_msg or f"opencode returned exit code {code}"
 
         elif agent == "hermes":
+            hermes_bin = find_cli_binary("hermes")
             try:
-                code, out, err = run_cli(["hermes", "chat", "-q", message], timeout=180)
+                code, out, err = run_cli([hermes_bin, "chat", "-q", message], timeout=180)
             except subprocess.TimeoutExpired:
                 return f"⏱ Hermes timed out.\n\nThe model took too long to respond. Try a shorter query or check your OpenRouter rate limits.\n\n**Message:** {message[:100]}"
             if code == 0:
@@ -291,8 +307,8 @@ def execute_agent(agent: str, message: str) -> str:
         elif agent == "gemini":
             gemini_bin = find_cli_binary("gemini")
             for attempt, (args, to) in enumerate([
-                (["-y", "-m", "gemini-2.5-flash"], 60),
-                (["-y"], 40),
+                (["-y", "--skip-trust", "-m", "gemini-2.5-flash"], 60),
+                (["-y", "--skip-trust"], 40),
             ]):
                 try:
                     code, out, err = run_cli([gemini_bin, *args, message], timeout=to)
@@ -301,7 +317,9 @@ def execute_agent(agent: str, message: str) -> str:
                         continue
                     return f"⏱ Gemini timed out.\n\nTry running `gemini \"{message[:60]}\"` directly.\n\n**Message:** {message[:100]}"
                 if code == 0:
-                    return (out or "").strip() or f"**Gemini CLI**\n\nProcessed your query.\n\n**Message:** {message}"
+                    # Strip ANSI codes from gemini output too
+                    cleaned = strip_ansi(out or "")
+                    return cleaned.strip() or f"**Gemini CLI**\n\nProcessed your query.\n\n**Message:** {message}"
                 err_msg = (err or "").strip()
                 if attempt == 0 and ("model" in err_msg.lower() or "not found" in err_msg.lower()):
                     continue
@@ -363,7 +381,7 @@ def execute_agent(agent: str, message: str) -> str:
             gemini_bin = find_cli_binary("gemini")
             prompt = f"You are OpenClaw, the orchestration agent. Coordinate and decompose the following task:\n\n{message}"
             try:
-                code, out, err = run_cli([gemini_bin, "-y", "-m", "gemini-2.5-flash", prompt], timeout=60)
+                code, out, err = run_cli([gemini_bin, "-y", "--skip-trust", "-m", "gemini-2.5-flash", prompt], timeout=60)
                 return (out or "").strip() or f"OpenClaw: processed task."
             except subprocess.TimeoutExpired:
                 return f"⏱ OpenClaw timed out."
@@ -375,7 +393,7 @@ def execute_agent(agent: str, message: str) -> str:
             gemini_bin = find_cli_binary("gemini")
             prompt = f"You are Jarvis, the voice-first executive assistant. Address the user's command politely and professionally:\n\n{message}"
             try:
-                code, out, err = run_cli([gemini_bin, "-y", "-m", "gemini-2.5-flash", prompt], timeout=60)
+                code, out, err = run_cli([gemini_bin, "-y", "--skip-trust", "-m", "gemini-2.5-flash", prompt], timeout=60)
                 return (out or "").strip() or f"Jarvis: command processed."
             except subprocess.TimeoutExpired:
                 return f"⏱ Jarvis timed out."
@@ -387,7 +405,7 @@ def execute_agent(agent: str, message: str) -> str:
             gemini_bin = find_cli_binary("gemini")
             prompt = f"You are Odysseus, the autonomous planning and research agent. Outline a deep research plan for this objective:\n\n{message}"
             try:
-                code, out, err = run_cli([gemini_bin, "-y", "-m", "gemini-2.5-flash", prompt], timeout=60)
+                code, out, err = run_cli([gemini_bin, "-y", "--skip-trust", "-m", "gemini-2.5-flash", prompt], timeout=60)
                 return (out or "").strip() or f"Odysseus: plan generated."
             except subprocess.TimeoutExpired:
                 return f"⏱ Odysseus timed out."
@@ -409,7 +427,7 @@ INSTRUCTIONS:
 TASK:
 {message}"""
             try:
-                code, out, err = run_cli([gemini_bin, "-y", "-m", "gemini-2.5-flash", research_prompt], timeout=60)
+                code, out, err = run_cli([gemini_bin, "-y", "--skip-trust", "-m", "gemini-2.5-flash", research_prompt], timeout=60)
                 return (out or "").strip() or f"Antigravity: research complete."
             except subprocess.TimeoutExpired:
                 return f"⏱ Antigravity timed out."
@@ -429,17 +447,6 @@ TASK:
 
 EMBEDDING_DIM = 1536
 
-def hash_to_vector(text: str, dim: int = EMBEDDING_DIM) -> list:
-    """Convert text to a deterministic pseudo-embedding vector using hashing.
-    Fix #10: single shake_256 call instead of 1536 separate MD5 calls."""
-    raw = hashlib.shake_256(text.encode()).digest(dim * 4)
-    vec = []
-    for i in range(dim):
-        chunk = raw[i * 4:(i + 1) * 4]
-        # Map 4 bytes to float in [-1.0, 1.0]
-        val = int.from_bytes(chunk, 'little') / 2147483648.0 - 1.0
-        vec.append(val)
-    return vec
 
 # Initialize sentence transformer model lazily
 _sentence_model = None
@@ -456,7 +463,7 @@ def get_sentence_model():
     return _sentence_model
 
 def local_embedding(text: str, dim: int = EMBEDDING_DIM) -> list:
-    """Generate true semantic embedding locally if sentence-transformers is installed, else hash."""
+    """Generate true semantic embedding locally if sentence-transformers is installed, else error."""
     model = get_sentence_model()
     if model:
         # Get 384-dimensional embedding
@@ -465,13 +472,20 @@ def local_embedding(text: str, dim: int = EMBEDDING_DIM) -> list:
         if len(vec) < dim:
             vec.extend([0.0] * (dim - len(vec)))
         return vec[:dim]
-    return hash_to_vector(text, dim)
+    raise RuntimeError("GEMINI_API_KEY is missing and sentence-transformers is not installed. Real embeddings require a valid API key.")
 
 async def generate_embedding(text: str) -> list:
     text = text[:8000]
+    
+    # Try local embedding first to save API usage
+    try:
+        return local_embedding(text)
+    except RuntimeError:
+        pass
+        
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        return local_embedding(text)
+        raise RuntimeError("GEMINI_API_KEY is missing and sentence-transformers is not installed. Real embeddings require a valid API key.")
     
     try:
         if not AIOHTTP_AVAILABLE:

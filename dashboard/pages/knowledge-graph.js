@@ -17,87 +17,81 @@ let kgState = {
 async function renderKnowledgeGraph() {
   const content = document.getElementById('pageContent');
   content.innerHTML = `
-    <div class="page-header">
-      <div class="page-header-left">
-        <h1 class="page-title">Knowledge Graph</h1>
-        <p class="page-subtitle">Entity/relation extraction, search, and visualization across all memory</p>
+    <div class="mc-header">
+      <div>
+        <h1 class="mc-title">Knowledge Graph</h1>
+        <p class="mc-subtitle">Entity/relation extraction, search, and visualization across all memory</p>
       </div>
-      <div class="page-header-right" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <button class="btn btn-warning" onclick="reindexKnowledgeGraph()">🔄 Reindex All</button>
-        <button class="btn btn-primary" onclick="loadKGStats()">📊 Refresh Stats</button>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="mc-btn" onclick="reindexKnowledgeGraph()" style="color:var(--yellow);border-color:rgba(234,179,8,0.3);">🔄 Reindex All</button>
+        <button class="mc-btn primary" onclick="loadKGStats()">📊 Refresh Stats</button>
       </div>
     </div>
 
-    <div class="card" style="margin-bottom:16px" id="kgStatsBar">
+    <div class="mc-card" style="margin-bottom:16px;padding:12px 16px;" id="kgStatsBar">
       <div class="loading"><div class="loading-spinner"></div></div>
     </div>
 
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-body" style="padding:12px 16px">
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <strong style="font-size:13px">View:</strong>
-          <button class="btn btn-sm btn-primary" onclick="setViewMode('search')" id="viewSearchBtn">🔍 Search</button>
-          <button class="btn btn-sm btn-ghost" onclick="setViewMode('graph')" id="viewGraphBtn">🕸️ Graph</button>
-        </div>
+    <div class="mc-card" style="margin-bottom:16px;padding:12px 16px;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <strong style="font-size:13px;color:var(--text-primary);">View:</strong>
+        <button class="mc-btn primary" onclick="setViewMode('search')" id="viewSearchBtn">🔍 Search</button>
+        <button class="mc-btn" onclick="setViewMode('graph')" id="viewGraphBtn">🕸️ Graph</button>
       </div>
     </div>
 
     <div id="searchView" style="display:block">
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-body" style="padding:16px">
-          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-            <div style="flex:1;min-width:300px">
-              <input type="text" id="kgSearchQuery" class="form-input" placeholder="Search entities or enter entity name..." style="font-size:14px;padding:12px 16px" onkeydown="handleKGSearchKeydown(event)">
-            </div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <select id="kgSearchDepth" class="form-select" style="width:auto;min-width:140px">
-                <option value="1">Depth 1</option>
-                <option value="2" selected>Depth 2</option>
-                <option value="3">Depth 3</option>
-              </select>
-              <select id="kgSearchLimit" class="form-select" style="width:auto;min-width:100px">
-                <option value="25">Limit 25</option>
-                <option value="50" selected>Limit 50</option>
-                <option value="100">Limit 100</option>
-              </select>
-              <button class="btn btn-primary" onclick="performKGSearch()" id="kgSearchBtn" style="padding:0 20px;height:42px">
-                <span id="kgSearchBtnText">🔍 Search</span>
-                <span id="kgSearchBtnSpinner" class="loading-spinner" style="width:16px;height:16px;display:none;margin-left:8px"></span>
-              </button>
-            </div>
+      <div class="mc-card" style="margin-bottom:16px">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <div style="flex:1;min-width:300px">
+            <input type="text" id="kgSearchQuery" class="mc-input" placeholder="Search entities or enter entity name..." style="font-size:14px;padding:12px 16px" onkeydown="handleKGSearchKeydown(event)">
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select id="kgSearchDepth" class="mc-input" style="width:auto;min-width:140px;height:42px;">
+              <option value="1">Depth 1</option>
+              <option value="2" selected>Depth 2</option>
+              <option value="3">Depth 3</option>
+            </select>
+            <select id="kgSearchLimit" class="mc-input" style="width:auto;min-width:100px;height:42px;">
+              <option value="25">Limit 25</option>
+              <option value="50" selected>Limit 50</option>
+              <option value="100">Limit 100</option>
+            </select>
+            <button class="mc-btn primary" onclick="performKGSearch()" id="kgSearchBtn" style="padding:0 20px;height:42px">
+              <span id="kgSearchBtnText">🔍 Search</span>
+              <span id="kgSearchBtnSpinner" class="loading-spinner" style="width:16px;height:16px;display:none;margin-left:8px"></span>
+            </button>
           </div>
         </div>
       </div>
 
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-body" style="padding:12px 16px">
-          <strong style="font-size:12px;color:var(--text-muted)">Quick explore:</strong>
-          <div id="kgQuickEntities" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
-        </div>
+      <div class="mc-card" style="margin-bottom:16px">
+        <strong style="font-size:12px;color:var(--text-muted)">Quick explore:</strong>
+        <div id="kgQuickEntities" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
       </div>
 
-      <div class="card">
-        <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
-          <h3 class="card-title">Entities</h3>
+      <div class="mc-card" style="padding:0;overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--border);">
+          <h3 style="font-weight:600;font-size:14px;color:var(--text-primary);margin:0;">Entities</h3>
           <div style="font-size:12px;color:var(--text-muted)" id="kgResultsCount">0 results</div>
         </div>
-        <div class="card-body" style="padding:0" id="kgEntitiesList">
+        <div id="kgEntitiesList" style="padding:0;">
           <div class="empty-state" style="padding:60px 20px;text-align:center"><div class="empty-state-icon">🕸️</div><div class="empty-state-title">Enter a query or click quick explore</div><div class="empty-state-desc">Search for entities or explore the graph view</div></div>
         </div>
       </div>
     </div>
 
     <div id="graphView" style="display:none">
-      <div class="card" style="height:calc(100vh - 300px);min-height:500px">
-        <div class="card-header" style="display:flex;align-items:center;justify-content:space-between">
-          <h3 class="card-title">Graph Visualization</h3>
+      <div class="mc-card" style="height:calc(100vh - 300px);min-height:500px;padding:0;display:flex;flex-direction:column;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:16px;border-bottom:1px solid var(--border);">
+          <h3 style="font-weight:600;font-size:14px;color:var(--text-primary);margin:0;">Graph Visualization</h3>
           <div style="display:flex;gap:8px;align-items:center">
             <span style="font-size:12px;color:var(--text-muted)">D3.js Force-Directed</span>
-            <button class="btn btn-ghost btn-sm" onclick="loadEntityNeighborhood()">🔄 Refresh</button>
+            <button class="mc-btn" style="padding:4px 8px;font-size:12px;" onclick="loadEntityNeighborhood()">🔄 Refresh</button>
           </div>
         </div>
-        <div class="card-body" style="padding:0;height:calc(100% - 60px)">
-          <div id="d3GraphContainer" style="width:100%;height:100%;position:relative"></div>
+        <div style="flex:1;position:relative;">
+          <div id="d3GraphContainer" style="width:100%;height:100%;position:absolute;"></div>
         </div>
       </div>
     </div>
@@ -124,14 +118,14 @@ function renderKGStats() {
   const stats = kgState.stats;
   if (!stats) return;
   container.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:12px 16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <div style="display:flex;gap:24px">
-        <div><strong>${stats.total_entities || 0}</strong> <span style="color:var(--text-muted);font-size:12px">entities</span></div>
-        <div><strong>${stats.total_relations || 0}</strong> <span style="color:var(--text-muted);font-size:12px">relations</span></div>
+        <div><strong style="color:var(--text-primary);">${stats.total_entities || 0}</strong> <span style="color:var(--text-muted);font-size:12px">entities</span></div>
+        <div><strong style="color:var(--text-primary);">${stats.total_relations || 0}</strong> <span style="color:var(--text-muted);font-size:12px">relations</span></div>
       </div>
       <div style="display:flex;gap:8px;font-size:11px;flex-wrap:wrap">
-        ${Object.entries(stats.entity_types || {}).map(([type, count]) => `<span class="badge" style="background:var(--blue-dim);color:var(--blue)">${type} (${count})</span>`).join('')}
-        ${Object.entries(stats.relation_types || {}).map(([type, count]) => `<span class="badge" style="background:var(--purple-dim);color:var(--purple)">${type} (${count})</span>`).join('')}
+        ${Object.entries(stats.entity_types || {}).map(([type, count]) => `<span class="mc-badge" style="background:rgba(56,189,248,0.1);color:var(--cyan);">${type} (${count})</span>`).join('')}
+        ${Object.entries(stats.relation_types || {}).map(([type, count]) => `<span class="mc-badge" style="background:rgba(168,85,247,0.1);color:var(--purple);">${type} (${count})</span>`).join('')}
       </div>
     </div>
   `;
@@ -143,8 +137,8 @@ function setViewMode(mode) {
   document.getElementById('graphView').style.display = mode === 'graph' ? 'block' : 'none';
   const searchBtn = document.getElementById('viewSearchBtn');
   const graphBtn = document.getElementById('viewGraphBtn');
-  if (searchBtn) { searchBtn.classList.toggle('btn-primary', mode === 'search'); searchBtn.classList.toggle('btn-ghost', mode !== 'search'); }
-  if (graphBtn) { graphBtn.classList.toggle('btn-primary', mode === 'graph'); graphBtn.classList.toggle('btn-ghost', mode !== 'graph'); }
+  if (searchBtn) { searchBtn.classList.toggle('primary', mode === 'search'); }
+  if (graphBtn) { graphBtn.classList.toggle('primary', mode === 'graph'); }
   if (mode === 'graph') { initGraph(); }
 }
 
@@ -176,17 +170,17 @@ function renderKGSearchResults() {
   const relations = kgState.searchResults?.relations || [];
   let html = '';
   if (entities.length) {
-    html += '<div style="padding:12px 16px;border-bottom:1px solid var(--border)"><strong>Entities (' + entities.length + ')</strong></div><div style="display:flex;flex-direction:column">';
+    html += '<div style="padding:12px 16px;border-bottom:1px solid var(--border)"><strong style="color:var(--text-primary);">Entities (' + entities.length + ')</strong></div><div style="display:flex;flex-direction:column">';
     for (const entity of entities) {
       const typeColor = getEntityTypeColor(entity.type);
-      html += `<div class="kg-entity-row" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:var(--transition)" onclick="showEntityDetail('${entity.name}')" onmouseover="this.style.background='var(--bg-card)'" onmouseout="this.style.background=''"><span style="font-size:20px">${getEntityIcon(entity.type)}</span><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px">${escapeHtml(entity.name)}</div><div style="display:flex;gap:gap:gap:gap:8px;margin-top:2px"><span class="badge" style="background:var(--${typeColor}-dim);color:var(--${typeColor})">${entity.type}</span><span style="font-size:11px;color:var(--text-muted)">${entity.mentions?.length || 0} mentions</span></div></div></div>`;
+      html += `<div class="kg-entity-row" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.02);cursor:pointer;transition:all 0.2s;" onclick="showEntityDetail('${entity.name}')" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background=''"><span style="font-size:20px">${getEntityIcon(entity.type)}</span><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:14px;color:var(--text-primary);">${escapeHtml(entity.name)}</div><div style="display:flex;gap:8px;margin-top:2px"><span class="mc-badge" style="background:var(--${typeColor}-dim);color:var(--${typeColor})">${entity.type}</span><span style="font-size:11px;color:var(--text-muted)">${entity.mentions?.length || 0} mentions</span></div></div></div>`;
     }
     html += '</div>';
   }
   if (relations.length) {
-    html += '<div style="padding:12px 16px;border-bottom:1px solid var(--border)"><strong>Relations (' + relations.length + ')</strong></div><div style="display:flex;flex-direction:column">';
+    html += '<div style="padding:12px 16px;border-bottom:1px solid var(--border)"><strong style="color:var(--text-primary);">Relations (' + relations.length + ')</strong></div><div style="display:flex;flex-direction:column">';
     for (const rel of relations.slice(0, 50)) {
-      html += `<div class="kg-relation-row" style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--border);color:var(--text-secondary)"><span style="font-weight:600">${escapeHtml(rel.source)}</span><span style="color:var(--text-muted)">→</span><span style="font-weight:600">${escapeHtml(rel.target)}</span><span class="badge" style="background:var(--purple-dim);color:var(--purple);margin-left:auto">${rel.type || 'co_occurs'}</span><span style="font-size:11px;color:var(--text-muted)">${rel.source_count || 1} co-occurrences</span></div>`;
+      html += `<div class="kg-relation-row" style="display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.02);color:var(--text-secondary)"><span style="font-weight:600;color:var(--text-primary);">${escapeHtml(rel.source)}</span><span style="color:var(--text-muted)">→</span><span style="font-weight:600;color:var(--text-primary);">${escapeHtml(rel.target)}</span><span class="mc-badge" style="background:rgba(168,85,247,0.1);color:var(--purple);margin-left:auto">${rel.type || 'co_occurs'}</span><span style="font-size:11px;color:var(--text-muted)">${rel.source_count || 1} co-occurrences</span></div>`;
     }
     html += '</div>';
   }

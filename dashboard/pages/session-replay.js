@@ -41,7 +41,7 @@ async function renderSessionReplay() {
       </div>
     `;
   } catch (err) {
-    document.getElementById('sessionList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">Failed to load sessions</div><div class="empty-state-desc">${escapeHtml(err.message)}</div></div>`;
+    (document.getElementById('sessionList') || {}).innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">Failed to load sessions</div><div class="empty-state-desc">${escapeHtml(err.message)}</div></div>`;
   }
 }
 
@@ -76,7 +76,7 @@ function renderSessionDetail(detail, messages, session) {
         <div style="display:flex;gap:8px;align-items:center">
           <label style="font-size:12px;color:var(--text-muted)"><input type="checkbox" id="showTimestamps" checked onchange="toggleTimestamps()"> Show times</label>
           <label style="font-size:12px;color:var(--text-muted)"><input type="checkbox" id="showToolCalls" checked onchange="toggleToolCalls()"> Show tool calls</label>
-          <button class="btn btn-sm btn-ghost" onclick="document.getElementById('sessionDetail').innerHTML=''">✕ Close</button>
+          <button class="btn btn-sm btn-ghost" onclick="(document.getElementById('sessionDetail') || {}).innerHTML =''">✕ Close</button>
         </div>
       </div>
     </div>

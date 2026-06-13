@@ -1,18 +1,18 @@
 async function renderSkills() {
   const content = document.getElementById('pageContent');
   content.innerHTML = `
-    <div class="page-header">
-      <div class="page-header-left">
-        <h1 class="page-title">Skills Hub</h1>
-        <p class="page-subtitle">Browse, run, and monitor skill performance</p>
+    <div class="mc-header">
+      <div>
+        <h1 class="mc-title">Skills Hub</h1>
+        <p class="mc-subtitle">Browse, run, and monitor skill performance</p>
       </div>
-      <div class="btn-group">
-        <input id="skillFilter" class="form-input" style="width:200px" placeholder="Filter skills..." oninput="filterSkills()">
+      <div style="display:flex;gap:8px">
+        <input id="skillFilter" class="mc-input" style="width:200px" placeholder="Filter skills..." oninput="filterSkills()">
       </div>
     </div>
-    <div class="tabs" id="skillTabs">
-      <button class="tab active" data-view="grid" onclick="switchSkillView('grid')">📊 Grid</button>
-      <button class="tab" data-view="list" onclick="switchSkillView('list')">📋 List</button>
+    <div class="mc-tabs" id="skillTabs" style="display:flex;gap:8px;margin-bottom:16px;">
+      <button class="mc-btn active" data-view="grid" onclick="switchSkillView('grid')">📊 Grid</button>
+      <button class="mc-btn" data-view="list" onclick="switchSkillView('list')">📋 List</button>
     </div>
     <div id="skillsContainer"><div class="loading"><div class="loading-spinner"></div></div></div>
     <div id="skillDetail" style="display:none"></div>
@@ -23,7 +23,7 @@ async function renderSkills() {
     window._allSkills = skills;
     renderSkillGrid(skills);
   } catch (err) {
-    document.getElementById('skillsContainer').innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
+    (document.getElementById('skillsContainer') || {}).innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
   }
 }
 
@@ -33,22 +33,22 @@ function renderSkillGrid(skills) {
     container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚡</div><div class="empty-state-title">No skills installed</div></div>';
     return;
   }
-  container.innerHTML = `<div class="grid grid-3" id="skillGrid">${skills.map(s => {
+  container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;" id="skillGrid">${skills.map(s => {
     const lastScore = s.scores && s.scores.length > 0 ? s.scores[s.scores.length - 1] : null;
     const avg = lastScore && lastScore.criteria_scores ? (lastScore.criteria_scores.reduce((a, b) => a + b, 0) / lastScore.criteria_scores.length) : null;
     const icons = ['⚡', '🔧', '📝', '🔍', '🔄', '🎯', '📊', '🛠', '💡', '🧪', '📋', '💾', '💰', '🔄', '🎨'];
     const iconIdx = s.name.split('').reduce((a, c) => a + c.charCodeAt(0), 0) % icons.length;
     const icon = icons[iconIdx];
-    return `<div class="skill-card" onclick="showSkillDetail('${s.name}')">
-      <div class="skill-card-header">
-        <div class="skill-card-icon">${icon}</div>
-        <div class="skill-card-name">${s.name.replace(/-/g, ' ')}</div>
+    return `<div class="mc-card" onclick="showSkillDetail('${s.name}')" style="cursor:pointer;transition:border-color 0.2s, background 0.2s;display:flex;flex-direction:column;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <div style="width:32px;height:32px;border-radius:6px;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:16px;">${icon}</div>
+        <div style="font-weight:500;font-size:14px;color:var(--text-primary);">${s.name.replace(/-/g, ' ')}</div>
       </div>
-      <div class="skill-card-desc">${s.description ? s.description.slice(0, 120) + (s.description.length > 120 ? '...' : '') : 'No description'}</div>
-      <div class="skill-card-footer">
-        ${avg !== null ? `<span class="badge badge-success">${(avg * 100).toFixed(0)}%</span>` : '<span class="badge badge-info">New</span>'}
-        ${s.has_learnings ? '<span class="badge badge-accent">📖</span>' : ''}
-        <button class="btn btn-sm btn-primary" style="margin-left:auto" onclick="event.stopPropagation();quickRunSkill('${s.name}')">▶ Run</button>
+      <div style="font-size:13px;color:var(--text-secondary);flex:1;margin-bottom:16px;line-height:1.5;">${s.description ? s.description.slice(0, 120) + (s.description.length > 120 ? '...' : '') : 'No description'}</div>
+      <div style="display:flex;align-items:center;gap:8px;padding-top:12px;border-top:1px solid var(--border);">
+        ${avg !== null ? `<span class="mc-badge" style="background:rgba(34,197,94,0.1);color:var(--green);">${(avg * 100).toFixed(0)}%</span>` : '<span class="mc-badge" style="background:rgba(56,189,248,0.1);color:var(--cyan);">New</span>'}
+        ${s.has_learnings ? '<span class="mc-badge" style="background:rgba(168,85,247,0.1);color:var(--purple);">📖</span>' : ''}
+        <button class="mc-btn primary" style="margin-left:auto;padding:4px 12px;font-size:12px;" onclick="event.stopPropagation();quickRunSkill('${s.name}')">▶ Run</button>
       </div>
     </div>`;
   }).join('')}</div>`;
@@ -58,7 +58,7 @@ function switchSkillView(view) {
   document.querySelectorAll('#skillTabs .tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
   if (view === 'list') {
     const skills = window._allSkills || [];
-    document.getElementById('skillsContainer').innerHTML = `<div class="table-wrapper"><table><thead><tr><th>Skill</th><th>Score</th><th>Learnings</th><th></th></tr></thead><tbody>${skills.map(s => {
+    (document.getElementById('skillsContainer') || {}).innerHTML = `<div class="table-wrapper"><table><thead><tr><th>Skill</th><th>Score</th><th>Learnings</th><th></th></tr></thead><tbody>${skills.map(s => {
       const lastScore = s.scores && s.scores.length > 0 ? s.scores[s.scores.length - 1] : null;
       const avg = lastScore && lastScore.criteria_scores ? (lastScore.criteria_scores.reduce((a, b) => a + b, 0) / lastScore.criteria_scores.length) : null;
       return `<tr onclick="showSkillDetail('${s.name}')" style="cursor:pointer">
@@ -94,37 +94,39 @@ async function showSkillDetail(name) {
     const avg = lastScore && lastScore.criteria_scores ? (lastScore.criteria_scores.reduce((a, b) => a + b, 0) / lastScore.criteria_scores.length) : null;
 
     detail.innerHTML = `
-      <div style="margin-bottom:16px">
-        <button class="btn btn-ghost" onclick="backToSkills()">← Back to Skills</button>
-        <button class="btn btn-primary" style="margin-left:8px" onclick="quickRunSkill('${name}')">▶ Run ${name.replace(/-/g, ' ')}</button>
+      <div style="margin-bottom:20px;display:flex;gap:8px;">
+        <button class="mc-btn" onclick="backToSkills()">← Back to Skills</button>
+        <button class="mc-btn primary" onclick="quickRunSkill('${name}')">▶ Run ${name.replace(/-/g, ' ')}</button>
       </div>
-      <div class="grid grid-2">
-        <div class="card">
-          <div class="card-header"><span class="card-title">📄 SKILL.md</span></div>
-          <pre style="max-height:400px;overflow:auto;font-size:12px">${escapeHtml(skill.skill || 'No SKILL.md')}</pre>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div class="mc-card" style="display:flex;flex-direction:column;height:400px;">
+          <div style="font-weight:500;padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:12px;">📄 SKILL.md</div>
+          <div style="flex:1;overflow:auto;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);white-space:pre-wrap;">${escapeHtml(skill.skill || 'No SKILL.md')}</div>
         </div>
-        <div class="card">
-          <div class="card-header"><span class="card-title">📖 Learnings</span></div>
-          <pre style="max-height:400px;overflow:auto;font-size:12px">${escapeHtml(skill.learnings || 'No learnings yet')}</pre>
+        <div class="mc-card" style="display:flex;flex-direction:column;height:400px;">
+          <div style="font-weight:500;padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:12px;">📖 Learnings</div>
+          <div style="flex:1;overflow:auto;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);white-space:pre-wrap;">${escapeHtml(skill.learnings || 'No learnings yet')}</div>
         </div>
       </div>
-      <div class="grid grid-2 mt-3">
-        <div class="card">
-          <div class="card-header"><span class="card-title">📊 Performance</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="mc-card">
+          <div style="font-weight:500;padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:12px;">📊 Performance</div>
           ${scores.length > 0 ? `
-            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
-              ${scores.slice(-10).map(s => `<span class="badge ${(s.total_score || 0) > 0.7 ? 'badge-success' : 'badge-warning'}">${((s.total_score || 0) * 100).toFixed(0)}%</span>`).join('')}
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+              ${scores.slice(-10).map(s => `<span class="mc-badge" style="background:${(s.total_score || 0) > 0.7 ? 'rgba(34,197,94,0.1)' : 'rgba(234,179,8,0.1)'};color:${(s.total_score || 0) > 0.7 ? 'var(--green)' : 'var(--yellow)'};">${((s.total_score || 0) * 100).toFixed(0)}%</span>`).join('')}
             </div>
-            <div class="progress-bar"><div class="progress-fill" style="width:${(avg || 0) * 100}%"></div></div>
-            <div style="font-size:12px;color:var(--text-muted);margin-top:6px">Average: ${avg !== null ? (avg * 100).toFixed(0) : 'N/A'}% (${scores.length} runs)</div>
+            <div style="height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;margin-bottom:8px;">
+              <div style="height:100%;width:${(avg || 0) * 100}%;background:var(--blue);border-radius:3px;"></div>
+            </div>
+            <div style="font-size:12px;color:var(--text-muted);">Average: ${avg !== null ? (avg * 100).toFixed(0) : 'N/A'}% (${scores.length} runs)</div>
           ` : '<div style="color:var(--text-muted);font-size:13px">No evaluation scores yet</div>'}
         </div>
-        <div class="card">
-          <div class="card-header"><span class="card-title">📁 Context Files</span></div>
+        <div class="mc-card">
+          <div style="font-weight:500;padding-bottom:12px;border-bottom:1px solid var(--border);margin-bottom:12px;">📁 Context Files</div>
           ${skill.context && skill.context.length > 0
-            ? `<div style="display:flex;flex-wrap:wrap;gap:6px">${skill.context.map(f => `<span class="badge badge-info">${f}</span>`).join('')}</div>`
+            ? `<div style="display:flex;flex-wrap:wrap;gap:6px">${skill.context.map(f => `<span class="mc-badge" style="background:rgba(56,189,248,0.1);color:var(--cyan);">${f}</span>`).join('')}</div>`
             : '<div style="color:var(--text-muted);font-size:13px">No context files</div>'}
-          ${skill.eval && skill.eval.criteria ? `<div style="margin-top:12px"><strong style="font-size:12px">Eval Criteria:</strong><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">${skill.eval.criteria.map(c => `<span class="badge badge-accent">${c}</span>`).join('')}</div></div>` : ''}
+          ${skill.eval && skill.eval.criteria ? `<div style="margin-top:16px"><div style="font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:8px;">Eval Criteria:</div><div style="display:flex;flex-wrap:wrap;gap:6px;">${skill.eval.criteria.map(c => `<span class="mc-badge" style="background:rgba(168,85,247,0.1);color:var(--purple);">${c}</span>`).join('')}</div></div>` : ''}
         </div>
       </div>
     `;

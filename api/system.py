@@ -35,7 +35,7 @@ async def get_audit(user: dict = Depends(get_current_user)):  # Fix #4: requires
                     logs.append(json.loads(line.strip()))
                 except Exception:  # Fix #14: was bare except:
                     pass
-    return {"audit": logs}
+    return {"audit": logs, "entries": logs}
 
 @router.get("/prompts")
 async def get_prompts():

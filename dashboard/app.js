@@ -9,7 +9,9 @@ const WS_URL = (location.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + locati
 
 // Fix #18: consistent getAuthToken — falls back to local-dev-key, never throws
 function getAuthToken() {
-  return localStorage.getItem('agentic_os_token') || 'local-dev-key';
+  let token = localStorage.getItem('agentic_os_token');
+  if (token === 'null' || token === 'undefined') token = null;
+  return token || 'local-dev-key';
 }
 
 function buildWSUrl(baseUrl) {
@@ -66,8 +68,6 @@ async function navigate(page) {
   if (navItem) navItem.classList.add('active');
 
   const info = PAGE_TITLES[hash] || PAGE_TITLES[basePage] || { title: 'Unknown', breadcrumb: '' };
-  document.getElementById('pageTitle').textContent = info.title;
-  document.getElementById('pageBreadcrumb').textContent = info.breadcrumb;
 
   const content = document.getElementById('pageContent');
   content.innerHTML = `<div class="loading"><div class="loading-spinner"></div><span>Loading ${info.title}...</span></div>`;
@@ -82,7 +82,7 @@ async function navigate(page) {
     const renderFn = window[`render${renderName}`];
     if (renderFn) {
       content.innerHTML = '';
-      content.className = 'page-content page-enter';
+      content.className = 'mc-main page-enter';
       if (bar) bar.style.width = '70%';
       await renderFn(hash);
       if (bar) { bar.style.width = '100%'; setTimeout(() => { bar.style.width = '0'; bar.classList.remove('active'); }, 400); }
@@ -167,13 +167,11 @@ function handleWSMessage(msg) {
 
 function updateAgentStatusFromWS(data) {
   const agents = data.agents || [];
-  const bar = document.getElementById('agentStatusBar');
   const online = agents.filter(a => a.status === 'online').length;
   const total = agents.length;
-  const dot = bar.querySelector('.agent-dot');
-  if (online === total) { dot.className = 'agent-dot online'; bar.querySelector('span').textContent = 'All agents online'; }
-  else if (online > 0) { dot.className = 'agent-dot warning'; bar.querySelector('span').textContent = `${online}/${total} online`; }
-  else { dot.className = 'agent-dot offline'; bar.querySelector('span').textContent = 'All agents offline'; }
+
+  const activeAgents = document.getElementById('mcActiveAgents');
+  if (activeAgents) activeAgents.textContent = online;
 
   const badge = document.getElementById('skillCount');
   if (badge && data.skills_count !== undefined) badge.textContent = data.skills_count;
@@ -205,13 +203,8 @@ async function updateAgentStatus() {
     const status = await api.getStatus();
     updateAgentStatusFromWS(status);
   } catch {
-    const bar = document.getElementById('agentStatusBar');
-    if (bar) {
-      const dot = bar.querySelector('.agent-dot');
-      if (dot) dot.className = 'agent-dot offline';
-      const span = bar.querySelector('span');
-      if (span) span.textContent = 'Disconnected';
-    }
+    const activeAgents = document.getElementById('mcActiveAgents');
+    if (activeAgents) activeAgents.textContent = '0';
   }
 }
 

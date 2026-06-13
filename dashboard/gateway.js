@@ -24,15 +24,17 @@ async function gwRefreshStatus() {
     const total  = (data.agents || []).length;
     Gateway.connected = online > 0;
 
-    const dot    = document.getElementById('gwDot');
-    const status = document.getElementById('gwStatus');
-    if (dot)    dot.className    = `agent-dot ${online === total ? 'online' : online > 0 ? 'warning' : 'offline'}`;
-    if (status) status.textContent = online === total ? 'All systems go' : online > 0 ? `${online}/${total} agents` : 'Disconnected';
+    const gwDot = document.getElementById('gwDot');
+    const activeAgents = document.getElementById('mcActiveAgents');
+    
+    if (gwDot) gwDot.className = `mc-dot ${online === total ? 'online' : online > 0 ? 'warning' : 'error'}`;
+    if (activeAgents) activeAgents.textContent = online;
   } catch {
-    const dot    = document.getElementById('gwDot');
-    const status = document.getElementById('gwStatus');
-    if (dot)    dot.className    = 'agent-dot offline';
-    if (status) status.textContent = 'Server offline';
+    const gwDot = document.getElementById('gwDot');
+    const activeAgents = document.getElementById('mcActiveAgents');
+    
+    if (gwDot) gwDot.className = 'mc-dot error';
+    if (activeAgents) activeAgents.textContent = '0';
     Gateway.connected = false;
   }
 }
@@ -50,21 +52,19 @@ function gwLoadProfile() {
 
 function gwUpdateProfileUI() {
   const p = Gateway.profile;
-  const gwProfile      = document.getElementById('gwProfile');
-  const gwModel        = document.getElementById('gwModel');
-  const topbarPName    = document.getElementById('topbarProfileName');
+  const mcSidebarModel = document.getElementById('mcSidebarModel');
+  const mcProfileName  = document.getElementById('mcProfileName');
 
-  if (gwProfile)   gwProfile.textContent   = p?.name  || 'Default';
-  if (gwModel)     gwModel.textContent     = (p?.model || 'owl-alpha').split('/').pop();
-  if (topbarPName) topbarPName.textContent = p?.name  || 'Default';
+  if (mcSidebarModel) mcSidebarModel.textContent = (p?.model || 'owl-alpha').split('/').pop();
+  if (mcProfileName)  mcProfileName.textContent  = p?.name  || 'Default';
 }
 
 function gwUpdateTokens(tokens) {
   Gateway.tokensToday += tokens || 0;
-  const gwTokens = document.getElementById('gwTokens');
-  if (gwTokens) {
+  const mcTokens = document.getElementById('mcTokensToday');
+  if (mcTokens) {
     const t = Gateway.tokensToday;
-    gwTokens.textContent = t >= 1000 ? `${(t / 1000).toFixed(1)}k tokens today` : `${t} tokens today`;
+    mcTokens.textContent = t >= 1000 ? `${(t / 1000).toFixed(1)}k` : `${t}`;
   }
 }
 

@@ -83,8 +83,19 @@ async def send_message(req: ChatRequest, user: dict = Depends(get_current_user))
 
     append_audit({"action": "chat_message_sent", "agent": agent, "user": user.get("user_id") or user.get("api_key")})
 
-    return {"response": response_text, "agent": agent, "history_length": len(history) + 2}
+    ai_response_obj = {"role": "assistant", "content": response_text, "agent": agent, "timestamp": get_timestamp()}
+    return {"response": ai_response_obj, "agent": agent, "history_length": len(history) + 2}
 
 @router.get("/history")
-async def get_chat_history(agent: str, user: dict = Depends(get_current_user)):
-    return {"messages": load_history(agent)}
+async def get_chat_history(agent: str = None, user: dict = Depends(get_current_user)):
+    if agent:
+        return {"messages": load_history(agent)}
+    
+    all_msgs = []
+    if CHAT_DIR.exists():
+        for f in CHAT_DIR.glob("*.jsonl"):
+            all_msgs.extend(load_history(f.stem))
+        for f in CHAT_DIR.glob("*.json"):
+            all_msgs.extend(load_history(f.stem))
+    all_msgs.sort(key=lambda x: x.get('timestamp', ''))
+    return {"messages": all_msgs}

@@ -200,7 +200,8 @@ Task Description: {task.get('body')}
 Respond ONLY with a valid JSON array of strings, where each string is a subtask title. Do not include markdown formatting or backticks.
 Example: ["Setup database", "Create API endpoint", "Write tests"]"""
     
-    result = execute_agent("gemini", prompt)
+    import asyncio
+    result = await asyncio.to_thread(execute_agent, "gemini", prompt)
     
     try:
         import re
@@ -212,11 +213,10 @@ Example: ["Setup database", "Create API endpoint", "Write tests"]"""
         subtask_titles = json.loads(clean_result)
         if not isinstance(subtask_titles, list):
             subtask_titles = [str(subtask_titles)]
-    except Exception:
-        # Fallback if LLM fails to return valid JSON
-        subtask_titles = [s.strip().lstrip("-* ") for s in task.get("body", "").split("\n") if s.strip().lstrip("-* ")]
         if not subtask_titles:
-            subtask_titles = ["Subtask 1", "Subtask 2"]
+            raise ValueError("LLM returned an empty list")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"LLM failed to decompose task into valid JSON array: {str(e)}\nOutput: {result}")
             
     children = []
     for title in subtask_titles:

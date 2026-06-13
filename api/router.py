@@ -17,23 +17,6 @@ ROUTER_RULES = {
 
 @router.post("/suggest")
 async def router_suggest(req: RouterSuggest, user: dict = Depends(get_current_user)):
-    task = req.task.lower()
-
-    # Compute heuristic keyword scores for all agents
-    raw_scores = {agent: 0 for agent in ROUTER_RULES}
-    for agent, patterns in ROUTER_RULES.items():
-        for pattern in patterns:
-            if re.search(pattern, task):
-                raw_scores[agent] += 1
-
-    # Pick heuristic winner
-    suggested = max(raw_scores, key=raw_scores.get)
-    if raw_scores[suggested] == 0:
-        suggested = "opencode"  # default
-        raw_scores["opencode"] = 1
-
-    # Try LLM override, but keep heuristic scores as the distribution baseline
-    llm_reasoning = ""
     try:
         prompt = f"""You are an AI agent router. Given this task, choose the BEST agent and explain why.
 
@@ -44,22 +27,35 @@ Agents:
 
 Task: {req.task}
 
-Respond with ONLY JSON (no markdown): {{"agent": "<name>", "reason": "<1 sentence>"}}"""
-        llm_out = await asyncio.to_thread(execute_agent, "gemini", prompt)  # Fix #6: non-blocking
-        match = re.search(r'\{[^}]+\}', llm_out)
-        if match:
-            parsed = json.loads(match.group(0))
-            if parsed.get("agent") in ROUTER_RULES:
-                suggested = parsed["agent"]
-                llm_reasoning = parsed.get("reason", "")
-                # Boost LLM-chosen agent so distribution is still meaningful
-                raw_scores[suggested] = max(raw_scores[suggested], 3)
-    except Exception:
-        pass  # Fall back to heuristic result
-
-    # Fix #15: normalize scores to percentages so UI gauge shows real distribution
-    total = sum(raw_scores.values()) or 1
-    score_pct = {agent: round(v * 100 / total) for agent, v in raw_scores.items()}
+Respond with ONLY JSON (no markdown): {{"agent": "<name>", "reason": "<1 sentence>", "confidence": 95}}"""
+        llm_out = await asyncio.to_thread(execute_agent, "gemini", prompt)
+        
+        from fastapi import HTTPException
+        match = re.search(r'\{[^}]+\}', llm_out, re.DOTALL)
+        if not match:
+            raise ValueError(f"LLM did not return valid JSON. Output: {llm_out}")
+            
+        parsed = json.loads(match.group(0))
+        suggested = parsed.get("agent", "").lower()
+        llm_reasoning = parsed.get("reason", "")
+        confidence_val = parsed.get("confidence", 50)
+        
+        # We need a proper scores dict for the UI
+        score_pct = {"opencode": 0, "hermes": 0, "gemini": 0}
+        if suggested in score_pct:
+            score_pct[suggested] = confidence_val
+            remainder = 100 - confidence_val
+            others = [k for k in score_pct if k != suggested]
+            if len(others) > 0:
+                score_pct[others[0]] = remainder // 2
+                score_pct[others[1]] = remainder - (remainder // 2)
+        else:
+            suggested = "opencode"
+            score_pct["opencode"] = 100
+            
+    except Exception as e:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail=f"LLM routing failed: {str(e)}")
 
     append_audit({
         "action": "task_routed_suggest",
@@ -70,9 +66,9 @@ Respond with ONLY JSON (no markdown): {{"agent": "<name>", "reason": "<1 sentenc
     return {
         "suggested": suggested,
         "suggested_agent": suggested,  # backwards compat
-        "confidence": "high" if raw_scores[suggested] >= 2 else "medium" if raw_scores[suggested] == 1 else "low",
+        "confidence": "high" if confidence_val >= 80 else "medium" if confidence_val >= 50 else "low",
         "scores": score_pct,
-        "reasoning": llm_reasoning or f"Heuristic: matched {raw_scores[suggested]} pattern(s) for {suggested}",
+        "reasoning": llm_reasoning,
         "task": req.task,
     }
 

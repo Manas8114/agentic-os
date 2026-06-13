@@ -3,25 +3,25 @@ let kanbanData = null;
 async function renderKanban() {
   const content = document.getElementById('pageContent');
   content.innerHTML = `
-    <div class="page-header">
-      <div class="page-header-left">
-        <div class="page-title">Kanban Board</div>
-        <div class="page-subtitle">Visual task management — track, prioritize, and organize work</div>
+    <div class="mc-header">
+      <div>
+        <h1 class="mc-title">Kanban Board</h1>
+        <p class="mc-subtitle">Visual task management — track, prioritize, and organize work</p>
       </div>
-      <div class="btn-group">
-        <button class="btn btn-primary" onclick="showAddKanbanTask()">+ Add Task</button>
-        <button class="btn btn-ghost" onclick="renderKanban()">🔄 Refresh</button>
+      <div style="display:flex;gap:8px">
+        <button class="mc-btn primary" onclick="showAddKanbanTask()">+ Add Task</button>
+        <button class="mc-btn" onclick="renderKanban()">🔄 Refresh</button>
       </div>
     </div>
-    <div class="kanban-toolbar">
-      <input class="form-input" id="kanbanFilterInput" placeholder="Filter tasks..." oninput="filterKanbanTasks()" style="flex:1;max-width:280px">
-      <select class="form-select" id="kanbanFilterPriority" onchange="filterKanbanTasks()" style="width:120px">
+    <div class="mc-toolbar" style="display:flex;gap:12px;margin-bottom:24px;">
+      <input class="mc-input" id="kanbanFilterInput" placeholder="Filter tasks..." oninput="filterKanbanTasks()" style="flex:1;max-width:280px">
+      <select class="mc-input" id="kanbanFilterPriority" onchange="filterKanbanTasks()" style="width:120px">
         <option value="all">All Priorities</option>
         <option value="high">High</option>
         <option value="medium">Medium</option>
         <option value="low">Low</option>
       </select>
-      <select class="form-select" id="kanbanFilterCategory" onchange="filterKanbanTasks()" style="width:140px">
+      <select class="mc-input" id="kanbanFilterCategory" onchange="filterKanbanTasks()" style="width:140px">
         <option value="all">All Categories</option>
         <option value="development">Development</option>
         <option value="devops">DevOps</option>
@@ -30,8 +30,8 @@ async function renderKanban() {
         <option value="general">General</option>
       </select>
     </div>
-    <div class="kanban-board" id="kanbanBoard">
-      <div class="skeleton" style="height:400px"></div>
+    <div class="kanban-board" id="kanbanBoard" style="display:flex;gap:16px;overflow-x:auto;padding-bottom:16px;min-height:400px;scrollbar-width:thin;">
+      <div class="skeleton" style="height:400px;width:100%"></div>
     </div>
   `;
   await loadKanbanData();
@@ -65,28 +65,39 @@ function renderKanbanBoard() {
       return true;
     }).filter(t => filterPriority === 'all' || (t.priority || 'medium') === filterPriority)
       .filter(t => filterCategory === 'all' || (t.category || 'general') === filterCategory);
+      
+    // Determine priority dot color
+    const getPriorityColor = (p) => {
+      if (p === 'high') return 'var(--red)';
+      if (p === 'medium') return 'var(--yellow)';
+      return 'var(--text-muted)';
+    };
+
     return `
-      <div class="kanban-column" data-column="${col}">
-        <div class="kanban-column-header">
-          <div class="kanban-column-title">
+      <div class="mc-kanban-column" data-column="${col}" style="flex:0 0 300px;display:flex;flex-direction:column;gap:12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:8px;padding:12px;">
+        <div class="kanban-column-header" style="display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;">
+          <div>
             <span>${columnIcons[col] || '📌'}</span>
             ${columnLabels[col] || col}
-            <span class="kanban-count">${colTasks.length}</span>
           </div>
+          <span class="mc-badge" style="background:var(--bg-card);color:var(--text-muted);border-radius:4px;padding:2px 6px;">${colTasks.length}</span>
         </div>
-        <div class="kanban-column-body" ondragover="event.preventDefault()" ondrop="onKanbanDrop(event, '${col}')">
-          ${colTasks.length === 0 ? `<div class="kanban-empty">No tasks</div>` :
+        <div class="kanban-column-body" ondragover="event.preventDefault()" ondrop="onKanbanDrop(event, '${col}')" style="flex:1;display:flex;flex-direction:column;gap:8px;min-height:100px;">
+          ${colTasks.length === 0 ? `<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px;border:1px dashed var(--border);border-radius:6px;">No tasks</div>` :
             colTasks.map(t => `
-              <div class="kanban-card" draggable="true" ondragstart="onKanbanDrag(event, '${t.id}')" onclick="showKanbanDetail('${t.id}')">
-                <div class="kanban-card-header">
-                  <span class="kanban-priority priority-${t.priority || 'medium'}">${t.priority || 'medium'}</span>
+              <div class="mc-card" draggable="true" ondragstart="onKanbanDrag(event, '${t.id}')" onclick="showKanbanDetail('${t.id}')" style="cursor:grab;padding:12px;background:var(--bg-panel);border:1px solid var(--border);transition:border-color 0.2s;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span class="mc-dot" style="background:${getPriorityColor(t.priority || 'medium')}"></span>
+                    <span style="font-size:11px;color:var(--text-muted);text-transform:uppercase;">${t.priority || 'medium'}</span>
+                  </div>
+                  ${t.status === 'blocked' ? `<span class="mc-badge" style="background:rgba(239,68,68,0.1);color:var(--red);">🚫 Blocked</span>` : ''}
                 </div>
-                <div class="kanban-card-title">${escapeHtml(t.title)}</div>
-                ${t.body ? `<div class="kanban-card-desc">${escapeHtml(t.body.substring(0, 80))}${t.body.length > 80 ? '...' : ''}</div>` : ''}
-                <div class="kanban-card-meta">
+                <div style="font-size:14px;font-weight:500;color:var(--text-primary);margin-bottom:6px;line-height:1.4;">${escapeHtml(t.title)}</div>
+                ${t.body ? `<div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;">${escapeHtml(t.body.substring(0, 80))}${t.body.length > 80 ? '...' : ''}</div>` : ''}
+                <div style="display:flex;justify-content:flex-end;font-size:11px;color:var(--text-muted);">
                   ${t.assignee ? `<span>👤 ${escapeHtml(t.assignee)}</span>` : ''}
                 </div>
-                ${t.status === 'blocked' ? `<div class="kanban-blocked-badge">🚫 Blocked</div>` : ''}
               </div>
             `).join('')}
         </div>

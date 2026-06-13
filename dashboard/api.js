@@ -1,6 +1,7 @@
 // Auth token helper - must be defined before api object since api.js loads before app.js
 function getAuthHeaders() {
-  const token = localStorage.getItem('agentic_os_token');
+  let token = localStorage.getItem('agentic_os_token');
+  if (token === 'null' || token === 'undefined') token = null;
   // If it's a JWT (has 3 parts separated by dots), use Bearer token
   if (token && token.split('.').length === 3) {
     return { 'Authorization': `Bearer ${token}` };
@@ -11,29 +12,64 @@ function getAuthHeaders() {
 const api = {
   async get(path) {
     const r = await fetch(path, { headers: { ...getAuthHeaders() } });
-    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `Request failed: ${r.status}`); }
+    if (!r.ok) {
+      if (r.status === 401) {
+        localStorage.removeItem('agentic_os_token');
+        window.location.reload();
+      }
+      const e = await r.json().catch(() => ({})); 
+      throw new Error(e.detail || `Request failed: ${r.status}`); 
+    }
     return r.json();
   },
   async post(path, body = {}, controller) {
     const opts = { method: 'POST', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() }, body: JSON.stringify(body) };
     if (controller) opts.signal = controller.signal;
     const r = await fetch(path, opts);
-    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `Request failed: ${r.status}`); }
+    if (!r.ok) {
+      if (r.status === 401) {
+        localStorage.removeItem('agentic_os_token');
+        window.location.reload();
+      }
+      const e = await r.json().catch(() => ({})); 
+      throw new Error(e.detail || `Request failed: ${r.status}`); 
+    }
     return r.json();
   },
   async put(path, body = {}) {
     const r = await fetch(path, { method: 'PUT', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() }, body: JSON.stringify(body) });
-    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `Request failed: ${r.status}`); }
+    if (!r.ok) {
+      if (r.status === 401) {
+        localStorage.removeItem('agentic_os_token');
+        window.location.reload();
+      }
+      const e = await r.json().catch(() => ({})); 
+      throw new Error(e.detail || `Request failed: ${r.status}`); 
+    }
     return r.json();
   },
   async patch(path, body = {}) {
     const r = await fetch(path, { method: 'PATCH', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() }, body: JSON.stringify(body) });
-    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `Request failed: ${r.status}`); }
+    if (!r.ok) {
+      if (r.status === 401) {
+        localStorage.removeItem('agentic_os_token');
+        window.location.reload();
+      }
+      const e = await r.json().catch(() => ({})); 
+      throw new Error(e.detail || `Request failed: ${r.status}`); 
+    }
     return r.json();
   },
   async del(path) {
     const r = await fetch(path, { method: 'DELETE', headers: { ...getAuthHeaders() } });
-    if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.detail || `Request failed: ${r.status}`); }
+    if (!r.ok) {
+      if (r.status === 401) {
+        localStorage.removeItem('agentic_os_token');
+        window.location.reload();
+      }
+      const e = await r.json().catch(() => ({})); 
+      throw new Error(e.detail || `Request failed: ${r.status}`); 
+    }
     return r.json();
   },
   getStatus: () => api.get('/api/status'),
@@ -61,8 +97,8 @@ const api = {
   updateSettings: (settings) => api.put('/api/settings', { settings }),
   getStandards: () => api.get('/api/standards'),
   discoverStandards: () => api.post('/api/standards/discover'),
-  chat: (agent, message, controller) => api.post('/api/chat', { agent, message }, controller),
-  getChatHistory: () => api.get('/api/chat/history'),
+  chat: (agent, message, controller) => api.post('/api/chat/send', { agent, message }, controller),
+  getChatHistory: (agent) => agent ? api.get(`/api/chat/history?agent=${encodeURIComponent(agent)}`) : api.get('/api/chat/history'),
   // Kanban
   getKanbanBoard: (status) => api.get(status ? `/api/kanban/board?status=${encodeURIComponent(status)}` : '/api/kanban/board'),
   getKanbanTask: (id) => api.get(`/api/kanban/tasks/${encodeURIComponent(id)}`),

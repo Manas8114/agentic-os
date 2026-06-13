@@ -39,20 +39,20 @@ async function renderStudio() {
   await studioLoadPrompts();
   const content = document.getElementById('pageContent');
   content.innerHTML = `
-    <div class="page-header">
-      <div class="page-header-left">
-        <h1 class="page-title">Studio</h1>
-        <p class="page-subtitle">Prompts, assets, generation queue, and reusable creative outputs</p>
+    <div class="mc-header">
+      <div class="mc-header-left">
+        <h1 class="mc-title">Studio</h1>
+        <p class="mc-subtitle">Prompts, assets, generation queue, and reusable creative outputs</p>
       </div>
-      <div class="page-header-right" style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn btn-ghost" onclick="studioExportHistory()">Export History</button>
-        <button class="btn btn-primary" onclick="studioSwitchTab('generate')">New Generation</button>
+      <div class="mc-header-right" style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="mc-btn mc-btn-ghost" onclick="studioExportHistory()">Export History</button>
+        <button class="mc-btn mc-btn-primary" onclick="studioSwitchTab('generate')">New Generation</button>
       </div>
     </div>
 
-    <div class="tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;border-bottom:1px solid var(--mc-border);padding-bottom:16px">
       ${['prompts', 'assets', 'generate', 'batch', 'history'].map(tab => `
-        <button class="btn btn-sm ${STUDIO_STATE.activeTab === tab ? 'btn-primary' : 'btn-ghost'}" onclick="studioSwitchTab('${tab}')">${studioTitle(tab)}</button>
+        <button class="mc-btn mc-btn-sm ${STUDIO_STATE.activeTab === tab ? 'mc-btn-primary' : 'mc-btn-ghost'}" onclick="studioSwitchTab('${tab}')">${studioTitle(tab)}</button>
       `).join('')}
     </div>
 
@@ -97,17 +97,17 @@ function studioRenderActiveTab() {
 
 function studioPromptsView() {
   return `
-    <div class="grid grid-2" style="align-items:start">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Prompt Library</h3>
-          <input id="studioPromptSearch" class="form-input" placeholder="Search prompts..." oninput="studioRenderPromptList()" style="max-width:220px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+      <div class="mc-card">
+        <div class="mc-card-header" style="display:flex;justify-content:space-between;align-items:center">
+          <h3 class="mc-card-title">Prompt Library</h3>
+          <input id="studioPromptSearch" class="mc-input" placeholder="Search prompts..." oninput="studioRenderPromptList()" style="max-width:220px">
         </div>
         <div id="studioPromptList" style="display:flex;flex-direction:column;gap:8px">${studioPromptListHtml()}</div>
       </div>
-      <div class="card">
-        <div class="card-header"><h3 class="card-title" id="studioPromptTitle">Preview</h3></div>
-        <div id="studioPromptPreview" style="min-height:320px;color:var(--text-secondary);font-family:var(--font-mono);font-size:12px;white-space:pre-wrap;line-height:1.6">Select a prompt to preview it.</div>
+      <div class="mc-card">
+        <div class="mc-card-header"><h3 class="mc-card-title" id="studioPromptTitle">Preview</h3></div>
+        <div class="mc-card-body" id="studioPromptPreview" style="min-height:320px;color:var(--text-secondary);font-family:var(--font-mono);font-size:12px;white-space:pre-wrap;line-height:1.6">Select a prompt to preview it.</div>
       </div>
     </div>
   `;
@@ -116,12 +116,12 @@ function studioPromptsView() {
 function studioPromptListHtml() {
   const q = document.getElementById('studioPromptSearch')?.value?.toLowerCase() || '';
   const prompts = STUDIO_STATE.prompts.filter(p => !q || p.title.toLowerCase().includes(q) || p.content.toLowerCase().includes(q));
-  if (!prompts.length) return `<div class="empty-state"><div class="empty-state-title">No prompts found</div></div>`;
+  if (!prompts.length) return `<div class="mc-empty"><div class="mc-empty-title">No prompts found</div></div>`;
   return prompts.map(prompt => `
-    <button class="card" onclick="studioSelectPrompt('${escapeHtml(prompt.id)}')" style="text-align:left;padding:12px;cursor:pointer">
+    <button class="mc-card" onclick="studioSelectPrompt('${escapeHtml(prompt.id)}')" style="text-align:left;padding:12px;cursor:pointer;width:100%;background:transparent;transition:var(--mc-transition)" onmouseover="this.style.background='var(--mc-hover)'" onmouseout="this.style.background='transparent'">
       <div style="display:flex;justify-content:space-between;gap:12px">
-        <strong>${escapeHtml(prompt.title)}</strong>
-        <span class="badge badge-info">${escapeHtml(prompt.category)}</span>
+        <strong style="color:var(--text-primary)">${escapeHtml(prompt.title)}</strong>
+        <span class="mc-badge mc-badge-info">${escapeHtml(prompt.category)}</span>
       </div>
       <div style="margin-top:6px;font-size:12px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(prompt.content)}</div>
     </button>
@@ -143,13 +143,13 @@ function studioSelectPrompt(id) {
 
 function studioAssetsView() {
   return `
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Asset Library</h3>
-        <button class="btn btn-primary btn-sm" onclick="studioImportAsset()">Add Asset</button>
+    <div class="mc-card">
+      <div class="mc-card-header" style="display:flex;justify-content:space-between;align-items:center">
+        <h3 class="mc-card-title">Asset Library</h3>
+        <button class="mc-btn mc-btn-primary mc-btn-sm" onclick="studioImportAsset()">Add Asset</button>
       </div>
-      <div class="grid grid-3" id="studioAssetsGrid">
-        ${STUDIO_STATE.assets.length ? STUDIO_STATE.assets.map(studioAssetCard).join('') : '<div class="empty-state"><div class="empty-state-title">No assets yet</div></div>'}
+      <div class="mc-card-body" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));gap:16px" id="studioAssetsGrid">
+        ${STUDIO_STATE.assets.length ? STUDIO_STATE.assets.map(studioAssetCard).join('') : '<div class="mc-empty"><div class="mc-empty-title">No assets yet</div></div>'}
       </div>
     </div>
   `;
@@ -157,11 +157,11 @@ function studioAssetsView() {
 
 function studioAssetCard(asset, index) {
   return `
-    <div class="card" style="padding:14px">
-      <div style="font-weight:700">${escapeHtml(asset.name)}</div>
+    <div class="mc-card" style="padding:14px">
+      <div style="font-weight:700;color:var(--text-primary)">${escapeHtml(asset.name)}</div>
       <div style="font-size:12px;color:var(--text-muted);margin-top:4px">${escapeHtml(asset.type || 'asset')} · ${formatBytes(asset.size || 0)}</div>
       <div style="font-size:12px;color:var(--text-secondary);margin-top:10px;word-break:break-word">${escapeHtml(asset.url || asset.note || '')}</div>
-      <button class="btn btn-danger btn-sm" style="margin-top:12px" onclick="studioRemoveAsset(${index})">Remove</button>
+      <button class="mc-btn mc-btn-danger mc-btn-sm" style="margin-top:12px" onclick="studioRemoveAsset(${index})">Remove</button>
     </div>
   `;
 }
@@ -184,26 +184,28 @@ function studioRemoveAsset(index) {
 
 function studioGenerateView() {
   return `
-    <div class="grid grid-2" style="align-items:start">
-      <div class="card">
-        <div class="form-group">
-          <label class="form-label">Type</label>
-          <select id="studioGenType" class="form-select">
-            <option value="image">Image</option>
-            <option value="video">Video</option>
-            <option value="audio">Audio</option>
-            <option value="prompt">Prompt Variant</option>
-          </select>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+      <div class="mc-card">
+        <div class="mc-card-body" style="display:flex;flex-direction:column;gap:16px">
+          <div>
+            <label style="display:block;margin-bottom:8px;font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px">Type</label>
+            <select id="studioGenType" class="mc-select" style="width:100%">
+              <option value="image">Image</option>
+              <option value="video">Video</option>
+              <option value="audio">Audio</option>
+              <option value="prompt">Prompt Variant</option>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;margin-bottom:8px;font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px">Prompt</label>
+            <textarea id="studioGenPrompt" class="mc-input" placeholder="Describe the output..." style="width:100%;min-height:100px;resize:vertical"></textarea>
+          </div>
+          <button class="mc-btn mc-btn-primary" onclick="studioGenerate()">Generate</button>
         </div>
-        <div class="form-group">
-          <label class="form-label">Prompt</label>
-          <textarea id="studioGenPrompt" class="form-textarea" placeholder="Describe the output..."></textarea>
-        </div>
-        <button class="btn btn-primary" onclick="studioGenerate()">Generate</button>
       </div>
-      <div class="card">
-        <div class="card-header"><h3 class="card-title">Recent Generations</h3></div>
-        <div id="studioGenerationResults">${studioGenerationResultsHtml()}</div>
+      <div class="mc-card">
+        <div class="mc-card-header"><h3 class="mc-card-title">Recent Generations</h3></div>
+        <div class="mc-card-body" id="studioGenerationResults">${studioGenerationResultsHtml()}</div>
       </div>
     </div>
   `;
@@ -241,41 +243,41 @@ async function studioGenerate() {
 }
 
 function studioGenerationResultsHtml() {
-  if (!STUDIO_STATE.generations.length) return '<div class="empty-state"><div class="empty-state-title">No generations yet</div></div>';
+  if (!STUDIO_STATE.generations.length) return '<div class="mc-empty"><div class="mc-empty-title">No generations yet</div></div>';
   return STUDIO_STATE.generations.slice(0, 10).map(item => `
-    <div class="card" style="padding:12px;margin-bottom:8px">
+    <div class="mc-card" style="padding:12px;margin-bottom:8px">
       <div style="display:flex;justify-content:space-between;gap:12px">
-        <strong>${escapeHtml(studioTitle(item.type))}</strong>
-        <span class="badge ${item.status === 'failed' ? 'badge-danger' : 'badge-success'}">${escapeHtml(item.status)}</span>
+        <strong style="color:var(--text-primary)">${escapeHtml(studioTitle(item.type))}</strong>
+        <span class="mc-badge ${item.status === 'failed' ? 'mc-badge-danger' : 'mc-badge-success'}">${escapeHtml(item.status)}</span>
       </div>
       <div style="font-size:12px;color:var(--text-secondary);margin-top:8px">${escapeHtml(item.prompt)}</div>
-      ${item.result?.error ? `<div style="font-size:12px;color:var(--red);margin-top:8px">${escapeHtml(item.result.error)}</div>` : ''}
+      ${item.result?.error ? `<div style="font-size:12px;color:var(--mc-danger);margin-top:8px">${escapeHtml(item.result.error)}</div>` : ''}
     </div>
   `).join('');
 }
 
 function studioBatchView() {
   return `
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Batch Queue</h3>
+    <div class="mc-card">
+      <div class="mc-card-header" style="display:flex;justify-content:space-between;align-items:center">
+        <h3 class="mc-card-title">Batch Queue</h3>
         <div style="display:flex;gap:8px">
-          <button class="btn btn-ghost btn-sm" onclick="studioAddBatchItem()">Add Item</button>
-          <button class="btn btn-primary btn-sm" onclick="studioRunBatch()">Run Batch</button>
+          <button class="mc-btn mc-btn-ghost mc-btn-sm" onclick="studioAddBatchItem()">Add Item</button>
+          <button class="mc-btn mc-btn-primary mc-btn-sm" onclick="studioRunBatch()">Run Batch</button>
         </div>
       </div>
-      <div id="studioBatchQueue">${studioBatchQueueHtml()}</div>
+      <div class="mc-card-body" id="studioBatchQueue">${studioBatchQueueHtml()}</div>
     </div>
   `;
 }
 
 function studioBatchQueueHtml() {
-  if (!STUDIO_STATE.batchQueue.length) return '<div class="empty-state"><div class="empty-state-title">Queue is empty</div></div>';
+  if (!STUDIO_STATE.batchQueue.length) return '<div class="mc-empty"><div class="mc-empty-title">Queue is empty</div></div>';
   return STUDIO_STATE.batchQueue.map((item, index) => `
-    <div class="card" style="padding:12px;margin-bottom:8px">
+    <div class="mc-card" style="padding:12px;margin-bottom:8px">
       <div style="display:flex;justify-content:space-between;gap:12px">
-        <span>${escapeHtml(item.prompt)}</span>
-        <button class="btn btn-danger btn-xs" onclick="studioRemoveBatchItem(${index})">Remove</button>
+        <span style="color:var(--text-primary)">${escapeHtml(item.prompt)}</span>
+        <button class="mc-btn mc-btn-danger mc-btn-sm" onclick="studioRemoveBatchItem(${index})">Remove</button>
       </div>
     </div>
   `).join('');
@@ -306,17 +308,19 @@ async function studioRunBatch() {
 
 function studioHistoryView() {
   return `
-    <div class="card">
-      <div class="card-header"><h3 class="card-title">History</h3></div>
+    <div class="mc-card">
+      <div class="mc-card-header"><h3 class="mc-card-title">History</h3></div>
+      <div class="mc-card-body">
       ${STUDIO_STATE.history.length ? STUDIO_STATE.history.slice().reverse().map(item => `
-        <div style="padding:12px 0;border-bottom:1px solid var(--border)">
+        <div style="padding:12px 0;border-bottom:1px solid var(--mc-border)">
           <div style="display:flex;justify-content:space-between;gap:12px">
-            <strong>${escapeHtml(item.name || studioTitle(item.type || 'item'))}</strong>
+            <strong style="color:var(--text-primary)">${escapeHtml(item.name || studioTitle(item.type || 'item'))}</strong>
             <span style="font-size:11px;color:var(--text-muted)">${item.timestamp ? new Date(item.timestamp).toLocaleString() : ''}</span>
           </div>
           <div style="font-size:12px;color:var(--text-secondary);margin-top:6px">${escapeHtml(item.prompt || item.url || '')}</div>
         </div>
-      `).join('') : '<div class="empty-state"><div class="empty-state-title">No history yet</div></div>'}
+      `).join('') : '<div class="mc-empty"><div class="mc-empty-title">No history yet</div></div>'}
+      </div>
     </div>
   `;
 }

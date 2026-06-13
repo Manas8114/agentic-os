@@ -82,21 +82,6 @@ import uuid
 from fastapi import BackgroundTasks
 from api.db import insert_video_job, get_video_job, update_video_job
 
-async def simulate_video_rendering(job_id: str):
-    try:
-        await asyncio.sleep(3)
-        update_video_job(job_id, status="rendering", progress=35)
-        await asyncio.sleep(3)
-        update_video_job(job_id, status="rendering", progress=75)
-        await asyncio.sleep(3)
-        update_video_job(
-            job_id, 
-            status="completed", 
-            progress=100, 
-            url="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-        )
-    except Exception as e:
-        update_video_job(job_id, status="failed", error=str(e))
 
 async def poll_external_video_api(job_id: str, provider: str, api_key: str):
     import aiohttp
@@ -192,10 +177,7 @@ async def generate_video(data: dict, background_tasks: BackgroundTasks, user: di
             
         return {"job_id": job_id, "status": status, "url": url}
     else:
-        job_id = f"sim_{uuid.uuid4().hex[:8]}"
-        insert_video_job(job_id, provider, prompt, "pending")
-        background_tasks.add_task(simulate_video_rendering, job_id)
-        return {"job_id": job_id, "status": "pending", "message": "Simulated rendering started in background."}
+        raise HTTPException(status_code=400, detail=f"API key not configured for provider: {provider}. Real generation requires an active key.")
 
 @router.get("/models")
 async def list_video_models(user: dict = Depends(get_current_user)):

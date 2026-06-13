@@ -39,7 +39,7 @@ async function renderBackups() {
       <div style="font-size:12px;color:var(--text-muted);text-align:right;margin-top:8px">${backups.length} backup${backups.length !== 1 ? 's' : ''}</div>
     `;
   } catch (err) {
-    document.getElementById('backupList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
+    (document.getElementById('backupList') || {}).innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
   }
 }
 

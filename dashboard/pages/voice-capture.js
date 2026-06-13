@@ -567,7 +567,11 @@ async function toggleWakeWord() {
   }
 function stopWakeWordDetection() {
   if (voiceState.wakeWordProcessor) {
-    voiceState.wakeWordProcessor.disconnect();
+    if (typeof voiceState.wakeWordProcessor.stop === 'function') {
+      voiceState.wakeWordProcessor.stop();
+    } else if (typeof voiceState.wakeWordProcessor.disconnect === 'function') {
+      voiceState.wakeWordProcessor.disconnect();
+    }
     voiceState.wakeWordProcessor = null;
   }
   if (voiceState.wakeWordStream) {

@@ -195,7 +195,7 @@ function removeTypingIndicator(id) {
 
 async function refreshChat() {
   try {
-    const data = await api.getChatHistory();
+    const data = await api.getChatHistory(window._currentAgent || 'opencode');
     const messages = data.messages || [];
     window._chatHistory = messages;
     renderChatHistory(messages);

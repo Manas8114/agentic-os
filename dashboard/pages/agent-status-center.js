@@ -336,17 +336,11 @@ async function renderActivityFeed(agentName) {
 
   try {
     // Fetch recent audit entries for this agent
-    const auditRes = await fetch('/api/audit?limit=200', {
-      headers: { 'X-API-Key': 'dev-api-key-change-in-production' }
-    });
-    const auditData = await auditRes.json();
-    const entries = auditData.entries || [];
+    const auditData = await api.getAudit(200);
+    const entries = auditData.audit || auditData.entries || [];
 
     // Fetch handoffs for this agent
-    const handoffsRes = await fetch('/api/handoffs', {
-      headers: { 'X-API-Key': 'dev-api-key-change-in-production' }
-    });
-    const handoffsData = await handoffsRes.json();
+    const handoffsData = await api.getHandoffs();
     const handoffs = handoffsData.handoffs || [];
 
     // Filter by agent

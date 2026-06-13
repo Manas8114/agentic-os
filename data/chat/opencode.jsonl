@@ -1,0 +1,2 @@
+{"role": "user", "content": "test", "timestamp": "2026-06-13T09:33:57.026102+00:00"}
+{"role": "assistant", "content": "\u26a0 Agent 'opencode' CLI not installed. Install it and try again.", "agent": "opencode", "timestamp": "2026-06-13T09:33:57.026102+00:00"}

@@ -11,7 +11,7 @@
       "priority": 10
     },
     {
-      "pattern": "research|analyze|search|summarize|compare|investigate|learn|discover|experiment|scout",
+      "pattern": "notebooklm|podcast|audio overview|research|analyze|search|summarize|compare|investigate|learn|discover|experiment|scout",
       "target": "gemini",
       "priority": 10
     },

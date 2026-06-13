@@ -1,0 +1,2 @@
+{"role": "user", "content": "test", "timestamp": "2026-06-13T09:59:03.257734+00:00"}
+{"role": "assistant", "content": "\u23f1 Gemini timed out.\n\nTry running `gemini \"test\"` directly.\n\n**Message:** test", "agent": "gemini", "timestamp": "2026-06-13T09:59:03.257734+00:00"}

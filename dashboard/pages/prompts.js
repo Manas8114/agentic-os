@@ -34,7 +34,7 @@ async function renderPrompts() {
       </div>`;
     }).join('');
   } catch (err) {
-    document.getElementById('promptGrid').innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
+    (document.getElementById('promptGrid') || {}).innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
   }
 }
 

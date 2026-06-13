@@ -1,16 +1,15 @@
 async function renderScheduler() {
   const content = document.getElementById('pageContent');
   content.innerHTML = `
-    <div class="page-header">
-      <div class="page-header-left">
-        <h1 class="page-title">Scheduler</h1>
-        <p class="page-subtitle">Automated workflow scheduling — single skills or multi-skill chains</p>
+    <div class="mc-header">
+      <div>
+        <h1 class="mc-title">Scheduler</h1>
+        <p class="mc-subtitle">Automated workflow scheduling — single skills or multi-skill chains</p>
       </div>
-    </div>
-
-    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
-      <button class="btn btn-primary" onclick="showAddJob('single')">+ Add Single Skill Job</button>
-      <button class="btn btn-primary" onclick="showAddJob('chain')">+ Add Skill Chain Job</button>
+      <div style="display:flex;gap:8px">
+        <button class="mc-btn primary" onclick="showAddJob('single')">+ Add Single Job</button>
+        <button class="mc-btn primary" onclick="showAddJob('chain')">+ Add Chain Job</button>
+      </div>
     </div>
 
     <div id="jobList"><div class="loading"><div class="loading-spinner"></div></div></div>
@@ -26,36 +25,48 @@ async function renderScheduler() {
     }
 
     container.innerHTML = `
-      <div class="table-wrapper">
-        <table>
-          <thead><tr><th>Name</th><th>Type</th><th>Skill(s)</th><th>Cron</th><th>Status</th><th>Last Run</th><th></th></tr></thead>
-          <tbody>
-            ${jobs.map(j => {
-              const isChain = j.skills && j.skills.length > 0;
-              return `
-                <tr>
-                  <td><strong>${j.name}</strong></td>
-                  <td><span class="badge ${isChain ? 'badge-accent' : 'badge-info'}">${isChain ? 'Chain' : 'Single'}</span></td>
-                  <td>
-                    ${isChain
-                      ? j.skills.map(s => `<span class="badge badge-info" style="margin:2px;font-size:10px">${s}</span>`).join(' ')
-                      : `<span class="badge badge-accent">${j.skill}</span>`
-                    }
-                  </td>
-                  <td><code>${j.cron}</code></td>
-                  <td><span class="badge ${j.enabled ? 'badge-success' : 'badge-warning'}">${j.enabled ? 'Active' : 'Paused'}</span></td>
-                  <td style="font-size:12px;color:var(--text-muted)">${j.last_run ? formatDate(j.last_run) : 'Never'}</td>
-                  <td><button class="btn btn-sm btn-danger" onclick="deleteJob('${j.id}')">Delete</button></td>
-                </tr>
-              `;
-            }).join('')}
-          </tbody>
-        </table>
+      <div class="mc-card" style="padding:0;overflow:hidden;">
+        <div class="table-wrapper" style="margin:0;">
+          <table style="width:100%;border-collapse:collapse;text-align:left;font-size:13px;">
+            <thead>
+              <tr style="border-bottom:1px solid var(--border);color:var(--text-muted);font-weight:500;font-size:12px;text-transform:uppercase;">
+                <th style="padding:12px 16px;">Name</th>
+                <th style="padding:12px 16px;">Type</th>
+                <th style="padding:12px 16px;">Skill(s)</th>
+                <th style="padding:12px 16px;">Cron</th>
+                <th style="padding:12px 16px;">Status</th>
+                <th style="padding:12px 16px;">Last Run</th>
+                <th style="padding:12px 16px;"></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${jobs.map((j, i) => {
+                const isChain = j.skills && j.skills.length > 0;
+                return `
+                  <tr style="${i !== jobs.length - 1 ? 'border-bottom:1px solid rgba(255,255,255,0.02);' : ''}">
+                    <td style="padding:12px 16px;font-weight:500;color:var(--text-primary);">${j.name}</td>
+                    <td style="padding:12px 16px;"><span class="mc-badge" style="background:${isChain ? 'rgba(168,85,247,0.1)' : 'rgba(56,189,248,0.1)'};color:${isChain ? 'var(--purple)' : 'var(--cyan)'};">${isChain ? 'Chain' : 'Single'}</span></td>
+                    <td style="padding:12px 16px;">
+                      ${isChain
+                        ? j.skills.map(s => `<span class="mc-badge" style="margin:2px;background:rgba(255,255,255,0.05);color:var(--text-secondary);">${s}</span>`).join(' ')
+                        : `<span class="mc-badge" style="background:rgba(255,255,255,0.05);color:var(--text-secondary);">${j.skill}</span>`
+                      }
+                    </td>
+                    <td style="padding:12px 16px;"><code style="font-family:var(--font-mono);font-size:12px;color:var(--text-muted);">${j.cron}</code></td>
+                    <td style="padding:12px 16px;"><span class="mc-badge" style="background:${j.enabled ? 'rgba(34,197,94,0.1)' : 'rgba(234,179,8,0.1)'};color:${j.enabled ? 'var(--green)' : 'var(--yellow)'};">${j.enabled ? 'Active' : 'Paused'}</span></td>
+                    <td style="padding:12px 16px;font-size:12px;color:var(--text-muted);">${j.last_run ? formatDate(j.last_run) : 'Never'}</td>
+                    <td style="padding:12px 16px;text-align:right;"><button class="mc-btn" onclick="deleteJob('${j.id}')" style="color:var(--red);">Delete</button></td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div style="font-size:12px;color:var(--text-muted);text-align:right;margin-top:8px">${jobs.length} job${jobs.length !== 1 ? 's' : ''}</div>
+      <div style="font-size:12px;color:var(--text-muted);text-align:right;margin-top:12px">${jobs.length} job${jobs.length !== 1 ? 's' : ''}</div>
     `;
   } catch (err) {
-    document.getElementById('jobList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
+    (document.getElementById('jobList') || {}).innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">${escapeHtml(err.message)}</div></div>`;
   }
 }
 
@@ -65,25 +76,27 @@ async function showAddJob(type) {
 
   if (type === 'single') {
     showModal('Add Single Skill Job', `
-      <div class="form-group">
-        <label class="form-label">Job Name</label>
-        <input id="jobName" class="form-input" placeholder="e.g., Nightly Backup">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Skill</label>
-        <select id="jobSkill" class="form-select">
-          <option value="">Select a skill...</option>
-          ${skills.map(s => `<option value="${s.name}">${s.name.replace(/-/g, ' ')}</option>`).join('')}
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Cron Expression</label>
-        <input id="jobCron" class="form-input" placeholder="e.g., 0 2 * * *" value="0 0 * * *">
-        <div class="form-hint">Format: minute hour day month weekday</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-bottom:6px;display:block;">Job Name</label>
+          <input id="jobName" class="mc-input" placeholder="e.g., Nightly Backup">
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-bottom:6px;display:block;">Skill</label>
+          <select id="jobSkill" class="mc-input">
+            <option value="">Select a skill...</option>
+            ${skills.map(s => `<option value="${s.name}">${s.name.replace(/-/g, ' ')}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-bottom:6px;display:block;">Cron Expression</label>
+          <input id="jobCron" class="mc-input" placeholder="e.g., 0 2 * * *" value="0 0 * * *">
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Format: minute hour day month weekday</div>
+        </div>
       </div>
     `, `
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="createJob('single')">Create Job</button>
+      <button class="mc-btn" onclick="closeModal()">Cancel</button>
+      <button class="mc-btn primary" onclick="createJob('single')">Create Job</button>
     `);
   } else {
     // Chain job builder - similar to skill-chain page
@@ -99,48 +112,50 @@ async function showAddJob(type) {
     showModal('Add Skill Chain Job (Wide Modal)', `
       <style>
         .modal.wide { max-width: 900px; }
-        .skill-chip { display:inline-flex;align-items:center;gap:6px;padding:8px 12px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);font-size:12px;cursor:pointer;transition:var(--transition) }
-        .skill-chip.selected { border-color:var(--accent); background:var(--accent-glow); }
-        .chain-step { display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;cursor:grab }
+        .skill-chip { display:inline-flex;align-items:center;gap:6px;padding:8px 12px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;transition:all 0.2s; }
+        .skill-chip.selected { border-color:var(--accent); background:rgba(56,189,248,0.1); }
+        .chain-step { display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-panel);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;cursor:grab }
       </style>
-      <div class="form-group" style="margin-bottom:16px">
-        <label class="form-label">Job Name</label>
-        <input id="chainJobName" class="form-input" placeholder="e.g., Research & Implement Pipeline">
-      </div>
-      <div class="form-group" style="margin-bottom:16px">
-        <label class="form-label">Cron Expression</label>
-        <input id="chainJobCron" class="form-input" placeholder="e.g., 0 3 * * 0" value="0 3 * * 0">
-        <div class="form-hint">Format: minute hour day month weekday</div>
-      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-bottom:6px;display:block;">Job Name</label>
+          <input id="chainJobName" class="mc-input" placeholder="e.g., Research & Implement Pipeline">
+        </div>
+        <div>
+          <label style="font-size:12px;color:var(--text-secondary);font-weight:500;margin-bottom:6px;display:block;">Cron Expression</label>
+          <input id="chainJobCron" class="mc-input" placeholder="e.g., 0 3 * * 0" value="0 3 * * 0">
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Format: minute hour day month weekday</div>
+        </div>
 
-      <h5 style="font-size:13px;margin:16px 0 8px;color:var(--text-secondary)">Available Skills</h5>
-      <div id="chainAvailableSkills" style="max-height:200px;overflow-y:auto;margin-bottom:16px">
-        ${Object.entries(categorized).map(([cat, catSkills]) => `
-          <div style="margin-bottom:12px"><h6 style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:6px">${cat}</h6>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            ${catSkills.map(skill => `
-              <div class="skill-chip" onclick="toggleChainSkill('${skill.name}', this)" data-skill-name="${skill.name}">
-                <input type="checkbox" onchange="event.stopPropagation()" style="accent-color:var(--accent)">
-                <span style="font-weight:600">${skill.name}</span>
-                <span class="badge" style="background:${getAgentColor(skill.primary_agent || 'opencode')};font-size:9px">${skill.primary_agent || 'opencode'}</span>
-              </div>
-            `).join('')}
-          </div></div>
-        `).join('')}
-      </div>
+        <h5 style="font-size:13px;margin:16px 0 8px;color:var(--text-secondary)">Available Skills</h5>
+        <div id="chainAvailableSkills" style="max-height:200px;overflow-y:auto;margin-bottom:16px">
+          ${Object.entries(categorized).map(([cat, catSkills]) => `
+            <div style="margin-bottom:12px"><h6 style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:6px">${cat}</h6>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              ${catSkills.map(skill => `
+                <div class="skill-chip" onclick="toggleChainSkill('${skill.name}', this)" data-skill-name="${skill.name}">
+                  <input type="checkbox" onchange="event.stopPropagation()" style="accent-color:var(--accent)">
+                  <span style="font-weight:600">${skill.name}</span>
+                  <span class="mc-badge" style="background:${getAgentColor(skill.primary_agent || 'opencode')};font-size:9px">${skill.primary_agent || 'opencode'}</span>
+                </div>
+              `).join('')}
+            </div></div>
+          `).join('')}
+        </div>
 
-      <h5 style="font-size:13px;margin:16px 0 8px;color:var(--text-secondary)">
-        Chain Order (click ✕ to remove, drag to reorder)
-        <span id="chainSelectedCount" style="font-weight:normal;color:var(--text-muted)">(0 selected)</span>
-      </h5>
-      <div id="chainSelectedSkills" class="droppable" style="min-height:100px;padding:12px;background:var(--bg-card);border:1px dashed var(--border);border-radius:var(--radius)"></div>
+        <h5 style="font-size:13px;margin:16px 0 8px;color:var(--text-secondary)">
+          Chain Order (click ✕ to remove, drag to reorder)
+          <span id="chainSelectedCount" style="font-weight:normal;color:var(--text-muted)">(0 selected)</span>
+        </h5>
+        <div id="chainSelectedSkills" class="droppable" style="min-height:100px;padding:12px;background:rgba(255,255,255,0.01);border:1px dashed var(--border);border-radius:6px"></div>
 
-      <div style="margin-top:16px;padding:12px;background:var(--bg-card);border-radius:var(--radius);border:1px solid var(--border);font-size:12px;color:var(--text-secondary)">
-        <strong>Note:</strong> Chains execute skills sequentially, passing output from each step to the next. Handoffs are automatically created between steps for tracking.
+        <div style="margin-top:16px;padding:12px;background:rgba(56,189,248,0.1);border-radius:6px;border:1px solid rgba(56,189,248,0.3);font-size:12px;color:var(--cyan)">
+          <strong>Note:</strong> Chains execute skills sequentially, passing output from each step to the next. Handoffs are automatically created between steps for tracking.
+        </div>
       </div>
     `, `
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="createChainJob()" disabled id="createChainBtn">Create Chain Job</button>
+      <button class="mc-btn" onclick="closeModal()">Cancel</button>
+      <button class="mc-btn primary" onclick="createChainJob()" disabled id="createChainBtn">Create Chain Job</button>
     `, 'wide');
 
     // Make modal wide
@@ -192,11 +207,11 @@ function updateChainSelectedList() {
          ondragstart="chainDragStart(event, ${i})"
          ondragover="chainDragOver(event)"
          ondrop="chainDrop(event, ${i})"
-         style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;cursor:grab">
-      <span style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0">${i + 1}</span>
-      <span style="font-weight:600;font-size:13px;flex:1">${skill.name}</span>
-      <span class="badge" style="background:${getAgentColor(skill.primary_agent || 'opencode')}">${skill.primary_agent || 'opencode'}</span>
-      <button class="btn btn-ghost" onclick="removeFromChain(${i})" style="padding:4px 8px;font-size:11px">✕</button>
+         style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;cursor:grab">
+      <span style="width:24px;height:24px;border-radius:50%;background:rgba(56,189,248,0.2);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0">${i + 1}</span>
+      <span style="font-weight:600;font-size:13px;flex:1;color:var(--text-primary);">${skill.name}</span>
+      <span class="mc-badge" style="background:${getAgentColor(skill.primary_agent || 'opencode')}">${skill.primary_agent || 'opencode'}</span>
+      <button class="mc-btn" onclick="removeFromChain(${i})" style="padding:4px 8px;font-size:11px;color:var(--red);">✕</button>
     </div>
   `).join('');
 }
@@ -234,10 +249,10 @@ function renderAvailableSkillsAll() {
       ${catSkills.map(skill => {
         const isSelected = window.chainState.selectedSkills.some(s => s.name === skill.name);
         return `
-          <div class="skill-chip ${isSelected ? 'selected' : ''}" onclick="toggleChainSkill('${skill.name}', this)" data-skill-name="${skill.name}" style="border-color: ${isSelected ? 'var(--accent)' : 'var(--border)'}; background: ${isSelected ? 'var(--accent-glow)' : 'var(--bg-card)'}">
+          <div class="skill-chip ${isSelected ? 'selected' : ''}" onclick="toggleChainSkill('${skill.name}', this)" data-skill-name="${skill.name}" style="border-color: ${isSelected ? 'var(--accent)' : 'var(--border)'}; background: ${isSelected ? 'rgba(56,189,248,0.1)' : 'rgba(255,255,255,0.02)'}">
             <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="event.stopPropagation()" style="accent-color:var(--accent)">
             <span style="font-weight:600">${skill.name}</span>
-            <span class="badge" style="background:${getAgentColor(skill.primary_agent || 'opencode')};font-size:9px">${skill.primary_agent || 'opencode'}</span>
+            <span class="mc-badge" style="background:${getAgentColor(skill.primary_agent || 'opencode')};font-size:9px">${skill.primary_agent || 'opencode'}</span>
           </div>
         `;
       }).join('')}

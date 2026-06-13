@@ -17,37 +17,25 @@ const ACR_STATE = {
 };
 
 const ACR_AGENT_META = {
-  opencode:      { icon: '🔧', name: 'opencode',       desc: 'Code & DevOps',        color: 'var(--blue)',   panels: ['chat','history','config','models','skills','kanban','activity','performance'] },
-  hermes:        { icon: '⚡', name: 'Hermes',         desc: 'Memory & Scheduling',  color: 'var(--purple)', panels: ['chat','history','config','models','skills','memory','tasks','activity','performance'] },
-  gemini:        { icon: '🧠', name: 'Gemini CLI',     desc: 'Research & Analysis',  color: 'var(--green)',  panels: ['chat','history','config','models','skills','research','activity','performance'] },
-  claude:        { icon: '🤖', name: 'Claude',         desc: 'Strategy & Architecture', color: 'var(--orange)', panels: ['chat','history','config','models','skills','review','activity','performance'] },
-  codex:         { icon: '🐙', name: 'Codex',          desc: 'Code & CI/CD',         color: 'var(--teal)',   panels: ['chat','history','config','models','skills','kanban','ci','activity','performance'] },
-  antigravity:   { icon: '🔭', name: 'Antigravity',    desc: 'Research & Discovery', color: 'var(--indigo)', panels: ['chat','history','config','models','skills','research','activity','performance'] },
-  openclaw:      { icon: '🕸', name: 'OpenClaw',       desc: 'Routing & Orchestration', color: 'var(--violet)',panels: ['chat','history','config','models','skills','routing','handoffs','activity','performance'] },
-  odysseus:      { icon: '🧭', name: 'Odysseus',       desc: 'Planning & Execution', color: 'var(--amber)',  panels: ['chat','history','config','models','skills','planning','goals','activity','performance'] },
-  jarvis:        { icon: '🎙', name: 'Jarvis',         desc: 'Voice Assistant',      color: 'var(--pink)',   panels: ['chat','history','config','models','skills','voice','schedule','tasks','activity','performance'] },
+  opencode:      { icon: '🔧', name: 'opencode',       desc: 'Code & DevOps',        color: 'var(--mc-blue)',   panels: ['chat','memory','files','skills','terminal','inspector','tasks'] },
+  hermes:        { icon: '⚡', name: 'Hermes',         desc: 'Memory & Scheduling',  color: 'var(--mc-purple)', panels: ['chat','memory','files','skills','terminal','inspector','tasks'] },
+  gemini:        { icon: '🧠', name: 'Gemini CLI',     desc: 'Research & Analysis',  color: 'var(--mc-green)',  panels: ['chat','memory','files','skills','terminal','inspector','tasks'] },
+  claude:        { icon: '🤖', name: 'Claude',         desc: 'Strategy & Arch',      color: 'var(--mc-orange)', panels: ['chat','memory','files','skills','terminal','inspector','tasks'] },
+  codex:         { icon: '🐙', name: 'Codex',          desc: 'Code & CI/CD',         color: 'var(--mc-teal)',   panels: ['chat','memory','files','skills','terminal','inspector','tasks'] },
+  antigravity:   { icon: '🔭', name: 'Antigravity',    desc: 'Research & Discovery', color: 'var(--mc-indigo)', panels: ['chat','memory','files','skills','terminal','inspector','tasks'] },
+  openclaw:      { icon: '🕸', name: 'OpenClaw',       desc: 'Routing',              color: 'var(--mc-violet)', panels: ['chat','memory','files','skills','terminal','inspector','tasks'] },
+  odysseus:      { icon: '🧭', name: 'Odysseus',       desc: 'Planning',             color: 'var(--mc-amber)',  panels: ['chat','memory','files','skills','terminal','inspector','tasks'] },
+  jarvis:        { icon: '🎙', name: 'Jarvis',         desc: 'Voice Assistant',      color: 'var(--mc-pink)',   panels: ['chat','memory','files','skills','terminal','inspector','tasks'] },
 };
 
 const PANEL_DEFS = {
   chat:       { icon: '💬', label: 'Chat',       render: 'acrRenderChat' },
-  history:    { icon: '📜', label: 'History',    render: 'acrRenderHistory' },
-  config:     { icon: '⚙️', label: 'Config',     render: 'acrRenderConfig' },
-  models:     { icon: '🤖', label: 'Models',     render: 'acrRenderModels' },
-  skills:     { icon: '⚡', label: 'Skills',     render: 'acrRenderSkills' },
-  kanban:     { icon: '📌', label: 'Kanban',     render: 'acrRenderKanban' },
-  ci:         { icon: '🔀', label: 'CI/CD',      render: 'acrRenderCI' },
   memory:     { icon: '🧠', label: 'Memory',     render: 'acrRenderMemory' },
+  files:      { icon: '📁', label: 'Files',      render: 'acrRenderFiles' },
+  skills:     { icon: '⚡', label: 'Skills',     render: 'acrRenderSkills' },
+  terminal:   { icon: '⌨️', label: 'Terminal',   render: 'acrRenderTerminal' },
+  inspector:  { icon: '🔍', label: 'Inspector',  render: 'acrRenderInspector' },
   tasks:      { icon: '📋', label: 'Tasks',      render: 'acrRenderTasks' },
-  routing:    { icon: '🧭', label: 'Routing',    render: 'acrRenderRouting' },
-  handoffs:   { icon: '🔄', label: 'Handoffs',   render: 'acrRenderHandoffs' },
-  review:     { icon: '🔍', label: 'Code Review',render: 'acrRenderReview' },
-  research:   { icon: '🔬', label: 'Research',   render: 'acrRenderResearch' },
-  planning:   { icon: '📋', label: 'Planning',   render: 'acrRenderPlanning' },
-  goals:      { icon: '🎯', label: 'Goals',      render: 'acrRenderGoals' },
-  voice:      { icon: '🎙', label: 'Voice',      render: 'acrRenderVoice' },
-  schedule:   { icon: '📅', label: 'Schedule',   render: 'acrRenderSchedule' },
-  activity:   { icon: '📊', label: 'Activity',   render: 'acrRenderActivity' },
-  performance:{ icon: '📈', label: 'Performance',render: 'acrRenderPerformance' },
 };
 
 async function renderAgentControlRoom() {
@@ -60,55 +48,57 @@ async function renderAgentControlRoom() {
   const meta = ACR_AGENT_META[ACR_STATE.agentName];
   if (!meta) { console.error('Unknown agent:', ACR_STATE.agentName); return; }
 
-  const content = document.getElementById('pageContent');
+  const content = document.getElementById('pageInnerContent') || document.getElementById('pageContent');
   content.innerHTML = `
-    <div class="acr-root" style="display:flex;height:calc(100vh - 60px);background:var(--bg-primary)">
+    <div class="acr-root" style="display:flex;height:calc(100vh - 64px);background:var(--mc-bg);margin:-32px;">
       <!-- Left Panel Nav -->
-      <nav class="acr-sidebar" style="width:260px;min-width:260px;background:var(--bg-secondary);border-right:1px solid var(--border);display:flex;flex-direction:column">
-        <div class="acr-sidebar-header" style="padding:16px;border-bottom:1px solid var(--border)">
+      <nav class="acr-sidebar" style="width:240px;min-width:240px;background:var(--mc-surface);border-right:1px solid var(--mc-border);display:flex;flex-direction:column">
+        <div class="acr-sidebar-header" style="padding:20px;border-bottom:1px solid var(--mc-border)">
           <div class="acr-agent-badge" style="display:flex;align-items:center;gap:12px">
-            <span class="acr-agent-icon" style="font-size:32px">${meta.icon}</span>
-            <div>
-              <div class="acr-agent-name" style="font-weight:700;font-size:16px">${meta.name}</div>
-              <div class="acr-agent-desc" style="font-size:11px;color:var(--text-muted)">${meta.desc}</div>
+            <div style="width:40px;height:40px;border-radius:10px;background:var(--mc-surface-hover);border:1px solid var(--mc-border);display:flex;align-items:center;justify-content:center;font-size:20px;">
+              ${meta.icon}
             </div>
-            <span class="agent-dot online" style="width:10px;height:10px;margin-left:auto"></span>
+            <div>
+              <div class="acr-agent-name" style="font-weight:600;font-size:14px;color:var(--mc-text-primary)">${meta.name}</div>
+              <div class="acr-agent-desc" style="font-size:11px;color:var(--mc-text-secondary)">${meta.desc}</div>
+            </div>
           </div>
         </div>
-        <div class="acr-nav" style="flex:1;overflow-y:auto;padding:8px">
+        <div class="acr-nav" style="flex:1;overflow-y:auto;padding:12px">
           ${meta.panels.map(p => {
             const def = PANEL_DEFS[p];
-            return `<button class="acr-nav-item ${p === 'chat' ? 'active' : ''}" onclick="acrSwitchPanel('${p}')" id="acrnav_${p}" style="display:flex;align-items:center;gap:10px;padding:12px;background:none;border:none;border-radius:8px;color:var(--text-secondary);font-size:13px;font-weight:500;cursor:pointer;transition:var(--transition);width:100%;text-align:left" ${!PANEL_DEFS[p] ? 'disabled style="opacity:.4"' : ''}>
-              <span class="acr-nav-icon" style="font-size:16px">${def?.icon || '🔧'}</span>
+            return `<button class="acr-nav-item ${p === 'chat' ? 'active' : ''}" onclick="acrSwitchPanel('${p}')" id="acrnav_${p}" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:none;border:none;border-radius:var(--mc-radius);color:var(--mc-text-secondary);font-size:13px;font-weight:500;cursor:pointer;transition:var(--mc-transition);width:100%;text-align:left;margin-bottom:4px;" onmouseover="if(!this.classList.contains('active')) this.style.background='var(--mc-surface-hover)'" onmouseout="if(!this.classList.contains('active')) this.style.background='none'" ${!PANEL_DEFS[p] ? 'disabled style="opacity:.4"' : ''}>
+              <span class="acr-nav-icon" style="font-size:14px;opacity:0.8;">${def?.icon || '🔧'}</span>
               <span class="acr-nav-label">${def?.label || p}</span>
             </button>`;
           }).join('')}
         </div>
-        <div class="acr-sidebar-footer" style="padding:12px;border-top:1px solid var(--border)">
-          <div class="acr-agent-status" style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-muted)">
-            <span id="acrModel">${meta.name}</span>
-            <span id="acrStatus">● Online</span>
+        <div class="acr-sidebar-footer" style="padding:16px;border-top:1px solid var(--mc-border)">
+          <div class="acr-agent-status" style="display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--mc-text-muted)">
+            <span id="acrModel">${meta.name} Core</span>
+            <span id="acrStatus" style="display:flex;align-items:center;gap:6px;"><span class="mc-dot online" style="width:8px;height:8px;"></span> Online</span>
           </div>
         </div>
       </nav>
 
       <!-- Main Panel Area -->
-      <div class="acr-main" style="flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-primary)">
-        <div class="acr-panel-header" style="padding:16px 24px;border-bottom:1px solid var(--border);background:var(--bg-secondary);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div class="acr-main" style="flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--mc-bg)">
+        <div class="acr-panel-header" style="padding:20px 32px;border-bottom:1px solid var(--mc-border);background:var(--mc-bg);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
           <div style="display:flex;align-items:center;gap:16px;flex:1;min-width:0">
-            <div class="acr-agent-mini" style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px;cursor:pointer" onclick="acrOpenAgentSwitcher()" title="Switch agent">
-              <span class="acr-agent-icon" style="font-size:20px">${meta.icon}</span>
-              <span class="acr-agent-name" style="font-weight:600;font-size:13px">${meta.name}</span>
-              <span style="font-size:10px;color:var(--text-muted)">▼</span>
+            <div class="acr-agent-mini" style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--mc-surface);border:1px solid var(--mc-border);border-radius:var(--mc-radius);cursor:pointer;transition:var(--mc-transition);" onclick="acrOpenAgentSwitcher()" onmouseover="this.style.borderColor='var(--mc-border-light)'" onmouseout="this.style.borderColor='var(--mc-border)'" title="Switch agent">
+              <span class="acr-agent-icon" style="font-size:16px">${meta.icon}</span>
+              <span class="acr-agent-name" style="font-weight:600;font-size:13px;color:var(--mc-text-primary)">${meta.name}</span>
+              <span style="font-size:10px;color:var(--mc-text-muted)">▼</span>
             </div>
+            <div style="width:1px;height:24px;background:var(--mc-border);margin:0 8px;"></div>
             <div>
-              <div class="acr-panel-title" id="acrPanelTitle" style="font-weight:600;font-size:16px">${PANEL_DEFS.chat.icon} ${PANEL_DEFS.chat.label}</div>
-              <div class="acr-panel-sub" id="acrPanelSub" style="font-size:12px;color:var(--text-muted);margin-top:2px">${getPanelDescription('chat')}</div>
+              <div class="acr-panel-title" id="acrPanelTitle" style="font-weight:600;font-size:16px;color:var(--mc-text-primary);display:flex;align-items:center;gap:8px;">${PANEL_DEFS.chat.icon} ${PANEL_DEFS.chat.label}</div>
+              <div class="acr-panel-sub" id="acrPanelSub" style="font-size:12px;color:var(--mc-text-secondary);margin-top:4px">${getPanelDescription('chat')}</div>
             </div>
           </div>
           <div class="btn-group" id="acrPanelActions" style="display:flex;gap:8px;flex-shrink:0"></div>
         </div>
-        <div class="acr-panel-content" id="acrMain" style="flex:1;overflow:auto;min-height:0">
+        <div class="acr-panel-content" id="acrMain" style="flex:1;overflow:auto;min-height:0;position:relative;">
           <div class="loading" style="padding:60px;text-align:center"><div class="loading-spinner"></div></div>
         </div>
       </div>
@@ -120,25 +110,13 @@ async function renderAgentControlRoom() {
 
 function getPanelDescription(panelId) {
   const descs = {
-    chat: 'Persistent chat with markdown, syntax highlighting, and history',
-    history: 'Session history and message replay',
-    config: 'Agent configuration: binary, prompts, limits, tools',
-    models: 'Model selection, temperature, max tokens',
-    skills: 'Skills registry filtered for this agent',
-    kanban: 'Task board for this agent\'s work',
-    ci: 'CI/CD pipeline monitoring and triggers',
-    memory: 'Brain files, journal, semantic search, knowledge graph',
-    tasks: 'Agent-specific task queue and scheduling',
-    routing: 'Task routing rules and agent selection logic',
-    handoffs: 'Inter-agent handoff protocol management',
-    review: 'Automated code review queue and history',
-    research: 'Web research, synthesis, and discovery tools',
-    planning: 'Multi-step plan creation and execution',
-    goals: 'OKR tracking, progress bars, milestone tracking',
-    voice: 'Voice capture, TTS, wake word configuration',
-    schedule: 'Calendar events, recurring, briefings',
-    activity: 'Audit log, skill runs, chat messages, timeline',
-    performance: 'Latency, success rate, cost, token usage trends',
+    chat: 'Persistent chat and interaction with the agent',
+    memory: 'Semantic memory, shared knowledge, and context',
+    files: 'Workspace files and code artifacts accessible by agent',
+    skills: 'Available tool capabilities and custom skills',
+    terminal: 'Live terminal output and process streams',
+    inspector: 'Internal state, context window, and token usage',
+    tasks: 'Agent specific task queue and background jobs',
   };
   return descs[panelId] || 'Panel content';
 }
@@ -154,7 +132,7 @@ async function acrSwitchPanel(panelId) {
 
   document.getElementById('acrPanelTitle').textContent = `${def.icon} ${def.label}`;
   document.getElementById('acrPanelSub').textContent = getPanelDescription(panelId);
-  document.getElementById('acrPanelActions').innerHTML = getPanelActions(panelId);
+  (document.getElementById('acrPanelActions') || {}).innerHTML = getPanelActions(panelId);
 
   const main = document.getElementById('acrMain');
   if (!main) return;
@@ -170,24 +148,13 @@ async function acrSwitchPanel(panelId) {
 
 function getPanelActions(panelId) {
   const actions = {
-    chat: '<button class="btn btn-sm" onclick="acrExportChat()">⬇ Export</button><button class="btn btn-sm" onclick="acrClearChat()">🗑 Clear</button>',
-    history: '<button class="btn btn-sm" onclick="acrReloadHistory()">🔄 Refresh</button>',
-    kanban: '<button class="btn btn-sm btn-primary" onclick="acrAddKanbanTask()">+ Add Task</button>',
-    memory: '<button class="btn btn-sm" onclick="acrReindexMemory()">🔄 Reindex</button>',
-    performance: '<button class="btn btn-sm" onclick="acrReloadPerformance()">🔄 Refresh</button>',
-    skills: '<button class="btn btn-sm" onclick="acrReloadSkills()">🔄 Refresh Skills</button>',
-    kanban: '<button class="btn btn-sm btn-primary" onclick="acrAddKanbanTask()">+ Add Task</button>',
-    review: '<button class="btn btn-sm btn-primary" onclick="acrRunCodeReview()">🔍 Run Review</button>',
-    research: '<button class="btn btn-sm btn-primary" onclick="acrRunResearch()">🔍 Start Research</button>',
-    planning: '<button class="btn btn-sm btn-primary" onclick="acrCreatePlan()">📋 New Plan</button>',
-    goals: '<button class="btn btn-sm btn-primary" onclick="acrAddGoal()">🎯 New Goal</button>',
-    voice: '<button class="btn btn-sm btn-primary" onclick="acrTestTTS()">🔊 Test TTS</button>',
-    schedule: '<button class="btn btn-sm btn-primary" onclick="acrAddScheduleEvent()">+ Add Event</button>',
-    ci: '<button class="btn btn-sm btn-primary" onclick="acrTriggerPipeline()">▶ Trigger</button>',
-    handoffs: '<button class="btn btn-sm btn-primary" onclick="acrCreateHandoff()">+ New Handoff</button>',
-    routing: '<button class="btn btn-sm btn-primary" onclick="acrAddRoutingRule()">+ Add Rule</button>',
-    planning: '<button class="btn btn-sm btn-primary" onclick="acrCreatePlan()">📋 New Plan</button>',
-    goals: '<button class="btn btn-sm btn-primary" onclick="acrAddGoal()">🎯 New Goal</button>',
+    chat: '<button class="mc-btn mc-btn-ghost" onclick="acrClearChat()">Clear</button>',
+    memory: '<button class="mc-btn mc-btn-primary" onclick="acrReindexMemory()">Reindex</button>',
+    files: '<button class="mc-btn mc-btn-primary" onclick="acrUploadFile()">Upload</button>',
+    skills: '<button class="mc-btn mc-btn-primary" onclick="acrReloadSkills()">Refresh</button>',
+    terminal: '<button class="mc-btn mc-btn-ghost" onclick="acrClearTerminal()">Clear</button>',
+    inspector: '<button class="mc-btn mc-btn-primary" onclick="acrRefreshInspector()">Refresh</button>',
+    tasks: '<button class="mc-btn mc-btn-primary" onclick="acrAddKanbanTask()">Add Task</button>',
   };
   return actions[panelId] || '';
 }
@@ -245,7 +212,7 @@ async function acrRenderChat(container) {
 
 async function acrLoadChatHistory() {
   try {
-    const data = await api.getChatHistory();
+    const data = await api.getChatHistory(ACR_STATE.agentName);
     ACR_STATE.chatHistory = data.messages || [];
     acrRenderMessages();
   } catch (e) { console.warn('Failed to load chat history:', e); }
@@ -361,7 +328,7 @@ async function acrRenderHistory(container) {
 
 async function acrLoadFullHistory() {
   try {
-    const data = await api.getChatHistory();
+    const data = await api.getChatHistory(ACR_STATE.agentName);
     ACR_STATE.sessionHistory = data.messages || [];
     acrRenderHistoryList();
   } catch (e) { console.warn(e); }
@@ -697,9 +664,353 @@ function acrSaveResearch() {
   showToast('Research already saved', 'info');
 }
 
-// Stub panels (to be implemented)
-const stubPanels = ['memory','tasks','routing','handoffs','review','planning','goals','voice','schedule','ci'];
-stubPanels.forEach(p => { window['acrRender' + p.charAt(0).toUpperCase() + p.slice(1)] = (container) => { container.innerHTML = `<div class="empty-state" style="padding:60px 24px;text-align:center"><div class="empty-state-icon">🔧</div><div class="empty-state-title">${PANEL_DEFS[p]?.label || p} Panel</div><div class="empty-state-desc">Coming soon for ${ACR_AGENT_META[ACR_STATE.agentName]?.name}</div></div>`; }; });
+// ─── PANEL: MEMORY ────────────────────────────────────────────────────────────
+async function acrRenderMemory(container) {
+  container.innerHTML = `
+    <div style="padding:24px;display:flex;flex-direction:column;gap:20px;height:100%;overflow:auto;">
+      <div style="display:flex;gap:12px;">
+        <input id="acrMemSearch" class="mc-input" style="flex:1;" placeholder="Search memory…" oninput="acrSearchMemory()">
+        <button class="mc-btn mc-btn-primary" onclick="acrReindexMemory()">Reindex</button>
+      </div>
+      <div id="acrMemStats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;"></div>
+      <div id="acrMemResults" style="display:flex;flex-direction:column;gap:8px;">
+        <div class="loading"><div class="loading-spinner"></div></div>
+      </div>
+    </div>
+  `;
+  // Load stats
+  try {
+    const stats = await api.getVectorStats();
+    const el = document.getElementById('acrMemStats');
+    if (el) el.innerHTML = `
+      <div class="mc-card" style="padding:14px;text-align:center;">
+        <div style="font-size:22px;font-weight:700;color:var(--mc-accent);">${stats.total_vectors || 0}</div>
+        <div style="font-size:11px;color:var(--mc-text-muted);margin-top:2px;">Vectors</div>
+      </div>
+      <div class="mc-card" style="padding:14px;text-align:center;">
+        <div style="font-size:22px;font-weight:700;color:var(--mc-blue);">${stats.brain_files || Object.values(stats.by_source||{}).reduce((a,b)=>a+b,0)}</div>
+        <div style="font-size:11px;color:var(--mc-text-muted);margin-top:2px;">Indexed Docs</div>
+      </div>
+      <div class="mc-card" style="padding:14px;text-align:center;">
+        <div style="font-size:22px;font-weight:700;color:var(--mc-purple);">${Math.round((stats.db_size_bytes||0)/1024)} KB</div>
+        <div style="font-size:11px;color:var(--mc-text-muted);margin-top:2px;">DB Size</div>
+      </div>
+    `;
+  } catch(e) { console.warn('Memory stats error', e); }
+  // Seed with brain files listing
+  acrSearchMemory('');
+}
+
+async function acrSearchMemory(q) {
+  const query = q !== undefined ? q : (document.getElementById('acrMemSearch')?.value || '');
+  const el = document.getElementById('acrMemResults');
+  if (!el) return;
+  if (!query.trim()) {
+    // Show brain files
+    try {
+      const data = await api.getBrain();
+      const files = data.files || [];
+      el.innerHTML = files.length === 0 ? '<div class="empty-state"><div class="empty-state-icon">🧠</div><div class="empty-state-title">No brain files</div></div>' :
+        files.map(f => `
+          <div style="background:var(--mc-surface);border:1px solid var(--mc-border);border-radius:var(--mc-radius);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:var(--mc-transition);"
+               onmouseover="this.style.borderColor='var(--mc-border-light)'" onmouseout="this.style.borderColor='var(--mc-border)'"
+               onclick="acrViewBrainFile('${escapeHtml(f)}')">
+            <span style="font-family:var(--mc-font-mono);font-size:13px;color:var(--mc-text-primary);">📄 ${escapeHtml(f)}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--mc-text-muted);flex-shrink:0;"><path d="M9 18l6-6-6-6"/></svg>
+          </div>`).join('');
+    } catch(e) { el.innerHTML = `<div class="empty-state"><div class="empty-state-title">Failed to load memory</div></div>`; }
+    return;
+  }
+  el.innerHTML = `<div class="loading"><div class="loading-spinner"></div></div>`;
+  try {
+    const data = await api.searchMemory({ query, top_k: 10 });
+    const results = data.results || [];
+    el.innerHTML = results.length === 0 ? `<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">No matches found</div></div>` :
+      results.map(r => `
+        <div style="background:var(--mc-surface);border:1px solid var(--mc-border);border-radius:var(--mc-radius);padding:14px 16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:11px;padding:2px 6px;background:var(--mc-accent-dim);color:var(--mc-accent);border-radius:4px;">${escapeHtml(r.source)}</span>
+            <span style="font-size:11px;color:var(--mc-text-muted);">${escapeHtml(r.content_id)}</span>
+            <span style="margin-left:auto;font-size:11px;color:var(--mc-blue);font-weight:600;">${(r.score*100).toFixed(0)}% match</span>
+          </div>
+          <div style="font-size:12px;color:var(--mc-text-secondary);font-family:var(--mc-font-mono);line-height:1.5;">${escapeHtml(r.text_preview||'')}</div>
+        </div>`).join('');
+  } catch(e) { el.innerHTML = `<div class="empty-state"><div class="empty-state-title">Search failed: ${escapeHtml(e.message)}</div></div>`; }
+}
+
+async function acrViewBrainFile(name) {
+  try {
+    const data = await api.getBrainFile(name);
+    showModal(name, `<div style="max-height:60vh;overflow:auto;"><pre style="white-space:pre-wrap;font-size:12px;font-family:var(--mc-font-mono);line-height:1.6;color:var(--mc-text-secondary);">${escapeHtml(data.content||'')}</pre></div>`,
+      `<button class="mc-btn" onclick="closeModal()">Close</button>`);
+  } catch(e) { showToast('Failed to load file: ' + e.message, 'error'); }
+}
+
+async function acrReindexMemory() {
+  showToast('Reindexing memory…', 'info');
+  try { const r = await api.reindexMemory(); showToast(`Reindexed ${r.indexed} documents`, 'success'); } catch(e) { showToast(e.message, 'error'); }
+}
+
+// ─── PANEL: FILES ────────────────────────────────────────────────────────────
+async function acrRenderFiles(container) {
+  container.innerHTML = `
+    <div style="display:flex;height:100%;overflow:hidden;">
+      <div style="width:260px;min-width:260px;border-right:1px solid var(--mc-border);overflow-y:auto;padding:12px;">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--mc-text-muted);padding:4px 8px 8px;font-weight:600;">Brain Files</div>
+        <div id="acrFilesList"></div>
+      </div>
+      <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+        <div id="acrFileViewer" style="flex:1;overflow:auto;padding:24px;">
+          <div class="empty-state" style="padding:60px;">
+            <div class="empty-state-icon">📁</div>
+            <div class="empty-state-title">Select a file to view</div>
+            <div class="empty-state-desc">Browse brain and skills files</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  try {
+    const data = await api.getBrain();
+    const files = data.files || [];
+    const el = document.getElementById('acrFilesList');
+    if (!el) return;
+    el.innerHTML = files.map(f => `
+      <div style="padding:8px 10px;border-radius:var(--mc-radius);cursor:pointer;transition:var(--mc-transition);font-size:12px;font-family:var(--mc-font-mono);color:var(--mc-text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"
+           onmouseover="this.style.background='var(--mc-surface-hover)';this.style.color='var(--mc-text-primary)'"
+           onmouseout="this.style.background='transparent';this.style.color='var(--mc-text-secondary)'"
+           onclick="acrOpenFile('${escapeHtml(f)}')">
+        📄 ${escapeHtml(f)}
+      </div>`).join('');
+  } catch(e) { console.warn(e); }
+}
+
+async function acrOpenFile(name) {
+  const viewer = document.getElementById('acrFileViewer');
+  if (!viewer) return;
+  viewer.innerHTML = `<div class="loading"><div class="loading-spinner"></div></div>`;
+  try {
+    const data = await api.getBrainFile(name);
+    const content = data.content || '';
+    viewer.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;">
+        <div style="font-family:var(--mc-font-mono);font-size:14px;font-weight:600;">${escapeHtml(name)}</div>
+        <button class="mc-btn mc-btn-primary" style="font-size:12px;" onclick="acrSaveFile('${escapeHtml(name)}')">💾 Save</button>
+      </div>
+      <textarea id="acrFileContent" style="width:100%;min-height:calc(100vh - 280px);background:rgba(0,0,0,0.2);border:1px solid var(--mc-border);border-radius:var(--mc-radius);padding:16px;font-family:var(--mc-font-mono);font-size:12px;color:var(--mc-text-primary);resize:none;line-height:1.6;outline:none;" spellcheck="false">${escapeHtml(content)}</textarea>
+    `;
+  } catch(e) { viewer.innerHTML = `<div class="empty-state"><div class="empty-state-title">Failed to load: ${escapeHtml(e.message)}</div></div>`; }
+}
+
+async function acrSaveFile(name) {
+  const content = document.getElementById('acrFileContent')?.value;
+  if (content === undefined) return;
+  try {
+    await api.updateBrainFile(name, content);
+    showToast(`${name} saved`, 'success');
+  } catch(e) { showToast('Save failed: ' + e.message, 'error'); }
+}
+
+function acrUploadFile() { showToast('File upload: drag files into workspace', 'info'); }
+
+// ─── PANEL: TERMINAL ────────────────────────────────────────────────────────
+async function acrRenderTerminal(container) {
+  container.innerHTML = `
+    <div style="display:flex;flex-direction:column;height:100%;background:rgba(0,0,0,0.3);">
+      <div id="acrTermOutput" style="flex:1;overflow-y:auto;padding:16px 20px;font-family:var(--mc-font-mono);font-size:12px;line-height:1.7;display:flex;flex-direction:column;gap:2px;">
+        <span style="color:var(--mc-accent);">[TERMINAL] ${ACR_AGENT_META[ACR_STATE.agentName]?.name} session started.</span>
+        <span style="color:var(--mc-text-muted);">[TERMINAL] Type a command or message to ${ACR_AGENT_META[ACR_STATE.agentName]?.name}.</span>
+      </div>
+      <div style="padding:12px 16px;border-top:1px solid var(--mc-border);background:var(--mc-surface);">
+        <form id="acrTermForm" style="display:flex;gap:8px;align-items:center;">
+          <span style="color:var(--mc-accent);font-family:var(--mc-font-mono);font-size:13px;flex-shrink:0;">$</span>
+          <input id="acrTermInput" class="mc-input" style="flex:1;font-family:var(--mc-font-mono);" placeholder="Enter command or message…" autocomplete="off">
+          <button type="submit" class="mc-btn mc-btn-primary" style="flex-shrink:0;">Run</button>
+        </form>
+        <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;">
+          ${['Show status', 'List skills', 'Run heartbeat', 'Memory stats'].map(c => 
+            `<button class="mc-btn" style="font-size:11px;padding:3px 8px;" onclick="acrTermQuick('${c}')">${c}</button>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  const form = document.getElementById('acrTermForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = document.getElementById('acrTermInput');
+    const cmd = input.value.trim();
+    if (!cmd) return;
+    input.value = '';
+    acrTermLog(`$ ${cmd}`, 'var(--mc-orange)');
+    input.disabled = true;
+    acrTermLog('…', 'var(--mc-text-muted)');
+    try {
+      const res = await api.chat(ACR_STATE.agentName, cmd);
+      const output = res.response?.content || res.response || '(no response)';
+      document.getElementById('acrTermOutput')?.lastElementChild?.remove();
+      acrTermLog(output, 'var(--mc-text-primary)');
+    } catch(err) {
+      document.getElementById('acrTermOutput')?.lastElementChild?.remove();
+      acrTermLog(`[ERROR] ${err.message}`, 'var(--mc-red)');
+    } finally {
+      input.disabled = false;
+      input.focus();
+    }
+  });
+}
+
+function acrTermLog(text, color = 'var(--mc-text-secondary)') {
+  const el = document.getElementById('acrTermOutput');
+  if (!el) return;
+  const span = document.createElement('span');
+  span.style.color = color;
+  span.style.whiteSpace = 'pre-wrap';
+  span.style.wordBreak = 'break-word';
+  span.textContent = text;
+  el.appendChild(span);
+  el.scrollTop = el.scrollHeight;
+}
+
+function acrTermQuick(cmd) {
+  const input = document.getElementById('acrTermInput');
+  if (input) { input.value = cmd; document.getElementById('acrTermForm').dispatchEvent(new Event('submit')); }
+}
+
+function acrClearTerminal() { const el = document.getElementById('acrTermOutput'); if (el) el.innerHTML = ''; }
+
+// ─── PANEL: INSPECTOR ────────────────────────────────────────────────────────
+async function acrRenderInspector(container) {
+  container.innerHTML = `<div style="padding:24px;overflow:auto;height:100%;display:flex;flex-direction:column;gap:20px;">
+    <div id="acrInspData" class="loading"><div class="loading-spinner"></div></div>
+  </div>`;
+  try {
+    const [stats, health, audit] = await Promise.all([
+      api.getVectorStats().catch(() => null),
+      api.getStatus().catch(() => null),
+      api.getAudit(10).catch(() => ({ entries: [] }))
+    ]);
+    const agentInfo = (health?.agents || []).find(a => a.name === ACR_STATE.agentName) || {};
+    const meta = ACR_AGENT_META[ACR_STATE.agentName];
+    const el = document.getElementById('acrInspData');
+    if (!el) return;
+    el.className = '';
+    el.innerHTML = `
+      <div class="mc-card" style="padding:20px;">
+        <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mc-text-muted);margin-bottom:12px;">Agent State</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          ${[
+            ['Name', meta?.name || ACR_STATE.agentName],
+            ['Status', agentInfo.status || 'unknown'],
+            ['Version', agentInfo.version || '—'],
+            ['Model', agentInfo.model || '—'],
+            ['Active Panel', ACR_STATE.activePanel],
+            ['Chat History', ACR_STATE.chatHistory.length + ' messages'],
+          ].map(([k, v]) => `
+            <div style="background:var(--mc-surface);border-radius:var(--mc-radius-sm);padding:10px;">
+              <div style="font-size:10px;color:var(--mc-text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">${k}</div>
+              <div style="font-size:13px;font-family:var(--mc-font-mono);color:var(--mc-text-primary);">${escapeHtml(String(v))}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="mc-card" style="padding:20px;">
+        <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mc-text-muted);margin-bottom:12px;">Memory Context</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          ${[
+            ['Vectors', stats?.total_vectors ?? '—'],
+            ['Brain Files', stats?.by_source?.brain ?? '—'],
+            ['Skills Indexed', stats?.by_source?.skill ?? '—'],
+          ].map(([k, v]) => `
+            <div style="background:var(--mc-surface);border-radius:var(--mc-radius-sm);padding:10px;text-align:center;">
+              <div style="font-size:20px;font-weight:700;color:var(--mc-accent);">${v}</div>
+              <div style="font-size:10px;color:var(--mc-text-muted);margin-top:2px;">${k}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+
+      <div class="mc-card" style="padding:20px;">
+        <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--mc-text-muted);margin-bottom:12px;">Recent Audit</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-family:var(--mc-font-mono);font-size:11px;">
+          ${(audit.entries || []).slice(-8).reverse().map(a => `
+            <div style="display:flex;gap:10px;padding:6px;border-radius:4px;background:var(--mc-surface);">
+              <span style="color:var(--mc-accent);flex-shrink:0;">[${a.action}]</span>
+              <span style="color:var(--mc-text-muted);">${a.timestamp || ''}</span>
+              <span style="color:var(--mc-text-secondary);margin-left:auto;">${escapeHtml(a.agent || a.skill || '')}</span>
+            </div>`).join('') || '<span style="color:var(--mc-text-muted);">No recent events</span>'}
+        </div>
+      </div>
+    `;
+  } catch(e) { container.innerHTML = `<div class="empty-state"><div class="empty-state-icon">⚠</div><div class="empty-state-title">Inspector error: ${escapeHtml(e.message)}</div></div>`; }
+}
+
+function acrRefreshInspector() { acrRenderInspector(document.getElementById('acrMain')); }
+
+// ─── PANEL: TASKS ─────────────────────────────────────────────────────────────
+async function acrRenderTasks(container) {
+  container.innerHTML = `
+    <div style="padding:24px;display:flex;flex-direction:column;gap:16px;height:100%;overflow:auto;">
+      <div style="display:flex;gap:10px;justify-content:space-between;align-items:center;">
+        <div style="display:flex;gap:8px;">
+          <select id="acrTaskFilter" class="mc-input" style="width:auto;font-size:12px;" onchange="acrLoadTasksPanel()">
+            <option value="">All</option>
+            <option value="todo">Todo</option>
+            <option value="in_progress">In Progress</option>
+            <option value="triage">Triage</option>
+            <option value="blocked">Blocked</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <button class="mc-btn mc-btn-primary" style="font-size:12px;" onclick="acrAddKanbanTask()">+ Add Task</button>
+      </div>
+      <div id="acrTasksList" style="display:flex;flex-direction:column;gap:8px;overflow:auto;"></div>
+    </div>
+  `;
+  await acrLoadTasksPanel();
+}
+
+async function acrLoadTasksPanel() {
+  const el = document.getElementById('acrTasksList');
+  if (!el) return;
+  const filter = document.getElementById('acrTaskFilter')?.value || '';
+  el.innerHTML = `<div class="loading"><div class="loading-spinner"></div></div>`;
+  try {
+    const data = await api.getKanbanBoard();
+    let tasks = Object.values(data.tasks || {});
+    if (filter) tasks = tasks.filter(t => t.status === filter);
+    if (tasks.length === 0) {
+      el.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📋</div><div class="empty-state-title">No tasks ${filter ? 'with status ' + filter : ''}</div></div>`;
+      return;
+    }
+    const statusColors = { in_progress: 'var(--mc-blue)', todo: 'var(--mc-text-muted)', triage: 'var(--mc-orange)', blocked: 'var(--mc-red)', done: 'var(--mc-accent)' };
+    el.innerHTML = tasks.map(t => {
+      const sc = statusColors[t.status] || 'var(--mc-text-muted)';
+      const pc = { high: 'var(--mc-red)', medium: 'var(--mc-orange)', low: 'var(--mc-accent)' }[t.priority] || 'var(--mc-text-muted)';
+      return `
+        <div style="background:var(--mc-surface);border:1px solid var(--mc-border);border-radius:var(--mc-radius);padding:14px 16px;transition:var(--mc-transition);" onmouseover="this.style.borderColor='var(--mc-border-light)'" onmouseout="this.style.borderColor='var(--mc-border)'">
+          <div style="display:flex;align-items:flex-start;gap:12px;">
+            <div style="width:8px;height:8px;border-radius:50%;background:${sc};margin-top:6px;flex-shrink:0;"></div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(t.title || 'Untitled')}</div>
+              ${t.body ? `<div style="font-size:11px;color:var(--mc-text-secondary);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(t.body.substring(0,120))}</div>` : ''}
+              <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;align-items:center;">
+                <span style="font-size:10px;padding:2px 6px;border-radius:4px;background:${sc}22;color:${sc};">${t.status}</span>
+                ${t.priority ? `<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:${pc}22;color:${pc};">${t.priority}</span>` : ''}
+                <div style="margin-left:auto;display:flex;gap:4px;">
+                  ${t.status !== 'done' ? `<button class="mc-btn" style="font-size:10px;padding:3px 8px;" onclick="api.completeKanbanTask('${t.id}','').then(()=>{showToast('Completed','success');acrLoadTasksPanel()}).catch(e=>showToast(e.message,'error'))">✓ Done</button>` : ''}
+                  ${t.status !== 'blocked' ? `<button class="mc-btn" style="font-size:10px;padding:3px 8px;color:var(--mc-red);" onclick="api.blockKanbanTask('${t.id}','').then(()=>acrLoadTasksPanel()).catch(e=>showToast(e.message,'error'))">Block</button>` : `<button class="mc-btn" style="font-size:10px;padding:3px 8px;" onclick="api.unblockKanbanTask('${t.id}').then(()=>acrLoadTasksPanel()).catch(e=>showToast(e.message,'error'))">Unblock</button>`}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e) { el.innerHTML = `<div class="empty-state"><div class="empty-state-title">Failed to load tasks: ${escapeHtml(e.message)}</div></div>`; }
+}
+
+// Remaining stubs (not in PANEL_DEFS so won't be shown in nav)
+const _remainingStubs = ['routing','handoffs','review','planning','goals','voice','schedule','ci'];
+_remainingStubs.forEach(p => { window['acrRender' + p.charAt(0).toUpperCase() + p.slice(1)] = (container) => { container.innerHTML = `<div class="empty-state" style="padding:60px 24px;"><div class="empty-state-icon">🔧</div><div class="empty-state-title">${p} Panel</div><div class="empty-state-desc">Coming soon</div></div>`; }; });
+
 
 // Register
 window.renderAgentControlRoom = renderAgentControlRoom;
@@ -745,3 +1056,20 @@ window.getPanelDescription = getPanelDescription;
 window.getPanelActions = getPanelActions;
 window.acrOpenAgentSwitcher = acrOpenAgentSwitcher;
 window.acrSwitchAgent = acrSwitchAgent;
+// New panels
+window.acrRenderMemory = acrRenderMemory;
+window.acrRenderFiles = acrRenderFiles;
+window.acrRenderTerminal = acrRenderTerminal;
+window.acrRenderInspector = acrRenderInspector;
+window.acrRenderTasks = acrRenderTasks;
+window.acrSearchMemory = acrSearchMemory;
+window.acrViewBrainFile = acrViewBrainFile;
+window.acrReindexMemory = acrReindexMemory;
+window.acrOpenFile = acrOpenFile;
+window.acrSaveFile = acrSaveFile;
+window.acrUploadFile = acrUploadFile;
+window.acrTermLog = acrTermLog;
+window.acrTermQuick = acrTermQuick;
+window.acrClearTerminal = acrClearTerminal;
+window.acrRefreshInspector = acrRefreshInspector;
+window.acrLoadTasksPanel = acrLoadTasksPanel;

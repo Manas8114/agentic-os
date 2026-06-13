@@ -31,6 +31,8 @@ from api.sessions import router as sessions_router
 from api.system import router as system_router
 from api.swarm import router as swarm_router
 from api.settings import router as settings_router
+from api.webhooks import router as webhooks_router
+from api.seo import router as seo_router
 
 # Aggregate router
 api_router = APIRouter()
@@ -62,3 +64,5 @@ api_router.include_router(sessions_router, prefix="/sessions", tags=["sessions"]
 api_router.include_router(system_router, tags=["system"])
 api_router.include_router(swarm_router, prefix="/swarm", tags=["swarm"])
 api_router.include_router(settings_router, prefix="/settings", tags=["settings"])
+api_router.include_router(webhooks_router, prefix="/webhooks", tags=["webhooks"])
+api_router.include_router(seo_router, prefix="/seo", tags=["seo"])

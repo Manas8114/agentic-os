@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agentic OS — Mission Control</title>
 <link rel="icon" type="image/svg+xml" href="/dashboard/favicon.svg">
+<link rel="apple-touch-icon" href="/dashboard/favicon.svg">
 <link rel="manifest" href="/dashboard/manifest.json">
 <meta name="theme-color" content="#0b0f14">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -16,162 +17,143 @@
 <link rel="stylesheet" href="/dashboard/styles.css">
 <link rel="stylesheet" href="/dashboard/styles-premium.css">
 <link rel="stylesheet" href="/dashboard/styles-v2.css">
+<link rel="stylesheet" href="/dashboard/styles-mc.css">
 <script src="/dashboard/chart.umd.min.js"></script>
 <script src="/dashboard/d3.min.js"></script>
 </head>
-<body class="has-gateway-bar">
-  <!-- Gateway Status Bar -->
-  <div id="gatewayBar">
-    <div class="gw-item">
-      <span class="agent-dot online" id="gwDot" style="width:9px;height:9px"></span>
-      <span id="gwStatus">Gateway</span>
+<body class="mc-theme">
+  <!-- Top Status Bar -->
+  <header class="mc-topbar">
+    <div class="mc-topbar-left">
+      <a href="#dashboard" class="mc-logo" onclick="navigate('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Agentic OS
+      </a>
+      <div class="mc-stat-badge" title="Active Agents"><span class="mc-dot online"></span><strong id="mcActiveAgents">0</strong> Agents</div>
+      <div class="mc-stat-badge" title="Running Tasks">⚡<strong id="mcRunningTasks">0</strong> Tasks</div>
     </div>
-    <div class="gw-sep"></div>
-    <div class="gw-item">
-      <span>👤</span>
-      <span id="gwProfile">Default</span>
-    </div>
-    <div class="gw-sep"></div>
-    <div class="gw-item gw-tokens">
-      <span>🔢</span>
-      <span id="gwTokens">0 tokens today</span>
-    </div>
-    <div class="gw-sep"></div>
-    <div class="gw-item">
-      <span id="gwModel" style="font-family:var(--font-mono);font-size:10px;color:var(--text-muted)">owl-alpha</span>
-    </div>
-    <div class="gw-spacer"></div>
-    <div class="gw-item">
-      <span class="gw-profile-badge" onclick="openProfileSwitcher()">⚡ Hermes Workspace</span>
-    </div>
-    <div class="gw-sep"></div>
-    <button class="gw-restart-btn" onclick="gwRestartGateway()">↺ Restart</button>
-  </div>
-  <div id="topLoadingBar"></div>
-  <nav id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo" onclick="navigate('dashboard')" style="cursor:pointer" title="Agentic OS — Mission Control">
-        <svg class="logo-svg" viewBox="0 0 64 64" width="36" height="36">
-          <defs>
-            <linearGradient id="mc" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#6c5ce7"/>
-              <stop offset="55%" stop-color="#a855f7"/>
-              <stop offset="100%" stop-color="#00e09e"/>
-            </linearGradient>
-            <filter id="mc-glow">
-              <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
-              <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
-          <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#mc)" opacity="0.18"/>
-          <rect x="2" y="2" width="60" height="60" rx="16" fill="none" stroke="url(#mc)" stroke-width="2"/>
-          <polygon points="32,8 52,19.5 52,42.5 32,54 12,42.5 12,19.5"
-                   fill="none" stroke="url(#mc)" stroke-width="1.8" stroke-linejoin="round" opacity="0.7"/>
-          <circle cx="32" cy="32" r="7" fill="url(#mc)" filter="url(#mc-glow)"/>
-          <ellipse cx="32" cy="32" rx="14" ry="5" fill="none" stroke="url(#mc)" stroke-width="1.4" opacity="0.6" transform="rotate(-30 32 32)"/>
-          <ellipse cx="32" cy="32" rx="14" ry="5" fill="none" stroke="url(#mc)" stroke-width="1.4" opacity="0.6" transform="rotate(30 32 32)"/>
-          <circle cx="18.5" cy="29" r="2.2" fill="#8b7cf7" filter="url(#mc-glow)"/>
-          <circle cx="45.5" cy="35" r="2.2" fill="#00e09e" filter="url(#mc-glow)"/>
-          <circle cx="32" cy="19" r="2.2" fill="#a855f7" filter="url(#mc-glow)"/>
-        </svg>
-        <span class="logo-text">Agentic OS</span>
+    
+    <div class="mc-topbar-center">
+      <div class="mc-search" onclick="if(window.CommandPalette) window.CommandPalette.toggle()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <span>Global Search...</span>
+        <kbd>⌘K</kbd>
       </div>
-      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">
-        <svg viewBox="0 0 24 24" width="18" height="18" class="toggle-icon">
-          <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    </div>
+    
+    <div class="mc-topbar-right">
+      <div class="mc-stat-badge" title="Token Usage Today">🔢<strong id="mcTokensToday">0</strong></div>
+      <div class="mc-stat-badge" id="mcGatewayHealth" title="Gateway Health"><span class="mc-dot online" id="gwDot"></span> Gateway</div>
+      
+      <button class="mc-btn mc-btn-ghost" title="Notifications" onclick="navigate('notification-center')" style="position:relative;padding:8px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span id="notifBadge" style="position:absolute;top:2px;right:2px;background:var(--mc-red);color:white;font-size:9px;border-radius:10px;padding:0 4px;display:none;">0</span>
+      </button>
+      
+      <button class="mc-btn mc-btn-ghost" onclick="openProfileSwitcher()">
+        👤 <span id="mcProfileName">Default</span>
       </button>
     </div>
-    <div class="sidebar-nav">
-      <div class="sidebar-section"><div class="sidebar-section-label">Primary</div></div>
-      <a href="#chat" class="nav-item" data-page="chat"><span class="nav-icon">💬</span><span class="nav-label">AI Chat</span></a>
-      <a href="#dashboard" class="nav-item active" data-page="dashboard"><span class="nav-icon">◉</span><span class="nav-label">Dashboard</span></a>
-      <div class="sidebar-section"><div class="sidebar-section-label">Agents</div></div>
-      <a href="#agent-control-room/opencode" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🔧</span><span class="nav-label">opencode</span></a>
-      <a href="#agent-control-room/hermes" class="nav-item" data-page="agent-control-room"><span class="nav-icon">⚡</span><span class="nav-label">Hermes</span></a>
-      <a href="#agent-control-room/gemini" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🧠</span><span class="nav-label">Gemini CLI</span></a>
-      <a href="#agent-control-room/claude" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🤖</span><span class="nav-label">Claude</span></a>
-      <a href="#agent-control-room/codex" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🐙</span><span class="nav-label">Codex</span></a>
-      <a href="#agent-control-room/antigravity" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🔭</span><span class="nav-label">Antigravity</span></a>
-      <a href="#agent-control-room/openclaw" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🕸</span><span class="nav-label">OpenClaw</span></a>
-      <a href="#agent-control-room/odysseus" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🧭</span><span class="nav-label">Odysseus</span></a>
-      <a href="#agent-control-room/jarvis" class="nav-item" data-page="agent-control-room"><span class="nav-icon">🎙</span><span class="nav-label">Jarvis</span></a>
-      <a href="#hermes-workspace" class="nav-item" data-page="hermes-workspace"><span class="nav-icon">⚡</span><span class="nav-label">Hermes Workspace</span><span class="nav-badge new-badge" style="background:var(--green);color:#000;font-size:8px">V2</span></a>
-      <a href="#command-room" class="nav-item" data-page="command-room"><span class="nav-icon">🏛</span><span class="nav-label">Command Room</span><span class="nav-badge new-badge" style="background:var(--accent);color:#fff;font-size:8px">V2</span></a>
-      <a href="#agent-skills-registry" class="nav-item" data-page="agent-skills-registry"><span class="nav-icon">📚</span><span class="nav-label">Skills Registry</span></a>
-      <a href="#skills" class="nav-item" data-page="skills"><span class="nav-icon">⚡</span><span class="nav-label">Skills</span><span class="nav-badge" id="skillCount">0</span></a>
-      <div class="sidebar-section"><div class="sidebar-section-label">Management</div></div>
-      <a href="#memory" class="nav-item" data-page="memory"><span class="nav-icon">🧠</span><span class="nav-label">Memory</span></a>
-      <a href="#memory-verification" class="nav-item" data-page="memory-verification"><span class="nav-icon">🔍</span><span class="nav-label">Memory Verify</span></a>
-      <a href="#scheduler" class="nav-item" data-page="scheduler"><span class="nav-icon">⏱</span><span class="nav-label">Scheduler</span></a>
-      <a href="#audit" class="nav-item" data-page="audit"><span class="nav-icon">📋</span><span class="nav-label">Audit</span></a>
-      <div class="sidebar-section"><div class="sidebar-section-label">Workflow</div></div>
-      <a href="#kanban" class="nav-item" data-page="kanban"><span class="nav-icon">📌</span><span class="nav-label">Kanban Board</span></a>
-      <a href="#agent-kanban" class="nav-item" data-page="agent-kanban"><span class="nav-icon">🤖</span><span class="nav-label">Agent Kanban</span></a>
-      <a href="#goals" class="nav-item" data-page="goals"><span class="nav-icon">🎯</span><span class="nav-label">Goals</span></a>
-      <a href="#journal" class="nav-item" data-page="journal"><span class="nav-icon">📓</span><span class="nav-label">Journal</span></a>
-      <a href="#handoffs" class="nav-item" data-page="handoffs"><span class="nav-icon">🔄</span><span class="nav-label">Handoffs</span></a>
-      <div class="sidebar-section"><div class="sidebar-section-label">Monitoring</div></div>
-      <a href="#agent-health" class="nav-item" data-page="agent-health"><span class="nav-icon">🏥</span><span class="nav-label">Agent Health</span><span class="nav-badge" id="agentHealthCount">0</span></a>
-      <a href="#agent-status-center" class="nav-item" data-page="agent-status-center"><span class="nav-icon">📊</span><span class="nav-label">Agent Status Center</span></a>
-      <a href="#agent-performance" class="nav-item" data-page="agent-performance"><span class="nav-icon">📈</span><span class="nav-label">Agent Performance</span></a>
-      <a href="#semantic-search" class="nav-item" data-page="semantic-search"><span class="nav-icon">🔍</span><span class="nav-label">Semantic Search</span></a>
-      <a href="#knowledge-graph" class="nav-item" data-page="knowledge-graph"><span class="nav-icon">🕸️</span><span class="nav-label">Knowledge Graph</span></a>
-      <a href="#context-injection" class="nav-item" data-page="context-injection"><span class="nav-icon">🧠</span><span class="nav-label">Context Injection</span></a>
-      <a href="#voice-capture" class="nav-item" data-page="voice-capture"><span class="nav-icon">🎙️</span><span class="nav-label">Voice Capture</span></a>
-      <a href="#timeline" class="nav-item" data-page="timeline"><span class="nav-icon">📅</span><span class="nav-label">Unified Timeline</span></a>
-      <a href="#conversation-view" class="nav-item" data-page="conversation-view"><span class="nav-icon">🧵</span><span class="nav-label">Conversation View</span></a>
-      <a href="#notification-center" class="nav-item" data-page="notification-center"><span class="nav-icon">🔔</span><span class="nav-label">Notification Center</span><span class="nav-badge" id="notifCount">0</span></a>
-      <a href="#smart-router" class="nav-item" data-page="smart-router"><span class="nav-icon">🧭</span><span class="nav-label">Smart Router</span></a>
-      <a href="#learning-analytics" class="nav-item" data-page="learning-analytics"><span class="nav-icon">📊</span><span class="nav-label">Learning Analytics</span></a>
-      <a href="#session-replay" class="nav-item" data-page="session-replay"><span class="nav-icon">🔄</span><span class="nav-label">Session Replay</span></a>
-      <div class="sidebar-section"><div class="sidebar-section-label">Factory</div></div>
-      <a href="#factory-idea-factory" class="nav-item" data-page="factory-idea-factory"><span class="nav-icon">🏭</span><span class="nav-label">Idea Factory</span><span class="nav-badge new-badge" style="background:var(--accent);color:#fff;font-size:8px">NEW</span></a>
-      <a href="#multi-agent-chat" class="nav-item" data-page="multi-agent-chat"><span class="nav-icon">🤖</span><span class="nav-label">Agent Discussion</span></a>
-      <div class="sidebar-section"><div class="sidebar-section-label">Management</div></div>
-        <a href="#agent-plugin-marketplace" class="nav-item" data-page="agent-plugin-marketplace"><span class="nav-icon">🏪</span><span class="nav-label">Plugin Marketplace</span></a>
-        <a href="#cost" class="nav-item" data-page="cost"><span class="nav-icon">💰</span><span class="nav-label">Cost Analytics</span></a>
-        <a href="#plugins" class="nav-item" data-page="plugins"><span class="nav-icon">🔌</span><span class="nav-label">Plugins</span></a>
-        <a href="#backups" class="nav-item" data-page="backups"><span class="nav-icon">💾</span><span class="nav-label">Backups</span></a>
-        <a href="#prompts" class="nav-item" data-page="prompts"><span class="nav-icon">📝</span><span class="nav-label">Prompts</span></a>
-        <a href="#studio" class="nav-item" data-page="studio"><span class="nav-icon">🎨</span><span class="nav-label">Studio</span></a>
-        <a href="#video-generator" class="nav-item" data-page="video-generator"><span class="nav-icon">🎬</span><span class="nav-label">Video Generator</span></a>
-        <a href="#workflow-designer" class="nav-item" data-page="workflow-designer"><span class="nav-icon">🔀</span><span class="nav-label">Workflow Designer</span></a>
-        <a href="#standards" class="nav-item" data-page="standards"><span class="nav-icon">📐</span><span class="nav-label">Standards</span></a>
-      <div class="sidebar-section"><div class="sidebar-section-label">System</div></div>
-      <a href="#settings" class="nav-item" data-page="settings"><span class="nav-icon">⚙</span><span class="nav-label">Settings</span></a>
-      <a href="#setup-wizard" class="nav-item" data-page="setup-wizard"><span class="nav-icon">🚀</span><span class="nav-label">Setup Wizard</span></a>
-    </div>
-    <div class="sidebar-footer">
-      <div class="agent-status-bar" id="agentStatusBar">
-        <div class="agent-dot offline"></div>
-        <span class="agent-status-text">Connecting...</span>
-      </div>
-      <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme"><span class="theme-label">🌓</span></button>
-    </div>
-  </nav>
+  </header>
 
-  <main class="main-content">
-    <div class="topbar">
-      <div class="topbar-left">
-        <span class="topbar-title" id="pageTitle">Dashboard</span>
-        <span class="topbar-breadcrumb" id="pageBreadcrumb">Overview</span>
-      </div>
-      <div class="topbar-right">
-        <div class="topbar-search">
-          <span>🔍</span>
-          <input type="text" placeholder="Search skills..." id="globalSearch" oninput="handleGlobalSearch(this.value)">
-        </div>
-        <button class="topbar-profile" id="topbarProfile" onclick="openProfileSwitcher()" title="Switch Hermes profile">
-          👤 <span id="topbarProfileName">Default</span>
+  <div id="topLoadingBar"></div>
+  
+  <div class="mc-app-body">
+    <!-- Left Sidebar -->
+    <nav id="sidebar" class="mc-sidebar">
+      <div class="mc-nav-section">Workspace</div>
+      <a href="#boardroom" class="nav-item mc-nav-item" data-page="boardroom">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+        <span class="mc-nav-label">CEO Boardroom</span>
+      </a>
+      <a href="#dashboard" class="nav-item mc-nav-item active" data-page="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        <span class="mc-nav-label">Overview</span>
+      </a>
+      <a href="#agents" class="nav-item mc-nav-item" data-page="agents">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span class="mc-nav-label">Agents</span>
+      </a>
+      <a href="#memory" class="nav-item mc-nav-item" data-page="memory">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+        <span class="mc-nav-label">Memory</span>
+      </a>
+      <a href="#workspace" class="nav-item mc-nav-item" data-page="workspace">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        <span class="mc-nav-label">Workspace</span>
+      </a>
+      <a href="#skills" class="nav-item mc-nav-item" data-page="skills">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <span class="mc-nav-label">Skills Hub</span>
+      </a>
+      <a href="#plugins" class="nav-item mc-nav-item" data-page="plugins">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        <span class="mc-nav-label">Plugins</span>
+      </a>
+      
+      <div class="mc-nav-section">Operations</div>
+      <a href="#kanban" class="nav-item mc-nav-item" data-page="kanban">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span class="mc-nav-label">Tasks</span>
+      </a>
+      <a href="#swarm" class="nav-item mc-nav-item" data-page="swarm">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <span class="mc-nav-label">Swarms</span>
+      </a>
+      <a href="#scheduler" class="nav-item mc-nav-item" data-page="scheduler">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="mc-nav-label">Scheduler</span>
+      </a>
+      <a href="#audit" class="nav-item mc-nav-item" data-page="audit">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span class="mc-nav-label">Audit Log</span>
+      </a>
+      
+      <div class="mc-nav-section">Advanced Tools</div>
+      <a href="#programmatic-seo" class="nav-item mc-nav-item" data-page="programmatic-seo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+        <span class="mc-nav-label">Programmatic SEO</span>
+      </a>
+      <a href="#knowledge-graph" class="nav-item mc-nav-item" data-page="knowledge-graph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        <span class="mc-nav-label">Knowledge Graph</span>
+      </a>
+      <a href="#semantic-search" class="nav-item mc-nav-item" data-page="semantic-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span class="mc-nav-label">Semantic Search</span>
+      </a>
+      <a href="#workflow-designer" class="nav-item mc-nav-item" data-page="workflow-designer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        <span class="mc-nav-label">Workflow Designer</span>
+      </a>
+      <a href="#studio" class="nav-item mc-nav-item" data-page="studio">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+        <span class="mc-nav-label">Studio</span>
+      </a>
+      
+      <div class="mc-nav-section">System</div>
+      <a href="#analytics" class="nav-item mc-nav-item" data-page="analytics">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span class="mc-nav-label">Analytics</span>
+      </a>
+      <a href="#settings" class="nav-item mc-nav-item" data-page="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="mc-nav-label">Settings</span>
+      </a>
+
+      <div class="mc-provider-footer">
+        <span id="mcSidebarModel">owl-alpha</span>
+        <button class="mc-btn mc-btn-ghost" onclick="toggleSidebar()" style="padding:4px" title="Collapse Sidebar">
+          <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
-        <button class="topbar-btn" onclick="logout()" title="Sign out" style="margin-left:8px;padding:6px 10px;background:none;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-secondary);cursor:pointer;font-size:12px" onmouseover="this.style.background='var(--bg-tertiary)'" onmouseout="this.style.background=''">⏻ Sign Out</button>
       </div>
-    </div>
-    <div id="pageContent" class="page-content">
-      <div class="loading"><div class="loading-spinner"></div><span>Loading Agentic OS...</span></div>
-    </div>
-  </main>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="mc-main" id="pageContent">
+      <div class="loading" style="padding:40px;text-align:center;"><div class="loading-spinner"></div><span>Initializing Mission Control...</span></div>
+    </main>
+  </div>
 
   <div id="toastContainer" class="toast-container"></div>
   <div id="modalContainer"></div>
@@ -189,6 +171,8 @@
   <script src="/dashboard/knowledge-graph-d3.js"></script>
   <script src="/dashboard/pages/factory-idea-factory.js"></script>
   <script src="/dashboard/pages/multi-agent-chat.js"></script>
+  <script src="/dashboard/pages/boardroom.js"></script>
+  <script src="/dashboard/pages/programmatic-seo.js"></script>
   <script src="/dashboard/gateway.js"></script>
   <script src="/dashboard/app.js"></script>
 </body>

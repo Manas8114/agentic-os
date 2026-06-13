@@ -321,15 +321,7 @@ async function installPlugin(pluginName) {
 
   showToast('Installing ' + pluginName + '...', 'info');
   try {
-    if (plugin.source === 'skill') {
-      await fetch('/api/plugins/install', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-API-Key': 'dev-api-key-change-in-production' },
-        body: JSON.stringify({ name: pluginName }),
-      });
-    } else {
-      await api.installPlugin(pluginName);
-    }
+    await api.installPlugin(pluginName);
     plugin.installed = true;
     applyPluginFilters();
     showToast(plugin.displayName + ' installed', 'success');
@@ -341,12 +333,7 @@ async function installPlugin(pluginName) {
 async function uninstallPlugin(pluginName) {
   if (!confirm('Uninstall ' + pluginName + '?')) return;
   try {
-    var response = await fetch('/api/plugins/uninstall', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-API-Key': 'dev-api-key-change-in-production' },
-      body: JSON.stringify({ name: pluginName }),
-    });
-    var result = await response.json();
+    var result = await api.uninstallPlugin(pluginName);
     var plugin = pluginMarketplaceState.allPlugins.find(function(p) { return p.name === pluginName; });
     if (plugin) {
       plugin.installed = false;

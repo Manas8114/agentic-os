@@ -193,7 +193,7 @@ class SharedMemoryLayer:
     
     async def index_content(self, source: str, content_id: str, text: str, metadata: Dict = None):
         """Index content into vector DB"""
-        from server import generate_embedding, hash_to_vector
+        from server import generate_embedding
         embedding = await generate_embedding(text)
         
         vector_db = self.load_vector_db()
